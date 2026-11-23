@@ -12,7 +12,7 @@ async function remember(t){const k=await crypto.subtle.generateKey({name:'AES-GC
 async function recall(){try{const a=await idb('get');return a?D.decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:a.iv},a.k,a.c)):null}catch{return null}}
 async function check(t){const r=await fetch(`https://api.github.com/repos/${CFG.owner}/${CFG.repo}`,{headers:{Authorization:'Bearer '+t,Accept:'application/vnd.github+json'},cache:'no-store'});
 if(r.status===401)throw Error('Token hết hạn hoặc sai');if(!r.ok)throw Error('GitHub '+r.status);const j=await r.json();if(j.permissions&&!j.permissions.push)throw Error('Token không có quyền ghi')}
-const enter=t=>{TOK=t;adm=true;B.classList.add('adm')};
+const enter=t=>{TOK=t;adm=true;B.classList.add('adm');loadLib().then(it=>{if(it.length||!ALL.length){ALL=it;refresh()}})};
 $('#sec').onclick=async()=>{if(adm)return;const t=await recall();if(t){try{await check(t);return enter(t)}catch{}}
 dlg('Đăng nhập',`<input id="pw" type="password" placeholder="Mật khẩu" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false"><input id="tk" type="password" placeholder="${localStorage.tk?'Token GitHub (đã lưu)':'Token GitHub'}" autocomplete="off" autocapitalize="off" spellcheck="false"><label class="ck"><input id="sw" type="checkbox"> Hiện chữ đang gõ</label>`,async d=>{
 const pw=$('#pw',d).value;if(await hx(pw)!==HASH)throw Error('Sai mật khẩu');const nt=$('#tk',d).value.trim(),t=nt||await getTok(pw);if(!t)throw Error('Cần token GitHub');

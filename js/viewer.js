@@ -6,8 +6,12 @@ const f=$('input:not([type=file]):not([type=checkbox]),textarea',d);if(f)f.focus
 /* ---- mở thư mục / xem file toàn màn hình ---- */
 let vurl=null,qt,skip=0;
 const wake=()=>{const v=$('#view');v.classList.remove('q');clearTimeout(qt);qt=setTimeout(()=>v.classList.add('q'),2500)};
-function openP(p){if(p.type==='folder')return showDir(p.id,true);
-const v=$('#view'),f=mk('iframe');vurl=LOCAL[p.id]?URL.createObjectURL(new Blob([LOCAL[p.id]],{type:'text/html'})):'files/'+p.id+'.html';
+async function openP(p){if(p.type==='folder')return showDir(p.id,true);
+const v=$('#view'),f=mk('iframe');let html=LOCAL[p.id];
+if(html==null){try{const r=await fetch('files/'+p.id+'.html',{cache:'no-store'});if(r.ok)html=await r.text();else throw 0}catch{try{const h={Accept:'application/vnd.github.raw+json'};if(TOK)h.Authorization='Bearer '+TOK;
+const r=await fetch(`https://api.github.com/repos/${CFG.owner}/${CFG.repo}/contents/files/${p.id}.html?ref=${CFG.branch}`,{headers:h,cache:'no-store'});if(r.ok)html=await r.text()}catch{}}}
+if(html==null)return dlg('Chưa mở được','<p>File chưa sẵn sàng, thử lại sau ít giây.</p>',null,'');
+vurl=URL.createObjectURL(new Blob([html],{type:'text/html'}));
 f.allow='fullscreen;autoplay;accelerometer;gyroscope;microphone;camera;clipboard-write;web-share';f.setAttribute('allowfullscreen','');f.src=vurl;
 $('iframe',v)?.remove();v.prepend(f);v.style.display='block';B.style.overflow='hidden';wake();history.pushState({v:1},'')}
 function closeView(pop){const v=$('#view');v.style.display='none';$('iframe',v)?.remove();vurl&&vurl.startsWith('blob:')&&URL.revokeObjectURL(vurl);vurl=null;if(document.fullscreenElement)document.exitFullscreen();if(!pop&&history.state&&history.state.v){skip=1;history.back()}}
