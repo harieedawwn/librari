@@ -1,0 +1,3501 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toán 11 · Bài 11: Hai đường thẳng song song</title>
+  <!-- Google Fonts với dự phòng hệ thống để đảm bảo hoạt động hoàn toàn offline -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&family=Lora:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <style>
+    /* =========================================================
+       BIẾN THIẾT KẾ & BẢNG MÀU PHẲNG (CHỈ LIGHT MODE)
+       ========================================================= */
+    :root {
+      --bg-paper: #FAF8F3;
+      --bg-card: #FFFFFF;
+      --bg-tray: #F3EFE6;
+      --bg-cloak: #E8E1D3;
+
+      --text-main: #1A1917;
+      --text-sub: #605C54;
+
+      --border-hairline: #E4DDD0;
+      --border-card: #E2DACB;
+
+      --accent-red: #B63E2A;
+      --accent-red-soft: #F9EFEA;
+
+      /* Bộ màu mực ngữ nghĩa */
+      --ink-blue: #1C606C;      /* đường a / giao tuyến a / mặt phẳng P */
+      --ink-blue-soft: #EEF5F6;
+      --ink-ochre: #9E6812;     /* đường b / giao tuyến b / mặt phẳng Q */
+      --ink-ochre-soft: #FBF5E9;
+      --ink-moss: #2A664B;      /* đường c / giao tuyến c / mặt phẳng R / trạng thái đúng */
+      --ink-moss-soft: #EDF5F0;
+
+      --font-serif: 'Lora', Georgia, 'Times New Roman', serif;
+      --font-sans: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+      --nav-height: 48px;
+      --container-max: 960px;
+      --radius: 10px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 68px;
+      background-color: var(--bg-paper);
+      color: var(--text-main);
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-sans);
+      font-size: 16.5px;
+      line-height: 1.7;
+      color: var(--text-main);
+      background-color: var(--bg-paper);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* =========================================================
+       KIỂU CHỮ & TOÁN HỌC THUẦN HTML
+       ========================================================= */
+    h1, h2, h3 {
+      font-family: var(--font-serif);
+      color: var(--text-main);
+      margin-top: 0;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    p {
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .id-code {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent-red);
+      letter-spacing: 0.04em;
+      font-variant-numeric: tabular-nums;
+      display: inline-block;
+    }
+
+    .fig-code {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-sub);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .math {
+      font-family: var(--font-mono);
+      font-size: 0.94em;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    /* Phân số ngang không dùng LaTeX */
+    .frac {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      vertical-align: middle;
+      margin: 0 0.16em;
+      font-family: var(--font-mono);
+      font-size: 0.84em;
+      line-height: 1.15;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .frac .num {
+      padding: 0 0.25em 0.08em;
+      border-bottom: 1px solid currentColor;
+    }
+
+    .frac .den {
+      padding: 0.08em 0.25em 0;
+    }
+
+    /* Quy tắc gạch chân ngữ nghĩa (chỉ dùng cho đối tượng trùng màu hình vẽ) */
+    .sem-a {
+      color: var(--ink-blue);
+      border-bottom: 2px solid var(--ink-blue);
+      font-weight: 600;
+      padding-bottom: 1px;
+    }
+
+    .sem-b {
+      color: var(--ink-ochre);
+      border-bottom: 2px solid var(--ink-ochre);
+      font-weight: 600;
+      padding-bottom: 1px;
+    }
+
+    .sem-c {
+      color: var(--ink-moss);
+      border-bottom: 2px solid var(--ink-moss);
+      font-weight: 600;
+      padding-bottom: 1px;
+    }
+
+    .sem-m {
+      color: var(--accent-red);
+      border-bottom: 2px solid var(--accent-red);
+      font-weight: 600;
+      padding-bottom: 1px;
+    }
+
+    /* =========================================================
+       THANH ĐIỀU HƯỚNG ĐỈNH (STICKY 48PX + TIẾN ĐỘ 2PX)
+       ========================================================= */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background-color: var(--bg-paper);
+      border-bottom: 1px solid var(--border-hairline);
+      width: 100%;
+    }
+
+    .top-nav-inner {
+      max-width: var(--container-max);
+      margin: 0 auto;
+      min-height: var(--nav-height);
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand-title {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 0.98rem;
+      color: var(--text-main);
+      text-decoration: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .nav-links {
+      display: none;
+      align-items: center;
+      gap: 4px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      min-height: 44px;
+      padding: 0 10px;
+      font-size: 0.86rem;
+      font-weight: 500;
+      color: var(--text-sub);
+      text-decoration: none;
+      border-radius: 6px;
+      white-space: nowrap;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--text-main);
+      background-color: var(--bg-tray);
+    }
+
+    .nav-links a.active .nav-num {
+      color: var(--accent-red);
+    }
+
+    .nav-num {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-sub);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .btn-nav {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 44px;
+      padding: 0 12px;
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-main);
+      background-color: var(--bg-tray);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .btn-nav:hover {
+      border-color: var(--text-sub);
+    }
+
+    .btn-nav[aria-pressed="true"] {
+      background-color: var(--accent-red);
+      border-color: var(--accent-red);
+      color: #FFFFFF;
+    }
+
+    .btn-menu-mobile {
+      display: inline-flex;
+    }
+
+    .cloak-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--text-sub);
+      display: inline-block;
+    }
+
+    .btn-nav[aria-pressed="true"] .cloak-indicator {
+      background-color: #FFFFFF;
+    }
+
+    /* Thanh tiến độ đọc 2px mép dưới navbar */
+    .progress-track {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 2px;
+      background-color: transparent;
+      pointer-events: none;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background-color: var(--accent-red);
+      transition: width 0.08s linear;
+    }
+
+    /* Ngăn kéo mục lục trên thiết bị nhỏ */
+    .mobile-drawer {
+      display: none;
+      background-color: var(--bg-paper);
+      border-bottom: 1px solid var(--border-hairline);
+      padding: 8px 16px 14px;
+    }
+
+    .mobile-drawer.open {
+      display: block;
+    }
+
+    .mobile-drawer-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .mobile-drawer-list a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 44px;
+      padding: 0 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .mobile-drawer-list a:hover {
+      background-color: var(--bg-tray);
+    }
+
+    /* =========================================================
+       KHUNG NỘI DUNG CHÍNH & CHỐNG ĐÓNG HỘP
+       ========================================================= */
+    .page-wrap {
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: 36px 18px 64px;
+    }
+
+    .chapter-cover {
+      padding-bottom: 32px;
+    }
+
+    .chapter-kicker {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--accent-red);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .chapter-title {
+      font-size: clamp(1.95rem, 4.4vw, 2.75rem);
+      margin-bottom: 14px;
+      letter-spacing: -0.01em;
+    }
+
+    .chapter-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-sub);
+      max-width: 720px;
+      margin-bottom: 0;
+    }
+
+    /* Phân tách các mục lớn trực tiếp trên nền giấy ấm */
+    .lesson-section {
+      padding-top: 52px;
+      margin-top: 52px;
+      border-top: 1px solid var(--border-hairline);
+    }
+
+    .section-header {
+      margin-bottom: 22px;
+    }
+
+    .section-code-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .section-accent-bar {
+      width: 28px;
+      height: 2px;
+      background-color: var(--accent-red);
+      display: inline-block;
+    }
+
+    .section-title {
+      font-size: clamp(1.42rem, 3vw, 1.85rem);
+      margin-bottom: 0;
+    }
+
+    .lead-para {
+      max-width: 760px;
+      font-size: 1.03rem;
+      color: var(--text-main);
+      margin-bottom: 24px;
+    }
+
+    /* =========================================================
+       THẺ TRẮNG (CHỈ DÙNG CHO BẢN ĐỒ, XƯỞNG, LUYỆN TẬP)
+       ========================================================= */
+    .white-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    /* =========================================================
+       BẢN ĐỒ XƯƠNG SỐNG (HTML/CSS THUẦN, KHÔNG DÙNG SVG)
+       ========================================================= */
+    .concept-map-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .concept-map-title {
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .concept-map-hint {
+      font-size: 0.86rem;
+      color: var(--text-sub);
+    }
+
+    .concept-chain {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+    }
+
+    .concept-node {
+      flex: 1 1 0;
+      text-align: left;
+      min-height: 44px;
+      padding: 12px 14px;
+      background-color: var(--bg-paper);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .concept-node:hover {
+      border-color: var(--text-sub);
+    }
+
+    .concept-node.active {
+      background-color: var(--accent-red-soft);
+      border-color: var(--accent-red);
+    }
+
+    .concept-node-id {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent-red);
+    }
+
+    .concept-node-name {
+      font-weight: 700;
+      font-size: 0.96rem;
+      color: var(--text-main);
+      line-height: 1.35;
+    }
+
+    .concept-node-sub {
+      font-size: 0.83rem;
+      color: var(--text-sub);
+      line-height: 1.35;
+    }
+
+    .concept-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--text-sub);
+      padding: 2px 4px;
+      text-align: center;
+    }
+
+    .concept-link-arrow {
+      font-family: var(--font-mono);
+      color: var(--accent-red);
+      font-weight: 600;
+    }
+
+    .concept-detail-tray {
+      margin-top: 16px;
+      padding: 14px 16px;
+      background-color: var(--bg-tray);
+      border-radius: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .concept-detail-text {
+      margin: 0;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      flex: 1 1 260px;
+    }
+
+    .btn-jump {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 16px;
+      background-color: var(--accent-red);
+      color: #FFFFFF;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.88rem;
+      border-radius: 8px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .btn-jump:hover {
+      opacity: 0.92;
+    }
+
+    /* =========================================================
+       THUẬT NGỮ BẤM MỞ TẠI CHỖ (GẠCH CHẤM MẢNH)
+       ========================================================= */
+    .term-trigger {
+      appearance: none;
+      background: none;
+      border: none;
+      border-bottom: 1.5px dotted var(--text-main);
+      font: inherit;
+      font-weight: 600;
+      color: var(--text-main);
+      padding: 0 1px 1px;
+      cursor: pointer;
+      display: inline;
+    }
+
+    .term-trigger:hover,
+    .term-trigger[aria-expanded="true"] {
+      color: var(--accent-red);
+      border-bottom-color: var(--accent-red);
+    }
+
+    .term-pop-area {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .term-note {
+      display: none;
+      padding: 12px 16px;
+      background-color: var(--bg-tray);
+      border-left: 3px solid var(--text-sub);
+      border-radius: 0 8px 8px 0;
+      font-size: 0.94rem;
+    }
+
+    .term-note.open {
+      display: block;
+    }
+
+    .term-note-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .term-note-title {
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .term-close {
+      min-height: 36px;
+      min-width: 36px;
+      background: transparent;
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      font-size: 0.82rem;
+      color: var(--text-sub);
+      cursor: pointer;
+      padding: 0 10px;
+    }
+
+    /* =========================================================
+       BẢNG SO SÁNH PHẲNG TRỰC TIẾP TRÊN NỀN #FAF8F3
+       ========================================================= */
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 20px 0 28px;
+    }
+
+    .flat-table {
+      width: 100%;
+      min-width: 580px;
+      border-collapse: collapse;
+      text-align: left;
+      background-color: transparent;
+    }
+
+    .flat-table th {
+      font-size: 0.84rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-sub);
+      padding: 12px 12px 12px 0;
+      border-bottom: 2px solid var(--border-hairline);
+    }
+
+    .flat-table td {
+      padding: 14px 12px 14px 0;
+      border-bottom: 1px solid var(--border-hairline);
+      vertical-align: top;
+      font-size: 0.96rem;
+    }
+
+    .flat-table tbody tr:last-child td {
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .tag-flat {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background-color: var(--bg-tray);
+      color: var(--text-main);
+    }
+
+    .tag-skew {
+      background-color: var(--accent-red-soft);
+      color: var(--accent-red);
+    }
+
+    /* =========================================================
+       KHUNG HÌNH VẼ SVG KỸ THUẬT (CUỘN NGANG AN TOÀN MOBILE)
+       ========================================================= */
+    .figure-block {
+      margin: 28px 0;
+    }
+
+    .figure-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .figure-caption {
+      font-size: 0.92rem;
+      color: var(--text-sub);
+    }
+
+    .svg-scroll-frame {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-top: 1px solid var(--border-hairline);
+      border-bottom: 1px solid var(--border-hairline);
+      padding: 16px 0;
+    }
+
+    .svg-scroll-frame.in-card {
+      border: 1px solid var(--border-hairline);
+      border-radius: 8px;
+      background-color: var(--bg-paper);
+      padding: 12px;
+    }
+
+    .svg-scroll-frame svg {
+      display: block;
+      margin: 0 auto;
+    }
+
+    .scroll-hint {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      margin-top: 6px;
+      display: block;
+    }
+
+    /* =========================================================
+       MỤC GẬP GIẢI THÍCH TỪ GỐC (<details>)
+       ========================================================= */
+    details.root-explain {
+      margin: 24px 0;
+      border-top: 1px solid var(--border-hairline);
+      border-bottom: 1px solid var(--border-hairline);
+      padding: 4px 0;
+    }
+
+    details.root-explain summary {
+      list-style: none;
+      cursor: pointer;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-weight: 600;
+      font-size: 0.96rem;
+      color: var(--text-main);
+      padding: 6px 0;
+    }
+
+    details.root-explain summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .summary-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .summary-badge {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--ink-blue);
+      background-color: var(--ink-blue-soft);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .summary-caret {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      color: var(--text-sub);
+      transition: transform 0.15s ease;
+    }
+
+    details.root-explain[open] .summary-caret {
+      transform: rotate(180deg);
+    }
+
+    .root-explain-body {
+      padding: 6px 0 14px;
+      font-size: 0.96rem;
+      color: var(--text-sub);
+      max-width: 760px;
+    }
+
+    /* =========================================================
+       KHUNG CHUẨN GHI NHỚ & CHẾ ĐỘ TỰ DÒ BÀI (.cloak)
+       ========================================================= */
+    .memory-box {
+      margin: 28px 0;
+      padding: 18px 20px;
+      background-color: var(--bg-tray);
+      border-left: 3px solid var(--accent-red);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .memory-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .memory-title {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 0;
+    }
+
+    .memory-list {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+
+    .memory-list li {
+      margin-bottom: 8px;
+    }
+
+    .memory-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Từ khóa cốt lõi cho chế độ Tự dò bài */
+    .cloak {
+      font-weight: 600;
+      color: var(--text-main);
+      border-radius: 4px;
+      padding: 1px 3px;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    body.study-mode .cloak {
+      background-color: var(--bg-cloak);
+      color: transparent;
+      border: 1px dashed #BDB3A1;
+      cursor: pointer;
+      user-select: none;
+      padding: 1px 6px;
+    }
+
+    body.study-mode .cloak:hover {
+      border-color: var(--accent-red);
+    }
+
+    body.study-mode .cloak.revealed {
+      background-color: var(--accent-red-soft);
+      color: var(--accent-red);
+      border: 1px solid var(--accent-red);
+      user-select: auto;
+    }
+
+    .study-mode-note {
+      display: none;
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      color: var(--accent-red);
+    }
+
+    body.study-mode .study-mode-note {
+      display: inline;
+    }
+
+    /* =========================================================
+       CHỐT NHANH GIỮA BÀI (1 CHẠM)
+       ========================================================= */
+    .quick-check {
+      margin: 28px 0 8px;
+      padding: 18px 0;
+      border-top: 1px solid var(--border-hairline);
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .quick-check-q {
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--text-main);
+    }
+
+    .quick-check-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn-choice {
+      min-height: 44px;
+      padding: 10px 18px;
+      font-family: var(--font-sans);
+      font-size: 0.94rem;
+      font-weight: 600;
+      color: var(--text-main);
+      background-color: var(--bg-tray);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn-choice:hover {
+      border-color: var(--text-sub);
+    }
+
+    .btn-choice.is-correct {
+      background-color: var(--ink-moss-soft);
+      border-color: var(--ink-moss);
+      color: var(--ink-moss);
+    }
+
+    .btn-choice.is-wrong {
+      background-color: var(--accent-red-soft);
+      border-color: var(--accent-red);
+      color: var(--accent-red);
+    }
+
+    .quick-feedback {
+      margin-top: 12px;
+      font-size: 0.94rem;
+      font-weight: 500;
+      display: none;
+    }
+
+    .quick-feedback.show {
+      display: block;
+    }
+
+    .quick-feedback.ok {
+      color: var(--ink-moss);
+    }
+
+    .quick-feedback.err {
+      color: var(--accent-red);
+    }
+
+    /* =========================================================
+       KỂ CHUYỆN TỪNG BƯỚC (HÌNH 02 - TỨ DIỆN ABCD)
+       ========================================================= */
+    .story-shell {
+      margin: 24px 0 28px;
+    }
+
+    .step-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .step-btn {
+      min-height: 44px;
+      padding: 0 14px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 600;
+      background-color: var(--bg-tray);
+      color: var(--text-sub);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .step-btn:hover {
+      color: var(--text-main);
+      border-color: var(--text-sub);
+    }
+
+    .step-btn.active[data-tone="blue"] {
+      background-color: var(--ink-blue);
+      border-color: var(--ink-blue);
+      color: #FFFFFF;
+    }
+
+    .step-btn.active[data-tone="ochre"] {
+      background-color: var(--ink-ochre);
+      border-color: var(--ink-ochre);
+      color: #FFFFFF;
+    }
+
+    .step-btn.active[data-tone="moss"] {
+      background-color: var(--ink-moss);
+      border-color: var(--ink-moss);
+      color: #FFFFFF;
+    }
+
+    .step-btn.active[data-tone="red"] {
+      background-color: var(--accent-red);
+      border-color: var(--accent-red);
+      color: #FFFFFF;
+    }
+
+    .story-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .story-narration {
+      padding: 16px 18px;
+      background-color: var(--bg-tray);
+      border-radius: 8px;
+      border-left: 3px solid var(--ink-blue);
+    }
+
+    .story-narration[data-tone="ochre"] { border-left-color: var(--ink-ochre); }
+    .story-narration[data-tone="moss"]  { border-left-color: var(--ink-moss); }
+    .story-narration[data-tone="red"]   { border-left-color: var(--accent-red); }
+
+    .story-step-heading {
+      font-family: var(--font-serif);
+      font-size: 1.06rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+
+    .story-nav-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .btn-subtle {
+      min-height: 44px;
+      padding: 0 14px;
+      font-family: var(--font-sans);
+      font-size: 0.88rem;
+      font-weight: 600;
+      background-color: var(--bg-paper);
+      color: var(--text-main);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .btn-subtle:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .btn-subtle:not(:disabled):hover {
+      border-color: var(--text-sub);
+    }
+
+    /* =========================================================
+       XƯỞNG TƯƠNG TÁC TRỌNG TÂM (HÌNH 03 - THẺ TRẮNG)
+       ========================================================= */
+    .lab-card {
+      margin: 24px 0 28px;
+    }
+
+    .lab-top-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .lab-mission {
+      padding: 12px 14px;
+      background-color: var(--bg-tray);
+      border-radius: 8px;
+      font-size: 0.93rem;
+      color: var(--text-main);
+      margin-bottom: 16px;
+    }
+
+    .lab-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--border-hairline);
+      padding-bottom: 12px;
+    }
+
+    .tab-btn {
+      min-height: 44px;
+      padding: 0 16px;
+      font-family: var(--font-sans);
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-sub);
+      background-color: var(--bg-tray);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background-color: var(--ink-moss);
+      border-color: var(--ink-moss);
+      color: #FFFFFF;
+    }
+
+    .lab-panel {
+      display: none;
+    }
+
+    .lab-panel.active {
+      display: block;
+    }
+
+    .lab-controls {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 16px;
+      padding: 16px;
+      background-color: var(--bg-tray);
+      border-radius: 8px;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .control-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .control-val {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      color: var(--accent-red);
+      font-weight: 600;
+    }
+
+    /* Thanh trượt có vùng chạm tối thiểu 44px */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 44px;
+      background: transparent;
+      cursor: pointer;
+      margin: 0;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 6px;
+      border-radius: 3px;
+      background: #D7CEBE;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent-red);
+      border: 2px solid #FFFFFF;
+      margin-top: -8px;
+    }
+
+    input[type="range"]::-moz-range-track {
+      height: 6px;
+      border-radius: 3px;
+      background: #D7CEBE;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent-red);
+      border: 2px solid #FFFFFF;
+    }
+
+    .preset-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .btn-preset {
+      min-height: 44px;
+      padding: 0 14px;
+      font-family: var(--font-sans);
+      font-size: 0.88rem;
+      font-weight: 600;
+      background-color: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .btn-preset:hover {
+      border-color: var(--text-sub);
+    }
+
+    .btn-preset.active-red {
+      background-color: var(--accent-red);
+      border-color: var(--accent-red);
+      color: #FFFFFF;
+    }
+
+    .btn-preset.active-moss {
+      background-color: var(--ink-moss);
+      border-color: var(--ink-moss);
+      color: #FFFFFF;
+    }
+
+    .btn-preset.active-blue {
+      background-color: var(--ink-blue);
+      border-color: var(--ink-blue);
+      color: #FFFFFF;
+    }
+
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .telemetry-cell {
+      background-color: var(--bg-paper);
+      border: 1px solid var(--border-hairline);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .telemetry-key {
+      font-size: 0.78rem;
+      color: var(--text-sub);
+      margin-bottom: 4px;
+    }
+
+    .telemetry-val {
+      font-family: var(--font-mono);
+      font-size: 0.98rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-main);
+    }
+
+    .telemetry-val.is-parallel {
+      color: var(--ink-moss);
+    }
+
+    .telemetry-val.is-concurrent {
+      color: var(--accent-red);
+    }
+
+    .pyramid-logic {
+      margin-top: 14px;
+      padding: 14px 16px;
+      background-color: var(--bg-paper);
+      border: 1px solid var(--border-hairline);
+      border-radius: 8px;
+      font-size: 0.94rem;
+    }
+
+    .pyramid-logic ol {
+      margin: 6px 0 0;
+      padding-left: 1.25rem;
+    }
+
+    .pyramid-logic li {
+      margin-bottom: 4px;
+    }
+
+    /* =========================================================
+       MỤC 04: BẪY ĐỀ THI & MỞ RỘNG (TRỰC TIẾP TRÊN NỀN #FAF8F3)
+       ========================================================= */
+    .traps-list {
+      margin: 18px 0 28px;
+      border-top: 1px solid var(--border-hairline);
+    }
+
+    .trap-item {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .trap-wrong-label {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--accent-red);
+      margin-bottom: 4px;
+    }
+
+    .trap-right-label {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--ink-moss);
+      margin-bottom: 4px;
+    }
+
+    .extension-block {
+      margin-top: 24px;
+      padding: 4px 0 4px 18px;
+      border-left: 3px solid var(--ink-blue);
+    }
+
+    .extension-kicker {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--ink-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+    }
+
+    .extension-title {
+      font-family: var(--font-serif);
+      font-size: 1.12rem;
+      margin-bottom: 8px;
+    }
+
+    /* =========================================================
+       MỤC 05: LUYỆN TẬP (THẺ TRẮNG)
+       ========================================================= */
+    .quiz-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .quiz-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .quiz-badge {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 4px;
+      background-color: var(--bg-tray);
+      color: var(--text-sub);
+    }
+
+    .quiz-badge.vdc {
+      background-color: var(--accent-red-soft);
+      color: var(--accent-red);
+    }
+
+    .quiz-prompt {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 14px;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .opt-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 44px;
+      width: 100%;
+      padding: 10px 14px;
+      text-align: left;
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      color: var(--text-main);
+      background-color: var(--bg-paper);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .opt-btn:hover {
+      border-color: var(--text-sub);
+    }
+
+    .opt-letter {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 600;
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background-color: var(--bg-tray);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .opt-btn.selected-correct {
+      background-color: var(--ink-moss-soft);
+      border-color: var(--ink-moss);
+      color: var(--ink-moss);
+      font-weight: 600;
+    }
+
+    .opt-btn.selected-correct .opt-letter {
+      background-color: var(--ink-moss);
+      color: #FFFFFF;
+    }
+
+    .opt-btn.selected-wrong {
+      background-color: var(--accent-red-soft);
+      border-color: var(--accent-red);
+      color: var(--accent-red);
+      font-weight: 600;
+    }
+
+    .opt-btn.selected-wrong .opt-letter {
+      background-color: var(--accent-red);
+      color: #FFFFFF;
+    }
+
+    /* Ghép cặp Câu 02 */
+    .match-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .match-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      align-items: center;
+      padding: 10px 12px;
+      background-color: var(--bg-paper);
+      border: 1px solid var(--border-hairline);
+      border-radius: 8px;
+    }
+
+    .match-row.row-ok {
+      border-color: var(--ink-moss);
+      background-color: var(--ink-moss-soft);
+    }
+
+    .match-row.row-err {
+      border-color: var(--accent-red);
+      background-color: var(--accent-red-soft);
+    }
+
+    .match-select {
+      min-height: 44px;
+      padding: 0 12px;
+      font-family: var(--font-sans);
+      font-size: 0.94rem;
+      color: var(--text-main);
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      width: 100%;
+    }
+
+    .match-status {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 600;
+      min-height: 20px;
+    }
+
+    .match-status.ok { color: var(--ink-moss); }
+    .match-status.err { color: var(--accent-red); }
+
+    .quiz-feedback {
+      margin-top: 12px;
+      font-size: 0.93rem;
+      font-weight: 600;
+      display: none;
+    }
+
+    .quiz-feedback.show { display: block; }
+    .quiz-feedback.ok { color: var(--ink-moss); }
+    .quiz-feedback.err { color: var(--accent-red); }
+
+    .quiz-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-hairline);
+    }
+
+    .btn-tool {
+      min-height: 44px;
+      padding: 0 14px;
+      font-family: var(--font-sans);
+      font-size: 0.87rem;
+      font-weight: 600;
+      color: var(--text-main);
+      background-color: var(--bg-tray);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .btn-tool:hover {
+      border-color: var(--text-sub);
+    }
+
+    .btn-tool.primary {
+      background-color: var(--ink-blue);
+      border-color: var(--ink-blue);
+      color: #FFFFFF;
+    }
+
+    .hint-box {
+      display: none;
+      margin-top: 12px;
+      padding: 12px 14px;
+      background-color: var(--ink-ochre-soft);
+      border-left: 3px solid var(--ink-ochre);
+      border-radius: 0 8px 8px 0;
+      font-size: 0.92rem;
+      color: var(--text-main);
+    }
+
+    .hint-box.show { display: block; }
+
+    .solution-box {
+      display: none;
+      margin-top: 12px;
+      padding: 14px 16px;
+      background-color: var(--bg-paper);
+      border: 1px solid var(--border-hairline);
+      border-radius: 8px;
+      font-size: 0.93rem;
+    }
+
+    .solution-box.show { display: block; }
+
+    .sol-step {
+      display: none;
+      padding: 8px 0;
+      border-bottom: 1px dashed var(--border-hairline);
+    }
+
+    .sol-step.visible { display: block; }
+    .sol-step:last-of-type { border-bottom: none; }
+
+    .sol-step-tag {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent-red);
+      margin-right: 6px;
+    }
+
+    .sol-controls {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    /* =========================================================
+       CHÂN TRANG TỐI GIẢN
+       ========================================================= */
+    .site-footer {
+      margin-top: 64px;
+      padding: 24px 18px 36px;
+      border-top: 1px solid var(--border-hairline);
+      text-align: center;
+      font-size: 0.88rem;
+      color: var(--text-sub);
+      background-color: var(--bg-paper);
+    }
+
+    /* =========================================================
+       BỐ CỤC ĐÁP ỨNG DESKTOP (>= 900PX)
+       ========================================================= */
+    @media (min-width: 720px) {
+      .options-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .match-row {
+        grid-template-columns: 1.5fr 1fr 0.7fr;
+      }
+
+      .trap-item {
+        grid-template-columns: 1fr 1.25fr;
+        gap: 24px;
+      }
+
+      .lab-controls {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .scroll-hint {
+        display: none;
+      }
+    }
+
+    @media (min-width: 900px) {
+      .nav-links {
+        display: flex;
+      }
+
+      .btn-menu-mobile {
+        display: none;
+      }
+
+      .mobile-drawer {
+        display: none !important;
+      }
+
+      .page-wrap {
+        padding: 44px 24px 72px;
+      }
+
+      .concept-chain {
+        flex-direction: row;
+        align-items: stretch;
+        gap: 6px;
+      }
+
+      .concept-link {
+        flex-direction: column;
+        justify-content: center;
+        flex: 0 0 76px;
+        font-size: 0.73rem;
+        line-height: 1.25;
+      }
+
+      .story-grid {
+        grid-template-columns: 1.35fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =========================================================
+       THANH ĐIỀU HƯỚNG ĐỈNH (STICKY 48PX)
+       ========================================================= -->
+  <header class="top-nav" id="topNav">
+    <div class="top-nav-inner">
+      <a href="#top" class="brand-title">Toán 11 · Bài 11</a>
+
+      <nav aria-label="Mục lục bài học">
+        <ul class="nav-links" id="desktopNav">
+          <li><a href="#muc-01" data-sec="muc-01"><span class="nav-num">01</span>Vị trí</a></li>
+          <li><a href="#muc-02" data-sec="muc-02"><span class="nav-num">02</span>Tính chất</a></li>
+          <li><a href="#muc-03" data-sec="muc-03"><span class="nav-num">03</span>Ba giao tuyến</a></li>
+          <li><a href="#muc-04" data-sec="muc-04"><span class="nav-num">04</span>Bẫy đề</a></li>
+          <li><a href="#muc-05" data-sec="muc-05"><span class="nav-num">05</span>Luyện tập</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav btn-menu-mobile" id="mobileMenuBtn" aria-expanded="false" aria-controls="mobileDrawer">
+          Mục lục
+        </button>
+        <button type="button" class="btn-nav" id="studyModeBtn" aria-pressed="false" title="Che mờ từ khóa trong các khung Chuẩn ghi nhớ">
+          <span class="cloak-indicator" aria-hidden="true"></span>
+          <span>Tự dò bài</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Thanh tiến độ đọc 2px -->
+    <div class="progress-track" aria-hidden="true">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <!-- Ngăn kéo mục lục trên màn hình nhỏ -->
+    <div class="mobile-drawer" id="mobileDrawer">
+      <ul class="mobile-drawer-list">
+        <li><a href="#muc-01"><span class="id-code">01</span> Vị trí tương đối của hai đường thẳng</a></li>
+        <li><a href="#muc-02"><span class="id-code">02</span> Tính chất cơ bản về hai đường thẳng song song</a></li>
+        <li><a href="#muc-03"><span class="id-code">03</span> Định lí về ba đường giao tuyến &amp; Xưởng tương tác</a></li>
+        <li><a href="#muc-04"><span class="id-code">04</span> Bẫy đề thi &amp; Mở rộng vận dụng cao</a></li>
+        <li><a href="#muc-05"><span class="id-code">05</span> Luyện tập cuối bài</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- =========================================================
+       NỘI DUNG CHÍNH
+       ========================================================= -->
+  <main class="page-wrap" id="top">
+
+    <!-- BÌA CHƯƠNG TRỰC TIẾP TRÊN NỀN GIẤY ẤM -->
+    <section class="chapter-cover">
+      <div class="chapter-kicker">CHƯƠNG IV · QUAN HỆ SONG SONG TRONG KHÔNG GIAN</div>
+      <h1 class="chapter-title">Bài 11: Hai đường thẳng song song</h1>
+      <p class="chapter-subtitle">
+        Phân loại vị trí tương đối trong không gian ba chiều, các tính chất song song cơ bản và định lí về ba đường giao tuyến.
+      </p>
+    </section>
+
+    <!-- BẢN ĐỒ XƯƠNG SỐNG (THẺ TRẮNG, HTML/CSS THUẦN, KHÔNG DÙNG SVG) -->
+    <section class="white-card" aria-label="Bản đồ xương sống bài học">
+      <div class="concept-map-header">
+        <h2 class="concept-map-title">Bản đồ xương sống bài học</h2>
+        <span class="concept-map-hint">Chọn một nhánh để xem tóm ý cốt lõi</span>
+      </div>
+
+      <div class="concept-chain" role="tablist" aria-label="Các trụ cột kiến thức">
+        <button type="button" class="concept-node active" role="tab" aria-selected="true" data-map="0">
+          <span class="concept-node-id">[01]</span>
+          <span class="concept-node-name">Vị trí tương đối</span>
+          <span class="concept-node-sub">Đồng phẳng hay chéo nhau</span>
+        </button>
+
+        <div class="concept-link" aria-hidden="true">
+          <span>Cơ sở phân loại</span>
+          <span class="concept-link-arrow">→</span>
+        </div>
+
+        <button type="button" class="concept-node" role="tab" aria-selected="false" data-map="1">
+          <span class="concept-node-id">[02]</span>
+          <span class="concept-node-name">Tính chất song song</span>
+          <span class="concept-node-sub">Tiên đề duy nhất &amp; Bắc cầu</span>
+        </button>
+
+        <div class="concept-link" aria-hidden="true">
+          <span>Mở rộng ra mặt phẳng</span>
+          <span class="concept-link-arrow">→</span>
+        </div>
+
+        <button type="button" class="concept-node" role="tab" aria-selected="false" data-map="2">
+          <span class="concept-node-id">[03]</span>
+          <span class="concept-node-name">Định lí 3 giao tuyến</span>
+          <span class="concept-node-sub">Đồng quy hoặc Đôi một //</span>
+        </button>
+
+        <div class="concept-link" aria-hidden="true">
+          <span>Vận dụng giải toán</span>
+          <span class="concept-link-arrow">→</span>
+        </div>
+
+        <button type="button" class="concept-node" role="tab" aria-selected="false" data-map="3">
+          <span class="concept-node-id">[04–05]</span>
+          <span class="concept-node-name">Bẫy đề &amp; Luyện tập</span>
+          <span class="concept-node-sub">Nhận diện lỗi sai &amp; Tìm giao tuyến</span>
+        </button>
+      </div>
+
+      <div class="concept-detail-tray" aria-live="polite">
+        <p class="concept-detail-text" id="mapSummaryText">
+          Hai đường thẳng trong không gian chia làm hai nhóm lớn: đồng phẳng (cắt nhau, song song, trùng nhau) và không đồng phẳng (chéo nhau).
+        </p>
+        <a href="#muc-01" class="btn-jump" id="mapJumpBtn">Đi tới mục 01 →</a>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         MỤC [01]: VỊ TRÍ TƯƠNG ĐỐI CỦA HAI ĐƯỜNG THẲNG
+         ========================================================= -->
+    <section class="lesson-section" id="muc-01">
+      <div class="section-header">
+        <div class="section-code-row">
+          <span class="id-code">[01]</span>
+          <span class="section-accent-bar" aria-hidden="true"></span>
+        </div>
+        <h2 class="section-title">Vị trí tương đối của hai đường thẳng trong không gian</h2>
+      </div>
+
+      <p class="lead-para">
+        Tại các nút giao cầu vượt đô thị, hai tuyến đường không nhất thiết phải cắt nhau hay song song mà có thể nằm ở hai tầng không gian khác nhau. Trong hình học không gian, vị trí giữa đường thẳng <span class="sem-a">a</span> và đường thẳng <span class="sem-b">b</span> được phân loại trước hết theo tiêu chí có
+        <button type="button" class="term-trigger" data-term="dong-phang" aria-expanded="false" aria-controls="note-dong-phang">đồng phẳng</button>
+        hay
+        <button type="button" class="term-trigger" data-term="cheo-nhau" aria-expanded="false" aria-controls="note-cheo-nhau">chéo nhau</button>.
+      </p>
+
+      <!-- Khay mở giải thích thuật ngữ tại chỗ -->
+      <div class="term-pop-area">
+        <div class="term-note" id="note-dong-phang" role="region" aria-label="Giải thích thuật ngữ đồng phẳng">
+          <div class="term-note-head">
+            <span class="term-note-title">Thuật ngữ: Đồng phẳng</span>
+            <button type="button" class="term-close" data-close-term="dong-phang">Đóng</button>
+          </div>
+          <div>Hai đường thẳng cùng nằm trong ít nhất một mặt phẳng. Ví dụ: hai mép đối diện của mặt bàn hoặc hai đường chéo của hình chữ nhật.</div>
+        </div>
+
+        <div class="term-note" id="note-cheo-nhau" role="region" aria-label="Giải thích thuật ngữ chéo nhau">
+          <div class="term-note-head">
+            <span class="term-note-title">Thuật ngữ: Chéo nhau</span>
+            <button type="button" class="term-close" data-close-term="cheo-nhau">Đóng</button>
+          </div>
+          <div>Hai đường thẳng không cùng nằm trong bất kì mặt phẳng nào. Ví dụ: tuyến đường trên cầu vượt và tuyến đường bên dưới cắt ngang qua nó.</div>
+        </div>
+      </div>
+
+      <!-- Bảng so sánh phẳng trực tiếp trên nền #FAF8F3 -->
+      <div class="table-scroll">
+        <table class="flat-table" aria-label="Phân loại 4 vị trí tương đối của hai đường thẳng">
+          <thead>
+            <tr>
+              <th>Vị trí tương đối</th>
+              <th>Điều kiện mặt phẳng</th>
+              <th>Số điểm chung</th>
+              <th>Kí hiệu</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Cắt nhau</strong></td>
+              <td><span class="tag-flat">Đồng phẳng</span></td>
+              <td>1 điểm chung duy nhất (<span class="sem-m">M</span>)</td>
+              <td><span class="math">a ∩ b = {M}</span></td>
+            </tr>
+            <tr>
+              <td><strong>Song song</strong></td>
+              <td><span class="tag-flat">Đồng phẳng</span></td>
+              <td>0 điểm chung</td>
+              <td><span class="math">a // b</span></td>
+            </tr>
+            <tr>
+              <td><strong>Trùng nhau</strong></td>
+              <td><span class="tag-flat">Đồng phẳng</span></td>
+              <td>Vô số điểm chung</td>
+              <td><span class="math">a ≡ b</span></td>
+            </tr>
+            <tr>
+              <td><strong>Chéo nhau</strong></td>
+              <td><span class="tag-flat tag-skew">Không đồng phẳng</span></td>
+              <td>0 điểm chung</td>
+              <td><span class="math">a chéo b</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- HÌNH 01: SVG KỸ THUẬT 4 VỊ TRÍ TƯƠNG ĐỐI -->
+      <div class="figure-block">
+        <div class="figure-meta">
+          <span class="fig-code">Hình 01</span>
+          <span class="figure-caption">Bốn vị trí tương đối của đường thẳng <span class="sem-a">a</span> và đường thẳng <span class="sem-b">b</span> trong không gian</span>
+        </div>
+
+        <div class="svg-scroll-frame">
+          <svg viewBox="0 0 760 198" style="min-width: 640px; width: 100%; height: auto;" role="img" aria-label="Bốn hình biểu diễn vị trí tương đối: cắt nhau, song song, trùng nhau và chéo nhau">
+            <!-- (1) Cắt nhau -->
+            <g transform="translate(10, 12)">
+              <polygon points="28,125 148,125 174,38 54,38" fill="#FFFFFF" stroke="#605C54" stroke-width="1.4"/>
+              <path d="M 38,108 A 18,18 0 0,1 51,125" fill="none" stroke="#605C54" stroke-width="1.2"/>
+              <text x="36" y="121" font-family="JetBrains Mono, monospace" font-size="12" fill="#605C54">α</text>
+              <!-- a và b cắt tại M -->
+              <line x1="65" y1="54" x2="142" y2="112" stroke="#1C606C" stroke-width="2.4"/>
+              <line x1="58" y1="106" x2="152" y2="56" stroke="#9E6812" stroke-width="2.4"/>
+              <circle cx="101.5" cy="82" r="4" fill="#B63E2A"/>
+              <text x="97" y="70" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#B63E2A">M</text>
+              <text x="145" y="114" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#1C606C">a</text>
+              <text x="151" y="54" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#9E6812">b</text>
+              <text x="95" y="152" text-anchor="middle" font-family="Be Vietnam Pro, sans-serif" font-size="13" font-weight="600" fill="#1A1917">(1) Cắt nhau</text>
+              <text x="95" y="172" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#605C54">a ∩ b = {M}</text>
+            </g>
+
+            <!-- (2) Song song -->
+            <g transform="translate(198, 12)">
+              <polygon points="28,125 148,125 174,38 54,38" fill="#FFFFFF" stroke="#605C54" stroke-width="1.4"/>
+              <path d="M 38,108 A 18,18 0 0,1 51,125" fill="none" stroke="#605C54" stroke-width="1.2"/>
+              <text x="36" y="121" font-family="JetBrains Mono, monospace" font-size="12" fill="#605C54">α</text>
+              <line x1="60" y1="74" x2="152" y2="54" stroke="#1C606C" stroke-width="2.4"/>
+              <line x1="60" y1="104" x2="152" y2="84" stroke="#9E6812" stroke-width="2.4"/>
+              <text x="140" y="50" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#1C606C">a</text>
+              <text x="140" y="102" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#9E6812">b</text>
+              <text x="95" y="152" text-anchor="middle" font-family="Be Vietnam Pro, sans-serif" font-size="13" font-weight="600" fill="#1A1917">(2) Song song</text>
+              <text x="95" y="172" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#605C54">a // b</text>
+            </g>
+
+            <!-- (3) Trùng nhau -->
+            <g transform="translate(386, 12)">
+              <polygon points="28,125 148,125 174,38 54,38" fill="#FFFFFF" stroke="#605C54" stroke-width="1.4"/>
+              <path d="M 38,108 A 18,18 0 0,1 51,125" fill="none" stroke="#605C54" stroke-width="1.2"/>
+              <text x="36" y="121" font-family="JetBrains Mono, monospace" font-size="12" fill="#605C54">α</text>
+              <!-- Vẽ hai nét sát trùng để rõ a trùng b -->
+              <line x1="56" y1="98" x2="152" y2="62" stroke="#1C606C" stroke-width="3.6"/>
+              <line x1="56" y1="98" x2="152" y2="62" stroke="#9E6812" stroke-width="1.6" stroke-dasharray="6,4"/>
+              <text x="72" y="84" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#1C606C">a</text>
+              <text x="86" y="104" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#9E6812">b</text>
+              <text x="95" y="152" text-anchor="middle" font-family="Be Vietnam Pro, sans-serif" font-size="13" font-weight="600" fill="#1A1917">(3) Trùng nhau</text>
+              <text x="95" y="172" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#605C54">a ≡ b</text>
+            </g>
+
+            <!-- (4) Chéo nhau -->
+            <g transform="translate(574, 12)">
+              <polygon points="22,125 142,125 168,38 48,38" fill="#FFFFFF" stroke="#605C54" stroke-width="1.4"/>
+              <path d="M 32,108 A 18,18 0 0,1 45,125" fill="none" stroke="#605C54" stroke-width="1.2"/>
+              <text x="30" y="121" font-family="JetBrains Mono, monospace" font-size="12" fill="#605C54">α</text>
+              <!-- b nằm trong (α) -->
+              <line x1="52" y1="108" x2="146" y2="86" stroke="#9E6812" stroke-width="2.4"/>
+              <!-- a xuyên qua (α) tại I không thuộc b -->
+              <line x1="88" y1="8" x2="94" y2="68" stroke="#1C606C" stroke-width="2.4"/>
+              <line x1="94" y1="68" x2="99" y2="125" stroke="#1C606C" stroke-width="2.2" stroke-dasharray="5,4"/>
+              <line x1="99" y1="125" x2="101" y2="142" stroke="#1C606C" stroke-width="2.4"/>
+              <circle cx="94" cy="68" r="4" fill="#B63E2A"/>
+              <text x="104" y="72" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#B63E2A">I</text>
+              <text x="74" y="24" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#1C606C">a</text>
+              <text x="132" y="106" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#9E6812">b</text>
+              <text x="90" y="160" text-anchor="middle" font-family="Be Vietnam Pro, sans-serif" font-size="13" font-weight="600" fill="#1A1917">(4) Chéo nhau</text>
+              <text x="90" y="178" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#605C54">a ∩ (α) = {I}, I ∉ b</text>
+            </g>
+          </svg>
+        </div>
+        <span class="scroll-hint">Vuốt ngang trên màn hình nhỏ để quan sát trọn cả 4 hình vẽ.</span>
+      </div>
+
+      <!-- Khung gập Giải thích từ gốc -->
+      <details class="root-explain">
+        <summary>
+          <span class="summary-label">
+            <span class="summary-badge">Giải thích từ gốc</span>
+            <span>Tại sao hai đường thẳng không có điểm chung trong không gian chưa chắc song song?</span>
+          </span>
+          <span class="summary-caret" aria-hidden="true">▾</span>
+        </summary>
+        <div class="root-explain-body">
+          Trong hình học phẳng (2 chiều), mọi đường thẳng đều bị ép nằm chung trên một mặt phẳng duy nhất; do đó hai đường thẳng chỉ có thể cắt nhau tại một điểm, trùng nhau, hoặc giữ hướng song song để không bao giờ gặp nhau. Khi bước sang không gian 3 chiều, chiều cao (chiều thứ ba) cho phép một đường thẳng đi lệch hướng hoàn toàn và vượt qua phía trên đường thẳng kia mà không cần chung mặt phẳng — tạo ra trạng thái <strong>chéo nhau</strong>.
+        </div>
+      </details>
+
+      <!-- CHUẨN GHI NHỚ 01 -->
+      <aside class="memory-box" aria-label="Chuẩn ghi nhớ mục 01">
+        <div class="memory-head">
+          <h3 class="memory-title">Chuẩn ghi nhớ 01</h3>
+          <span class="study-mode-note">Bấm từng ô mờ để lật đáp án</span>
+        </div>
+        <ul class="memory-list">
+          <li>Hai đường thẳng cùng nằm trong một mặt phẳng gọi là <span class="cloak">đồng phẳng</span> (cắt nhau, song song hoặc trùng nhau).</li>
+          <li>Hai đường thẳng không cùng nằm trong bất kì mặt phẳng nào gọi là <span class="cloak">chéo nhau</span>.</li>
+          <li>Hai đường thẳng song song là hai đường thẳng <span class="cloak">đồng phẳng và không có điểm chung</span>.</li>
+          <li>Có <span class="cloak">đúng một mặt phẳng</span> chứa hai đường thẳng song song.</li>
+        </ul>
+      </aside>
+
+      <!-- CHỐT NHANH 01 -->
+      <div class="quick-check" id="chot-01">
+        <div class="id-code" style="margin-bottom:6px;">Chốt 01</div>
+        <p class="quick-check-q">Nhận định sau đúng hay sai: “Trong không gian, hai đường thẳng không có điểm chung thì song song với nhau.”</p>
+        <div class="quick-check-actions">
+          <button type="button" class="btn-choice" data-qc="1" data-val="true">Đúng</button>
+          <button type="button" class="btn-choice" data-qc="1" data-val="false">Sai</button>
+        </div>
+        <div class="quick-feedback" id="qc-fb-1" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         MỤC [02]: TÍNH CHẤT CƠ BẢN VỀ HAI ĐƯỜNG THẲNG SONG SONG
+         ========================================================= -->
+    <section class="lesson-section" id="muc-02">
+      <div class="section-header">
+        <div class="section-code-row">
+          <span class="id-code">[02]</span>
+          <span class="section-accent-bar" aria-hidden="true"></span>
+        </div>
+        <h2 class="section-title">Tính chất cơ bản về hai đường thẳng song song</h2>
+      </div>
+
+      <p class="lead-para">
+        Mọi kết quả hình học phẳng đều đúng trên từng mặt phẳng riêng lẻ trong không gian. Nhờ mặt phẳng trung gian, tiên đề song song và tính chất bắc cầu tiếp tục có hiệu lực trong không gian ba chiều.
+      </p>
+
+      <!-- KỂ CHUYỆN TỪNG BƯỚC (HÌNH 02) -->
+      <div class="story-shell">
+        <div class="figure-meta">
+          <span class="fig-code">Hình 02 · Kể chuyện từng bước</span>
+          <span class="figure-caption">Tứ diện ABCD có M, N, P, Q là trung điểm AB, CD, AD, BC — Chứng minh MPNQ là hình bình hành</span>
+        </div>
+
+        <div class="step-bar" role="tablist" aria-label="Các bước chứng minh Hình 02">
+          <button type="button" class="step-btn active" data-step="0" data-tone="blue" role="tab" aria-selected="true">Bước 1</button>
+          <button type="button" class="step-btn" data-step="1" data-tone="ochre" role="tab" aria-selected="false">Bước 2</button>
+          <button type="button" class="step-btn" data-step="2" data-tone="moss" role="tab" aria-selected="false">Bước 3</button>
+          <button type="button" class="step-btn" data-step="3" data-tone="red" role="tab" aria-selected="false">Bước 4</button>
+        </div>
+
+        <div class="story-grid">
+          <div class="svg-scroll-frame" style="padding:10px 0;">
+            <svg id="svgStory02" viewBox="0 0 600 320" style="min-width: 600px; width: 100%; height: auto;" role="img" aria-label="Tứ diện ABCD với tứ giác MPNQ nối các trung điểm">
+              <!-- Các mặt làm nổi theo bước -->
+              <polygon id="s2-face-abc" points="290,34 115,215 268,284" fill="#EEF5F6" opacity="0.85"/>
+              <polygon id="s2-face-acd" points="290,34 268,284 485,215" fill="#FBF5E9" opacity="0"/>
+              <polygon id="s2-face-mpnq" points="202.5,124.5 387.5,124.5 376.5,249.5 191.5,249.5" fill="#EDF5F0" stroke="none" opacity="0"/>
+
+              <!-- Cạnh khuất BD -->
+              <line x1="115" y1="215" x2="485" y2="215" stroke="#8A847A" stroke-width="1.5" stroke-dasharray="6,5"/>
+
+              <!-- Các cạnh thấy của tứ diện -->
+              <line x1="290" y1="34" x2="115" y2="215" stroke="#1A1917" stroke-width="1.8"/>
+              <line x1="290" y1="34" x2="485" y2="215" stroke="#1A1917" stroke-width="1.8"/>
+              <line x1="115" y1="215" x2="268" y2="284" stroke="#1A1917" stroke-width="1.8"/>
+              <line x1="268" y1="284" x2="485" y2="215" stroke="#1A1917" stroke-width="1.8"/>
+
+              <!-- Cạnh trung gian AC -->
+              <line id="s2-edge-ac" x1="290" y1="34" x2="268" y2="284" stroke="#2A664B" stroke-width="3.2"/>
+
+              <!-- Các cạnh phụ MP và QN (hiện mờ ban đầu, nổi ở bước 4) -->
+              <line id="s2-edge-mp" x1="202.5" y1="124.5" x2="387.5" y2="124.5" stroke="#B63E2A" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.35"/>
+              <line id="s2-edge-qn" x1="191.5" y1="249.5" x2="376.5" y2="249.5" stroke="#B63E2A" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.35"/>
+
+              <!-- Đường trung bình MQ -->
+              <line id="s2-edge-mq" x1="202.5" y1="124.5" x2="191.5" y2="249.5" stroke="#1C606C" stroke-width="3.2"/>
+
+              <!-- Đường trung bình PN -->
+              <line id="s2-edge-pn" x1="387.5" y1="124.5" x2="376.5" y2="249.5" stroke="#9E6812" stroke-width="1.6" opacity="0.35"/>
+
+              <!-- Kí hiệu song song (ẩn/hiện theo bước) -->
+              <g id="s2-par-ac" stroke="#2A664B" stroke-width="2" fill="none">
+                <polyline points="274,154 279,162 285,155"/>
+              </g>
+              <g id="s2-par-mq" stroke="#1C606C" stroke-width="2" fill="none">
+                <polyline points="191,182 197,190 203,183"/>
+              </g>
+              <g id="s2-par-pn" stroke="#9E6812" stroke-width="2" fill="none" opacity="0">
+                <polyline points="376,182 382,190 388,183"/>
+              </g>
+
+              <!-- Các đỉnh tứ diện -->
+              <circle cx="290" cy="34" r="3.5" fill="#1A1917"/>
+              <circle cx="115" cy="215" r="3.5" fill="#1A1917"/>
+              <circle cx="268" cy="284" r="3.5" fill="#1A1917"/>
+              <circle cx="485" cy="215" r="3.5" fill="#1A1917"/>
+
+              <text x="290" y="22" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600" fill="#1A1917">A</text>
+              <text x="96" y="220" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600" fill="#1A1917">B</text>
+              <text x="268" y="306" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600" fill="#1A1917">C</text>
+              <text x="502" y="220" text-anchor="start" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600" fill="#1A1917">D</text>
+
+              <!-- Các trung điểm M, Q, P, N -->
+              <circle id="s2-pt-m" cx="202.5" cy="124.5" r="4.5" fill="#1C606C"/>
+              <circle id="s2-pt-q" cx="191.5" cy="249.5" r="4.5" fill="#1C606C"/>
+              <circle id="s2-pt-p" cx="387.5" cy="124.5" r="4" fill="#9E6812" opacity="0.45"/>
+              <circle id="s2-pt-n" cx="376.5" cy="249.5" r="4" fill="#9E6812" opacity="0.45"/>
+
+              <text x="186" y="120" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600" fill="#1C606C">M</text>
+              <text x="180" y="268" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600" fill="#1C606C">Q</text>
+              <text x="403" y="120" text-anchor="start" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600" fill="#9E6812">P</text>
+              <text x="389" y="268" text-anchor="start" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600" fill="#9E6812">N</text>
+
+              <!-- Nhãn chú thích bên lề trong SVG -->
+              <rect x="448" y="24" width="138" height="72" rx="6" fill="#FAF8F3" stroke="#E4DDD0" stroke-width="1"/>
+              <text x="460" y="45" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="#2A664B">AC: cạnh trung gian</text>
+              <text x="460" y="65" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="#1C606C">MQ ⊂ (ABC)</text>
+              <text x="460" y="85" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="#9E6812">PN ⊂ (ACD)</text>
+            </svg>
+          </div>
+
+          <div class="story-narration" id="storyNarration" data-tone="blue" aria-live="polite">
+            <div class="id-code" id="storyStepCode" style="margin-bottom:4px;">Bước 1 / 4</div>
+            <h3 class="story-step-heading" id="storyStepTitle">Xét mặt phẳng (ABC)</h3>
+            <div id="storyStepBody">
+              Trong tam giác <span class="math">ΔABC</span>, hai điểm M, Q lần lượt là trung điểm của AB và BC nên <span class="sem-a">MQ</span> là đường trung bình. Suy ra <span class="sem-a">MQ</span> <span class="math">//</span> <span class="sem-c">AC</span> và <span class="math">MQ = <span class="frac"><span class="num">1</span><span class="den">2</span></span>AC</span>.
+            </div>
+            <div class="story-nav-row">
+              <button type="button" class="btn-subtle" id="storyPrevBtn" disabled>← Quay lại</button>
+              <button type="button" class="btn-subtle" id="storyNextBtn">Tiếp theo →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHUẨN GHI NHỚ 02 -->
+      <aside class="memory-box" aria-label="Chuẩn ghi nhớ mục 02">
+        <div class="memory-head">
+          <h3 class="memory-title">Chuẩn ghi nhớ 02</h3>
+          <span class="study-mode-note">Bấm từng ô mờ để lật đáp án</span>
+        </div>
+        <ul class="memory-list">
+          <li><strong>Tính chất 1 (Duy nhất):</strong> Trong không gian, qua một điểm không nằm trên đường thẳng cho trước, có <span class="cloak">đúng một đường thẳng</span> song song với đường thẳng đã cho.</li>
+          <li><strong>Tính chất 2 (Bắc cầu):</strong> Hai đường thẳng <span class="cloak">phân biệt</span> cùng song song với <span class="cloak">đường thẳng thứ ba</span> thì <span class="cloak">song song với nhau</span> (<span class="math">a // c</span>, <span class="math">b // c</span>, <span class="math">a ≠ b</span> <span class="math">⇒ a // b</span>).</li>
+        </ul>
+      </aside>
+    </section>
+
+    <!-- =========================================================
+         MỤC [03]: ĐỊNH LÍ VỀ BA ĐƯỜNG GIAO TUYẾN & XƯỞNG TƯƠNG TÁC
+         ========================================================= -->
+    <section class="lesson-section" id="muc-03">
+      <div class="section-header">
+        <div class="section-code-row">
+          <span class="id-code">[03]</span>
+          <span class="section-accent-bar" aria-hidden="true"></span>
+        </div>
+        <h2 class="section-title">Định lí về ba đường giao tuyến</h2>
+      </div>
+
+      <p class="lead-para">
+        Khi ba mặt phẳng đôi một cắt nhau theo ba giao tuyến phân biệt, vị trí của ba đường thẳng này bị ràng buộc chặt chẽ. Quan hệ đó tạo ra công cụ mạnh nhất để dựng giao tuyến của hai mặt phẳng chứa hai đường thẳng song song.
+      </p>
+
+      <!-- XƯỞNG TƯƠNG TÁC TRỌNG TÂM (THẺ TRẮNG - HÌNH 03) -->
+      <div class="white-card lab-card" id="xuong-tuong-tac">
+        <div class="lab-top-row">
+          <span class="fig-code">Hình 03 · Xưởng tương tác không gian</span>
+          <span class="id-code">[LAB 03]</span>
+        </div>
+
+        <div class="lab-mission">
+          <strong>Nhiệm vụ thử nghiệm:</strong> Kéo thanh trượt góc nghiêng <span class="math">θ</span> của mặt phẳng (R) về đúng <span class="math">0°</span> để quan sát thời điểm điểm đồng quy <span class="sem-m">M</span> biến mất và ba giao tuyến <span class="sem-a">a</span>, <span class="sem-b">b</span>, <span class="sem-c">c</span> chuyển sang đôi một song song; sau đó chuyển sang tab <strong>Ứng dụng: Hình chóp S.ABCD</strong> để quan sát cách dựng giao tuyến qua đỉnh <span class="sem-m">S</span>.
+        </div>
+
+        <div class="lab-tabs" role="tablist" aria-label="Chọn kịch bản xưởng tương tác">
+          <button type="button" class="tab-btn active" id="tabBtnPlanes" role="tab" aria-selected="true" aria-controls="panelPlanes">
+            Ba mặt phẳng (P), (Q), (R)
+          </button>
+          <button type="button" class="tab-btn" id="tabBtnPyramid" role="tab" aria-selected="false" aria-controls="panelPyramid">
+            Ứng dụng: Hình chóp S.ABCD
+          </button>
+        </div>
+
+        <!-- TAB 1: BA MẶT PHẲNG (P), (Q), (R) -->
+        <div class="lab-panel active" id="panelPlanes" role="tabpanel" aria-labelledby="tabBtnPlanes">
+          <div class="svg-scroll-frame in-card">
+            <svg id="svgLabPlanes" viewBox="0 0 660 360" style="min-width: 620px; width: 100%; height: auto;" role="img" aria-label="Mô hình tương tác ba mặt phẳng (P), (Q), (R) cắt nhau theo ba giao tuyến a, b, c"></svg>
+          </div>
+          <span class="scroll-hint">Vuốt ngang nếu khung hình rộng hơn màn hình điện thoại.</span>
+
+          <!-- Bảng thông số thời gian thực (chỉ đơn vị thật ° và m) -->
+          <div class="telemetry-grid" aria-live="polite">
+            <div class="telemetry-cell">
+              <div class="telemetry-key">Góc nghiêng mặt phẳng (R)</div>
+              <div class="telemetry-val" id="outTheta">θ = 20°</div>
+            </div>
+            <div class="telemetry-cell">
+              <div class="telemetry-key">Cao độ giao điểm M trên c</div>
+              <div class="telemetry-val" id="outHeight">h = 5,49 m</div>
+            </div>
+            <div class="telemetry-cell">
+              <div class="telemetry-key">Trạng thái 3 giao tuyến</div>
+              <div class="telemetry-val is-concurrent" id="outState">Đồng quy tại M</div>
+            </div>
+          </div>
+
+          <!-- Bộ điều khiển thanh trượt & nút kịch bản -->
+          <div class="lab-controls">
+            <div class="control-group">
+              <div class="control-label-row">
+                <label for="sliderTheta">Góc nghiêng θ giữa (R) và trục c</label>
+                <span class="control-val" id="valThetaLabel">20°</span>
+              </div>
+              <input type="range" id="sliderTheta" min="0" max="35" step="1" value="20" aria-label="Góc nghiêng theta từ 0 độ đến 35 độ">
+            </div>
+
+            <div class="control-group">
+              <div class="control-label-row">
+                <label for="sliderPhi1">Góc xoay quan sát không gian φ</label>
+                <span class="control-val" id="valPhi1Label">0°</span>
+              </div>
+              <input type="range" id="sliderPhi1" min="-30" max="30" step="1" value="0" aria-label="Góc xoay quan sát phi từ -30 độ đến 30 độ">
+            </div>
+
+            <div class="control-group" style="grid-column: 1 / -1;">
+              <div class="preset-row">
+                <button type="button" class="btn-preset active-red" id="presetConcurrent">Đồng quy tại M (θ = 20°)</button>
+                <button type="button" class="btn-preset" id="presetParallel">Đôi một song song (θ = 0°)</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: ỨNG DỤNG HÌNH CHÓP S.ABCD -->
+        <div class="lab-panel" id="panelPyramid" role="tabpanel" aria-labelledby="tabBtnPyramid">
+          <div class="svg-scroll-frame in-card">
+            <svg id="svgLabPyramid" viewBox="0 0 660 360" style="min-width: 620px; width: 100%; height: auto;" role="img" aria-label="Hình chóp S.ABCD đáy hình bình hành và giao tuyến m đi qua S song song với hai cạnh đáy"></svg>
+          </div>
+          <span class="scroll-hint">Vuốt ngang nếu khung hình rộng hơn màn hình điện thoại.</span>
+
+          <div class="lab-controls">
+            <div class="control-group">
+              <div class="control-label-row">
+                <span>Chọn cặp mặt phẳng xét giao tuyến</span>
+              </div>
+              <div class="preset-row">
+                <button type="button" class="btn-preset active-blue" id="btnPair1">(SAB) ∩ (SCD)</button>
+                <button type="button" class="btn-preset" id="btnPair2">(SAD) ∩ (SBC)</button>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <div class="control-label-row">
+                <label for="sliderPhi2">Góc xoay hình chóp φ</label>
+                <span class="control-val" id="valPhi2Label">0°</span>
+              </div>
+              <input type="range" id="sliderPhi2" min="-35" max="35" step="1" value="0" aria-label="Góc xoay hình chóp phi từ -35 độ đến 35 độ">
+            </div>
+          </div>
+
+          <div class="pyramid-logic" id="pyramidLogic" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <!-- Khung gập Giải thích từ gốc -->
+      <details class="root-explain">
+        <summary>
+          <span class="summary-label">
+            <span class="summary-badge">Giải thích từ gốc</span>
+            <span>Vì sao hệ quả lại có khả năng “hoặc trùng với một trong hai đường thẳng đó”?</span>
+          </span>
+          <span class="summary-caret" aria-hidden="true">▾</span>
+        </summary>
+        <div class="root-explain-body">
+          Giả sử <span class="math">a // b</span>, mặt phẳng (P) chứa <span class="math">a</span> và mặt phẳng (Q) chứa <span class="math">b</span>. Nếu mặt phẳng (Q) xoay quanh đường thẳng <span class="math">b</span> sao cho đi qua luôn đường thẳng <span class="math">a</span> thì (Q) trở thành đúng mặt phẳng duy nhất <span class="math">mp(a, b)</span>. Khi đó, giao tuyến của hai mặt phẳng (P) và (Q) chính là đường thẳng <span class="math">a</span> — tức trùng với một trong hai đường thẳng song song ban đầu.
+        </div>
+      </details>
+
+      <!-- CHUẨN GHI NHỚ 03 -->
+      <aside class="memory-box" aria-label="Chuẩn ghi nhớ mục 03">
+        <div class="memory-head">
+          <h3 class="memory-title">Chuẩn ghi nhớ 03</h3>
+          <span class="study-mode-note">Bấm từng ô mờ để lật đáp án</span>
+        </div>
+        <ul class="memory-list">
+          <li><strong>Định lí 3 đường giao tuyến:</strong> Nếu ba mặt phẳng đôi một cắt nhau theo ba giao tuyến phân biệt thì ba giao tuyến đó <span class="cloak">đồng quy</span> hoặc <span class="cloak">đôi một song song</span>.</li>
+          <li><strong>Hệ quả tìm giao tuyến:</strong> Nếu hai mặt phẳng chứa hai đường thẳng song song thì giao tuyến của chúng (nếu có) <span class="cloak">song song với hai đường thẳng đó</span> hoặc <span class="cloak">trùng với một trong hai đường thẳng đó</span>.</li>
+        </ul>
+      </aside>
+
+      <!-- CHỐT NHANH 02 -->
+      <div class="quick-check" id="chot-02">
+        <div class="id-code" style="margin-bottom:6px;">Chốt 02</div>
+        <p class="quick-check-q">Cho hình chóp S.ABCD có đáy ABCD là hình thang (<span class="math">AB // CD</span>). Giao tuyến của hai mặt phẳng (SAB) và (SCD) là:</p>
+        <div class="quick-check-actions">
+          <button type="button" class="btn-choice" data-qc="2" data-val="A">A. Đường thẳng qua S và song song với AB, CD.</button>
+          <button type="button" class="btn-choice" data-qc="2" data-val="B">B. Đường thẳng nối S với giao điểm O của AC và BD.</button>
+        </div>
+        <div class="quick-feedback" id="qc-fb-2" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         MỤC [04]: BẪY ĐỀ THI & MỞ RỘNG VẬN DỤNG CAO
+         ========================================================= -->
+    <section class="lesson-section" id="muc-04">
+      <div class="section-header">
+        <div class="section-code-row">
+          <span class="id-code">[04]</span>
+          <span class="section-accent-bar" aria-hidden="true"></span>
+        </div>
+        <h2 class="section-title">Bẫy đề thi phổ biến &amp; Mở rộng vận dụng cao</h2>
+      </div>
+
+      <p class="lead-para">
+        Phần lớn lỗi mất điểm trắc nghiệm ở Bài 11 xuất phát từ thói quen áp đặt tính chất hình học phẳng vào không gian hoặc bỏ sót điều kiện phân biệt.
+      </p>
+
+      <div class="traps-list">
+        <div class="trap-item">
+          <div>
+            <div class="trap-wrong-label">Bẫy 01 · Nhận định sai</div>
+            <div>Hai đường thẳng không có điểm chung thì song song với nhau.</div>
+          </div>
+          <div>
+            <div class="trap-right-label">Bản chất đúng</div>
+            <div>Thiếu điều kiện <strong>đồng phẳng</strong>; trong không gian, hai đường thẳng không có điểm chung còn có thể <strong>chéo nhau</strong>.</div>
+          </div>
+        </div>
+
+        <div class="trap-item">
+          <div>
+            <div class="trap-wrong-label">Bẫy 02 · Nhận định sai</div>
+            <div>Nếu <span class="math">a // c</span> và <span class="math">b // c</span> thì luôn suy ra <span class="math">a // b</span>.</div>
+          </div>
+          <div>
+            <div class="trap-right-label">Bản chất đúng</div>
+            <div>Cần bổ sung điều kiện <span class="math">a</span> và <span class="math">b</span> <strong>phân biệt</strong>; nếu không, <span class="math">a</span> có thể trùng với <span class="math">b</span>.</div>
+          </div>
+        </div>
+
+        <div class="trap-item">
+          <div>
+            <div class="trap-wrong-label">Bẫy 03 · Nhận định sai</div>
+            <div>Trong không gian, nếu <span class="math">a</span> cắt <span class="math">b</span> và <span class="math">b</span> cắt <span class="math">c</span> thì <span class="math">a</span> cắt <span class="math">c</span>.</div>
+          </div>
+          <div>
+            <div class="trap-right-label">Bản chất đúng</div>
+            <div>Quan hệ cắt nhau không có tính bắc cầu; <span class="math">a</span> và <span class="math">c</span> có thể rơi vào cả 4 vị trí: cắt nhau, song song, trùng nhau hoặc chéo nhau.</div>
+          </div>
+        </div>
+
+        <div class="trap-item">
+          <div>
+            <div class="trap-wrong-label">Bẫy 04 · Nhận định sai</div>
+            <div>Hai mặt phẳng chứa hai đường thẳng song song luôn cắt nhau theo giao tuyến song song với hai đường thẳng đó.</div>
+          </div>
+          <div>
+            <div class="trap-right-label">Bản chất đúng</div>
+            <div>Chỉ đúng khi hai mặt phẳng đó cắt nhau (giao tuyến “nếu có”), và giao tuyến đó còn có thể <strong>trùng với một trong hai đường thẳng</strong>.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nội dung mở rộng vận dụng cao trực tiếp trên nền #FAF8F3 -->
+      <div class="extension-block">
+        <div class="extension-kicker">Mở rộng vận dụng cao</div>
+        <h3 class="extension-title">Kỹ thuật dựng thiết diện bằng giao tuyến song song trong hình chóp</h3>
+        <p style="margin-bottom:0;">
+          Xét hình chóp S.ABCD có đáy ABCD là hình thang (<span class="math">AB // CD</span>) và điểm M thuộc cạnh SD. Để tìm thiết diện của hình chóp cắt bởi mặt phẳng (MAB), nhận thấy hai mặt phẳng (MAB) và (SCD) có điểm chung M đồng thời chứa hai đường thẳng song song AB và CD. Theo hệ quả định lí ba đường giao tuyến, giao tuyến của (MAB) và (SCD) là đường thẳng qua M song song với CD, cắt cạnh SC tại N. Khi đó các đoạn giao tuyến khép kín tạo thành thiết diện là hình thang ABNM (<span class="math">MN // AB</span>).
+        </p>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         MỤC [05]: LUYỆN TẬP CUỐI BÀI (5 CÂU TRONG THẺ TRẮNG)
+         ========================================================= -->
+    <section class="lesson-section" id="muc-05">
+      <div class="section-header">
+        <div class="section-code-row">
+          <span class="id-code">[05]</span>
+          <span class="section-accent-bar" aria-hidden="true"></span>
+        </div>
+        <h2 class="section-title">Luyện tập cuối bài</h2>
+      </div>
+
+      <p class="lead-para">
+        Chọn trực tiếp phương án ở từng câu để kiểm tra kết quả ngay, hoặc mở Gợi ý và Lời giải từng bước khi cần đối chiếu lập luận.
+      </p>
+
+      <div class="quiz-stack">
+
+        <!-- CÂU 01 -->
+        <article class="white-card" id="cau-01" data-mcq="C">
+          <div class="quiz-head">
+            <span class="id-code">Câu 01</span>
+            <span class="quiz-badge">Nhận biết</span>
+          </div>
+          <p class="quiz-prompt">Cho hình hộp chữ nhật <span class="math">ABCD.A'B'C'D'</span>. Vị trí tương đối của hai đường thẳng <span class="math">AB</span> và <span class="math">CC'</span> là:</p>
+
+          <div class="options-grid">
+            <button type="button" class="opt-btn" data-opt="A"><span class="opt-letter">A</span><span>Song song</span></button>
+            <button type="button" class="opt-btn" data-opt="B"><span class="opt-letter">B</span><span>Cắt nhau</span></button>
+            <button type="button" class="opt-btn" data-opt="C"><span class="opt-letter">C</span><span>Chéo nhau</span></button>
+            <button type="button" class="opt-btn" data-opt="D"><span class="opt-letter">D</span><span>Trùng nhau</span></button>
+          </div>
+
+          <div class="quiz-feedback" role="status"></div>
+
+          <div class="quiz-tools">
+            <button type="button" class="btn-tool" data-toggle-hint="hint-01">Gợi ý</button>
+            <button type="button" class="btn-tool" data-toggle-sol="sol-01">Lời giải từng bước</button>
+          </div>
+
+          <div class="hint-box" id="hint-01">
+            Xét mặt phẳng đáy (ABCD): đường thẳng AB nằm trọn trong (ABCD), còn đường thẳng CC' chỉ cắt mặt phẳng (ABCD) tại điểm C.
+          </div>
+
+          <div class="solution-box" id="sol-01">
+            <div class="sol-step visible"><span class="sol-step-tag">Bước 1:</span> Đường thẳng AB nằm trong mặt phẳng đáy (ABCD).</div>
+            <div class="sol-step"><span class="sol-step-tag">Bước 2:</span> Đường thẳng CC' cắt mặt phẳng (ABCD) tại điểm duy nhất C, mà C không thuộc đường thẳng AB.</div>
+            <div class="sol-step"><span class="sol-step-tag">Bước 3:</span> Không tồn tại mặt phẳng nào chứa đồng thời cả AB và CC', do đó AB và CC' <strong>chéo nhau</strong>. Chọn <strong>C</strong>.</div>
+            <div class="sol-controls">
+              <button type="button" class="btn-tool primary" data-next-step="sol-01">Mở bước tiếp theo →</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- CÂU 02 (GHÉP CẶP DÙNG DROPDOWN GỌN) -->
+        <article class="white-card" id="cau-02">
+          <div class="quiz-head">
+            <span class="id-code">Câu 02</span>
+            <span class="quiz-badge">Ghép cặp · Thông hiểu</span>
+          </div>
+          <p class="quiz-prompt">Cho hình chóp <span class="math">S.MNPQ</span> có đáy <span class="math">MNPQ</span> là hình bình hành tâm O. Chọn vị trí tương đối đúng cho từng cặp đường thẳng:</p>
+
+          <div class="match-list">
+            <div class="match-row" data-ans="Song song">
+              <div><strong>1.</strong> Đường thẳng <span class="math">MN</span> và <span class="math">PQ</span></div>
+              <select class="match-select" aria-label="Vị trí tương đối của MN và PQ">
+                <option value="">-- Chọn vị trí --</option>
+                <option value="Song song">Song song</option>
+                <option value="Cắt nhau">Cắt nhau</option>
+                <option value="Chéo nhau">Chéo nhau</option>
+                <option value="Trùng nhau">Trùng nhau</option>
+              </select>
+              <div class="match-status"></div>
+            </div>
+
+            <div class="match-row" data-ans="Cắt nhau">
+              <div><strong>2.</strong> Đường thẳng <span class="math">MP</span> và <span class="math">NQ</span></div>
+              <select class="match-select" aria-label="Vị trí tương đối của MP và NQ">
+                <option value="">-- Chọn vị trí --</option>
+                <option value="Song song">Song song</option>
+                <option value="Cắt nhau">Cắt nhau</option>
+                <option value="Chéo nhau">Chéo nhau</option>
+                <option value="Trùng nhau">Trùng nhau</option>
+              </select>
+              <div class="match-status"></div>
+            </div>
+
+            <div class="match-row" data-ans="Chéo nhau">
+              <div><strong>3.</strong> Đường thẳng <span class="math">SM</span> và <span class="math">PQ</span></div>
+              <select class="match-select" aria-label="Vị trí tương đối của SM và PQ">
+                <option value="">-- Chọn vị trí --</option>
+                <option value="Song song">Song song</option>
+                <option value="Cắt nhau">Cắt nhau</option>
+                <option value="Chéo nhau">Chéo nhau</option>
+                <option value="Trùng nhau">Trùng nhau</option>
+              </select>
+              <div class="match-status"></div>
+            </div>
+
+            <div class="match-row" data-ans="Song song">
+              <div><strong>4.</strong> Giao tuyến của <span class="math">(SMN)</span> và <span class="math">(SPQ)</span> so với <span class="math">MN</span></div>
+              <select class="match-select" aria-label="Vị trí tương đối của giao tuyến (SMN) và (SPQ) so với MN">
+                <option value="">-- Chọn vị trí --</option>
+                <option value="Song song">Song song</option>
+                <option value="Cắt nhau">Cắt nhau</option>
+                <option value="Chéo nhau">Chéo nhau</option>
+                <option value="Trùng nhau">Trùng nhau</option>
+              </select>
+              <div class="match-status"></div>
+            </div>
+          </div>
+
+          <div class="quiz-feedback" id="matchFeedback" role="status"></div>
+
+          <div class="quiz-tools">
+            <button type="button" class="btn-tool primary" id="gradeMatchBtn">Chấm bài Câu 02</button>
+            <button type="button" class="btn-tool" data-toggle-hint="hint-02">Gợi ý</button>
+            <button type="button" class="btn-tool" data-toggle-sol="sol-02">Lời giải từng bước</button>
+          </div>
+
+          <div class="hint-box" id="hint-02">
+            Hai cặp đầu nằm trọn trong hình bình hành đáy MNPQ; cặp 3 có SM cắt mặt đáy tại M ∉ PQ; cặp 4 áp dụng hệ quả định lí ba đường giao tuyến.
+          </div>
+
+          <div class="solution-box" id="sol-02">
+            <div class="sol-step visible"><span class="sol-step-tag">Bước 1:</span> Đáy MNPQ là hình bình hành nên cặp cạnh đối <span class="math">MN // PQ</span> (Song song) và hai đường chéo MP, NQ cắt nhau tại tâm O (Cắt nhau).</div>
+            <div class="sol-step"><span class="sol-step-tag">Bước 2:</span> Đường thẳng PQ nằm trong mặt đáy (MNPQ), còn đường thẳng SM cắt (MNPQ) tại M và M ∉ PQ nên SM và PQ <strong>Chéo nhau</strong>.</div>
+            <div class="sol-step"><span class="sol-step-tag">Bước 3:</span> Hai mặt phẳng (SMN) và (SPQ) có điểm chung S (nằm ngoài MN, PQ) và chứa <span class="math">MN // PQ</span> nên giao tuyến qua S phải <strong>Song song</strong> với MN.</div>
+            <div class="sol-controls">
+              <button type="button" class="btn-tool primary" data-next-step="sol-02">Mở bước tiếp theo →</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- CÂU 03 -->
+        <article class="white-card" id="cau-03" data-mcq="B">
+          <div class="quiz-head">
+            <span class="id-code">Câu 03</span>
+            <span class="quiz-badge">Thông hiểu</span>
+          </div>
+          <p class="quiz-prompt">Ba mặt phẳng phân biệt <span class="math">(α)</span>, <span class="math">(β)</span>, <span class="math">(γ)</span> đôi một cắt nhau theo ba giao tuyến phân biệt <span class="math">x</span>, <span class="math">y</span>, <span class="math">z</span>. Nếu biết <span class="math">x // y</span> thì khẳng định nào chắc chắn đúng?</p>
+
+          <div class="options-grid">
+            <button type="button" class="opt-btn" data-opt="A"><span class="opt-letter">A</span><span><span class="math">z</span> cắt cả <span class="math">x</span> và <span class="math">y</span></span></button>
+            <button type="button" class="opt-btn" data-opt="B"><span class="opt-letter">B</span><span><span class="math">z</span> song song với cả <span class="math">x</span> và <span class="math">y</span></span></button>
+            <button type="button" class="opt-btn" data-opt="C"><span class="opt-letter">C</span><span><span class="math">z</span> chéo với <span class="math">x</span></span></button>
+            <button type="button" class="opt-btn" data-opt="D"><span class="opt-letter">D</span><span><span class="math">z</span> chỉ song song với <span class="math">x</span> và cắt <span class="math">y</span></span></button>
+          </div>
+
+          <div class="quiz-feedback" role="status"></div>
+
+          <div class="quiz-tools">
+            <button type="button" class="btn-tool" data-toggle-hint="hint-03">Gợi ý</button>
+            <button type="button" class="btn-tool" data-toggle-sol="sol-03">Lời giải từng bước</button>
+          </div>
+
+          <div class="hint-box" id="hint-03">
+            Áp dụng trực tiếp định lí về ba đường giao tuyến: chỉ có đúng hai khả năng là đồng quy hoặc đôi một song song.
+          </div>
+
+          <div class="solution-box" id="sol-03">
+            <div class="sol-step visible"><span class="sol-step-tag">Bước 1:</span> Theo định lí về ba đường giao tuyến, ba đường thẳng phân biệt x, y, z chỉ có thể đồng quy hoặc đôi một song song.</div>
+            <div class="sol-step"><span class="sol-step-tag">Bước 2:</span> Vì đã biết <span class="math">x // y</span> nên x và y không có điểm chung, loại bỏ hoàn toàn khả năng đồng quy.</div>
+            <div class="sol-step"><span class="sol-step-tag">Bước 3:</span> Do đó ba giao tuyến bắt buộc đôi một song song, tức <span class="math">z // x</span> và <span class="math">z // y</span>. Chọn <strong>B</strong>.</div>
+            <div class="sol-controls">
+              <button type="button" class="btn-tool primary" data-next-step="sol-03">Mở bước tiếp theo →</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- CÂU 04 -->
+        <article class="white-card" id="cau-04" data-mcq="B">
+          <div class="quiz-head">
+            <span class="id-code">Câu 04</span>
+            <span class="quiz-badge">Vận dụng</span>
+          </div>
+          <p class="quiz-prompt">
+            Cho hình chóp <span class="math">S.ABCD</span> có đáy ABCD là hình thang với <span class="math">AB // CD</span>, <span class="math">AB = 12 cm</span>, <span class="math">CD = 4 cm</span>. Điểm E thuộc cạnh SA thỏa mãn tỉ số
+            <span class="frac"><span class="num">SE</span><span class="den">SA</span></span> <span class="math">= 0,25</span>.
+            Mặt phẳng (ECD) cắt cạnh SB tại F. Độ dài đoạn thẳng EF bằng:
+          </p>
+
+          <div class="options-grid">
+            <button type="button" class="opt-btn" data-opt="A"><span class="opt-letter">A</span><span class="mono">1 cm</span></button>
+            <button type="button" class="opt-btn" data-opt="B"><span class="opt-letter">B</span><span class="mono">3 cm</span></button>
+            <button type="button" class="opt-btn" data-opt="C"><span class="opt-letter">C</span><span class="mono">4 cm</span></button>
+            <button type="button" class="opt-btn" data-opt="D"><span class="opt-letter">D</span><span class="mono">9 cm</span></button>
+          </div>
+
+          <div class="quiz-feedback" role="status"></div>
+
+          <div class="quiz-tools">
+            <button type="button" class="btn-tool" data-toggle-hint="hint-04">Gợi ý</button>
+            <button type="button" class="btn-tool" data-toggle-sol="sol-04">Lời giải từng bước</button>
+          </div>
+
+          <div class="hint-box" id="hint-04">
+            Tìm phương của giao tuyến EF = (ECD) ∩ (SAB), rồi dùng hệ quả định lí Thalès trong tam giác SAB.
+          </div>
+
+          <div class="solution-box" id="sol-04">
+            <div class="sol-step visible"><span class="sol-step-tag">Bước 1:</span> Hai mặt phẳng (ECD) và (SAB) có điểm chung E, lần lượt chứa hai đường thẳng song song CD và AB, nên giao tuyến EF qua E song song với AB và CD.</div>
+            <div class="sol-step"><span class="sol-step-tag">Bước 2:</span> Trong <span class="math">ΔSAB</span>, vì <span class="math">EF // AB</span> nên theo hệ quả định lí Thalès ta có <span class="frac"><span class="num">EF</span><span class="den">AB</span></span> <span class="math">=</span> <span class="frac"><span class="num">SE</span><span class="den">SA</span></span> <span class="math">= 0,25</span>.</div>
+            <div class="sol-step"><span class="sol-step-tag">Bước 3:</span> Thay số: <span class="math">EF = 0,25 · 12 = 3 cm</span>. Chọn <strong>B</strong>.</div>
+            <div class="sol-controls">
+              <button type="button" class="btn-tool primary" data-next-step="sol-04">Mở bước tiếp theo →</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- CÂU 05 (VẬN DỤNG CAO) -->
+        <article class="white-card" id="cau-05" data-mcq="C">
+          <div class="quiz-head">
+            <span class="id-code">Câu 05</span>
+            <span class="quiz-badge vdc">Vận dụng cao</span>
+          </div>
+          <p class="quiz-prompt">
+            Cho hình chóp <span class="math">S.ABCD</span> có đáy ABCD là hình bình hành tâm O. Gọi I là trung điểm của cạnh SC và K là điểm trên cạnh SB sao cho <span class="math">SK = 2KB</span>. Mặt phẳng (AIK) cắt cạnh SD tại H. Tỉ số
+            <span class="frac"><span class="num">SH</span><span class="den">SD</span></span> bằng:
+          </p>
+
+          <div class="options-grid">
+            <button type="button" class="opt-btn" data-opt="A"><span class="opt-letter">A</span><span class="frac"><span class="num">1</span><span class="den">3</span></span></button>
+            <button type="button" class="opt-btn" data-opt="B"><span class="opt-letter">B</span><span class="frac"><span class="num">1</span><span class="den">2</span></span></button>
+            <button type="button" class="opt-btn" data-opt="C"><span class="opt-letter">C</span><span class="frac"><span class="num">2</span><span class="den">3</span></span></button>
+            <button type="button" class="opt-btn" data-opt="D"><span class="opt-letter">D</span><span class="frac"><span class="num">3</span><span class="den">4</span></span></button>
+          </div>
+
+          <div class="quiz-feedback" role="status"></div>
+
+          <div class="quiz-tools">
+            <button type="button" class="btn-tool" data-toggle-hint="hint-05">Gợi ý</button>
+            <button type="button" class="btn-tool" data-toggle-sol="sol-05">Lời giải từng bước</button>
+          </div>
+
+          <div class="hint-box" id="hint-05">
+            Gọi G là giao điểm của AI và SO trong ΔSAC (G chính là trọng tâm ΔSAC). So sánh tỉ số SG/SO và SK/SB trong ΔSBO.
+          </div>
+
+          <div class="solution-box" id="sol-05">
+            <div class="sol-step visible"><span class="sol-step-tag">Bước 1:</span> Trong <span class="math">ΔSAC</span>, O là trung điểm AC và I là trung điểm SC nên hai đường trung tuyến AI và SO cắt nhau tại trọng tâm G, suy ra <span class="frac"><span class="num">SG</span><span class="den">SO</span></span> <span class="math">=</span> <span class="frac"><span class="num">2</span><span class="den">3</span></span>.</div>
+            <div class="sol-step"><span class="sol-step-tag">Bước 2:</span> Trên cạnh SB có <span class="math">SK = 2KB ⇒</span> <span class="frac"><span class="num">SK</span><span class="den">SB</span></span> <span class="math">=</span> <span class="frac"><span class="num">2</span><span class="den">3</span></span>. Xét <span class="math">ΔSBO</span> có <span class="frac"><span class="num">SG</span><span class="den">SO</span></span> <span class="math">=</span> <span class="frac"><span class="num">SK</span><span class="den">SB</span></span> <span class="math">=</span> <span class="frac"><span class="num">2</span><span class="den">3</span></span> nên theo định lí Thalès đảo ta có <span class="math">KG // BO</span>, tức <span class="math">KG // BD</span>.</div>
+            <div class="sol-step"><span class="sol-step-tag">Bước 3:</span> Hai mặt phẳng (AIK) và (SBD) có điểm chung K, lần lượt chứa hai đường thẳng song song KG (vì <span class="math">G ∈ AI ⊂ (AIK)</span>) và BD, nên giao tuyến KH phải song song với BD.</div>
+            <div class="sol-step"><span class="sol-step-tag">Bước 4:</span> Trong <span class="math">ΔSBD</span>, vì <span class="math">KH // BD</span> nên theo định lí Thalès ta có <span class="frac"><span class="num">SH</span><span class="den">SD</span></span> <span class="math">=</span> <span class="frac"><span class="num">SK</span><span class="den">SB</span></span> <span class="math">=</span> <span class="frac"><span class="num">2</span><span class="den">3</span></span>. Chọn <strong>C</strong>.</div>
+            <div class="sol-controls">
+              <button type="button" class="btn-tool primary" data-next-step="sol-05">Mở bước tiếp theo →</button>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- CHÂN TRANG TỐI GIẢN -->
+  <footer class="site-footer">
+    Toán 11 · Kết nối tri thức với cuộc sống · Bài 11: Hai đường thẳng song song
+  </footer>
+
+  <!-- =========================================================
+       TOÀN BỘ LOGIC TƯƠNG TÁC (OFFLINE 100%)
+       ========================================================= -->
+  <script>
+    (function () {
+      'use strict';
+
+      /* ---------------------------------------------------------
+         1. THANH TIẾN ĐỘ ĐỌC, MỤC LỤC MOBILE & TỰ DÒ BÀI
+         --------------------------------------------------------- */
+      const progressFill = document.getElementById('progressFill');
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const mobileDrawer = document.getElementById('mobileDrawer');
+      const studyModeBtn = document.getElementById('studyModeBtn');
+      const desktopLinks = document.querySelectorAll('#desktopNav a');
+      const sections = ['muc-01', 'muc-02', 'muc-03', 'muc-04', 'muc-05']
+        .map(id => document.getElementById(id))
+        .filter(Boolean);
+
+      function updateScrollUI() {
+        const doc = document.documentElement;
+        const scrollTop = window.scrollY || doc.scrollTop;
+        const maxScroll = doc.scrollHeight - window.innerHeight;
+        const pct = maxScroll > 0 ? Math.min(100, Math.max(0, (scrollTop / maxScroll) * 100)) : 0;
+        progressFill.style.width = pct.toFixed(1) + '%';
+
+        // Highlight mục hiện tại trên desktop nav
+        let currentId = 'muc-01';
+        const marker = scrollTop + 120;
+        for (let i = 0; i < sections.length; i++) {
+          if (sections[i].offsetTop <= marker) {
+            currentId = sections[i].id;
+          }
+        }
+        desktopLinks.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('data-sec') === currentId);
+        });
+      }
+
+      window.addEventListener('scroll', updateScrollUI, { passive: true });
+      window.addEventListener('resize', updateScrollUI, { passive: true });
+      updateScrollUI();
+
+      mobileMenuBtn.addEventListener('click', function () {
+        const isOpen = mobileDrawer.classList.toggle('open');
+        mobileMenuBtn.setAttribute('aria-expanded', String(isOpen));
+      });
+
+      mobileDrawer.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', function () {
+          mobileDrawer.classList.remove('open');
+          mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        });
+      });
+
+      // Chế độ Tự dò bài (.cloak)
+      const cloaks = document.querySelectorAll('.cloak');
+      studyModeBtn.addEventListener('click', function () {
+        const active = document.body.classList.toggle('study-mode');
+        studyModeBtn.setAttribute('aria-pressed', String(active));
+        if (!active) {
+          cloaks.forEach(el => el.classList.remove('revealed'));
+        }
+      });
+
+      cloaks.forEach(el => {
+        el.setAttribute('tabindex', '0');
+        el.addEventListener('click', function () {
+          if (!document.body.classList.contains('study-mode')) return;
+          el.classList.toggle('revealed');
+        });
+        el.addEventListener('keydown', function (e) {
+          if ((e.key === 'Enter' || e.key === ' ') && document.body.classList.contains('study-mode')) {
+            e.preventDefault();
+            el.classList.toggle('revealed');
+          }
+        });
+      });
+
+      /* ---------------------------------------------------------
+         2. BẢN ĐỒ XƯƠNG SỐNG (INTERACTIVE CONCEPT MAP)
+         --------------------------------------------------------- */
+      const mapData = [
+        {
+          summary: 'Hai đường thẳng trong không gian chia làm hai nhóm lớn: đồng phẳng (cắt nhau, song song, trùng nhau) và không đồng phẳng (chéo nhau).',
+          href: '#muc-01',
+          btn: 'Đi tới mục 01 →'
+        },
+        {
+          summary: 'Qua một điểm ngoài đường thẳng có đúng một đường thẳng song song với nó; hai đường thẳng phân biệt cùng song song với đường thẳng thứ ba thì song song với nhau.',
+          href: '#muc-02',
+          btn: 'Đi tới mục 02 →'
+        },
+        {
+          summary: 'Ba mặt phẳng đôi một cắt nhau theo ba giao tuyến phân biệt thì ba giao tuyến đó đồng quy hoặc đôi một song song — cơ sở để tìm giao tuyến song song trong hình chóp.',
+          href: '#muc-03',
+          btn: 'Đi tới mục 03 →'
+        },
+        {
+          summary: 'Nhận diện 4 bẫy suy luận từ hình học phẳng sang không gian và thực hành 5 bài tập có chấm điểm, gợi ý và lời giải từng bước.',
+          href: '#muc-04',
+          btn: 'Đi tới mục 04 →'
+        }
+      ];
+
+      const mapNodes = document.querySelectorAll('.concept-node');
+      const mapSummaryText = document.getElementById('mapSummaryText');
+      const mapJumpBtn = document.getElementById('mapJumpBtn');
+
+      mapNodes.forEach(node => {
+        node.addEventListener('click', function () {
+          const idx = Number(node.getAttribute('data-map'));
+          mapNodes.forEach(n => {
+            const isSelf = n === node;
+            n.classList.toggle('active', isSelf);
+            n.setAttribute('aria-selected', String(isSelf));
+          });
+          const item = mapData[idx];
+          mapSummaryText.textContent = item.summary;
+          mapJumpBtn.setAttribute('href', item.href);
+          mapJumpBtn.textContent = item.btn;
+        });
+      });
+
+      /* ---------------------------------------------------------
+         3. THUẬT NGỮ BẤM MỞ TẠI CHỖ
+         --------------------------------------------------------- */
+      document.querySelectorAll('.term-trigger').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const id = btn.getAttribute('data-term');
+          const box = document.getElementById('note-' + id);
+          if (!box) return;
+          const willOpen = !box.classList.contains('open');
+          box.classList.toggle('open', willOpen);
+          btn.setAttribute('aria-expanded', String(willOpen));
+        });
+      });
+
+      document.querySelectorAll('[data-close-term]').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const id = btn.getAttribute('data-close-term');
+          const box = document.getElementById('note-' + id);
+          const trigger = document.querySelector('.term-trigger[data-term="' + id + '"]');
+          if (box) box.classList.remove('open');
+          if (trigger) trigger.setAttribute('aria-expanded', 'false');
+        });
+      });
+
+      /* ---------------------------------------------------------
+         4. CHỐT NHANH GIỮA BÀI (CHỐT 01 & CHỐT 02)
+         --------------------------------------------------------- */
+      const qcConfigs = {
+        '1': {
+          correct: 'false',
+          okMsg: 'Chính xác (Sai) — Trong không gian, hai đường thẳng không có điểm chung còn có thể chéo nhau.',
+          errMsg: 'Chưa đúng — Hai đường thẳng không có điểm chung chưa chắc đồng phẳng; chúng có thể chéo nhau.'
+        },
+        '2': {
+          correct: 'A',
+          okMsg: 'Chính xác (A) — (SAB) và (SCD) có điểm chung S và chứa hai đường thẳng song song AB, CD nên giao tuyến qua S và song song với AB, CD.',
+          errMsg: 'Chưa đúng — Giao điểm O của AC và BD là điểm chung của (SAC) và (SBD), không thuộc (SAB) và (SCD).'
+        }
+      };
+
+      document.querySelectorAll('[data-qc]').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const qid = btn.getAttribute('data-qc');
+          const val = btn.getAttribute('data-val');
+          const cfg = qcConfigs[qid];
+          const siblings = document.querySelectorAll('[data-qc="' + qid + '"]');
+          siblings.forEach(b => b.classList.remove('is-correct', 'is-wrong'));
+
+          const fb = document.getElementById('qc-fb-' + qid);
+          const isRight = val === cfg.correct;
+          btn.classList.add(isRight ? 'is-correct' : 'is-wrong');
+          fb.textContent = isRight ? cfg.okMsg : cfg.errMsg;
+          fb.className = 'quick-feedback show ' + (isRight ? 'ok' : 'err');
+        });
+      });
+
+      /* ---------------------------------------------------------
+         5. KỂ CHUYỆN TỪNG BƯỚC (HÌNH 02 - TỨ DIỆN ABCD)
+         --------------------------------------------------------- */
+      const storySteps = [
+        {
+          code: 'Bước 1 / 4',
+          tone: 'blue',
+          title: 'Xét mặt phẳng (ABC)',
+          html: 'Trong tam giác <span class="math">ΔABC</span>, hai điểm M, Q lần lượt là trung điểm của AB và BC nên <span class="sem-a">MQ</span> là đường trung bình. Suy ra <span class="sem-a">MQ</span> <span class="math">//</span> <span class="sem-c">AC</span> và <span class="math">MQ = <span class="frac"><span class="num">1</span><span class="den">2</span></span>AC</span>.',
+          svg: { abc: 0.85, acd: 0, mpnq: 0, acW: 3.2, mqO: 1, mqW: 3.2, pnO: 0.3, pnW: 1.6, mpO: 0.25, mpDash: '4,4', parAC: 1, parMQ: 1, parPN: 0, ptMQ: 1, ptPN: 0.4 }
+        },
+        {
+          code: 'Bước 2 / 4',
+          tone: 'ochre',
+          title: 'Xét mặt phẳng (ACD)',
+          html: 'Tương tự, trong tam giác <span class="math">ΔACD</span>, hai điểm P, N lần lượt là trung điểm của AD và CD nên <span class="sem-b">PN</span> là đường trung bình. Suy ra <span class="sem-b">PN</span> <span class="math">//</span> <span class="sem-c">AC</span> và <span class="math">PN = <span class="frac"><span class="num">1</span><span class="den">2</span></span>AC</span>.',
+          svg: { abc: 0, acd: 0.85, mpnq: 0, acW: 3.2, mqO: 0.35, mqW: 1.8, pnO: 1, pnW: 3.2, mpO: 0.25, mpDash: '4,4', parAC: 1, parMQ: 0, parPN: 1, ptMQ: 0.4, ptPN: 1 }
+        },
+        {
+          code: 'Bước 3 / 4',
+          tone: 'moss',
+          title: 'Áp dụng tính chất bắc cầu',
+          html: 'Hai đường thẳng phân biệt <span class="sem-a">MQ</span> và <span class="sem-b">PN</span> cùng song song với đường thẳng thứ ba <span class="sem-c">AC</span> nên theo Tính chất 2 ta có <span class="sem-a">MQ</span> <span class="math">//</span> <span class="sem-b">PN</span>; đồng thời <span class="math">MQ = PN = <span class="frac"><span class="num">1</span><span class="den">2</span></span>AC</span>.',
+          svg: { abc: 0, acd: 0, mpnq: 0, acW: 3.0, mqO: 1, mqW: 3.2, pnO: 1, pnW: 3.2, mpO: 0.35, mpDash: '4,4', parAC: 1, parMQ: 1, parPN: 1, ptMQ: 1, ptPN: 1 }
+        },
+        {
+          code: 'Bước 4 / 4',
+          tone: 'red',
+          title: 'Kết luận tứ giác MPNQ là hình bình hành',
+          html: 'Vì <span class="sem-a">MQ</span> <span class="math">//</span> <span class="sem-b">PN</span> nên bốn điểm M, P, N, Q đồng phẳng (có đúng một mặt phẳng chứa hai đường thẳng song song). Tứ giác <span class="sem-m">MPNQ</span> có cặp cạnh đối <span class="math">MQ // PN</span> và <span class="math">MQ = PN</span> nên là hình bình hành.',
+          svg: { abc: 0, acd: 0, mpnq: 0.9, acW: 1.8, mqO: 1, mqW: 3.0, pnO: 1, pnW: 3.0, mpO: 1, mpDash: 'none', parAC: 0, parMQ: 1, parPN: 1, ptMQ: 1, ptPN: 1 }
+        }
+      ];
+
+      let currentStoryIdx = 0;
+      const stepBtns = document.querySelectorAll('.step-btn');
+      const storyNarration = document.getElementById('storyNarration');
+      const storyStepCode = document.getElementById('storyStepCode');
+      const storyStepTitle = document.getElementById('storyStepTitle');
+      const storyStepBody = document.getElementById('storyStepBody');
+      const storyPrevBtn = document.getElementById('storyPrevBtn');
+      const storyNextBtn = document.getElementById('storyNextBtn');
+
+      function renderStoryStep(idx) {
+        currentStoryIdx = idx;
+        const st = storySteps[idx];
+        stepBtns.forEach((b, i) => {
+          b.classList.toggle('active', i === idx);
+          b.setAttribute('aria-selected', String(i === idx));
+        });
+        storyNarration.setAttribute('data-tone', st.tone);
+        storyStepCode.textContent = st.code;
+        storyStepTitle.textContent = st.title;
+        storyStepBody.innerHTML = st.html;
+        storyPrevBtn.disabled = idx === 0;
+        storyNextBtn.disabled = idx === storySteps.length - 1;
+
+        // Cập nhật SVG Hình 02
+        const s = st.svg;
+        document.getElementById('s2-face-abc').setAttribute('opacity', s.abc);
+        document.getElementById('s2-face-acd').setAttribute('opacity', s.acd);
+        document.getElementById('s2-face-mpnq').setAttribute('opacity', s.mpnq);
+        document.getElementById('s2-edge-ac').setAttribute('stroke-width', s.acW);
+
+        const elMQ = document.getElementById('s2-edge-mq');
+        elMQ.setAttribute('opacity', s.mqO);
+        elMQ.setAttribute('stroke-width', s.mqW);
+
+        const elPN = document.getElementById('s2-edge-pn');
+        elPN.setAttribute('opacity', s.pnO);
+        elPN.setAttribute('stroke-width', s.pnW);
+
+        ['s2-edge-mp', 's2-edge-qn'].forEach(id => {
+          const el = document.getElementById(id);
+          el.setAttribute('opacity', s.mpO);
+          el.setAttribute('stroke-width', s.mpDash === 'none' ? '2.8' : '1.5');
+          el.setAttribute('stroke-dasharray', s.mpDash);
+        });
+
+        document.getElementById('s2-par-ac').setAttribute('opacity', s.parAC);
+        document.getElementById('s2-par-mq').setAttribute('opacity', s.parMQ);
+        document.getElementById('s2-par-pn').setAttribute('opacity', s.parPN);
+        document.getElementById('s2-pt-m').setAttribute('opacity', s.ptMQ);
+        document.getElementById('s2-pt-q').setAttribute('opacity', s.ptMQ);
+        document.getElementById('s2-pt-p').setAttribute('opacity', s.ptPN);
+        document.getElementById('s2-pt-n').setAttribute('opacity', s.ptPN);
+      }
+
+      stepBtns.forEach(btn => {
+        btn.addEventListener('click', function () {
+          renderStoryStep(Number(btn.getAttribute('data-step')));
+        });
+      });
+
+      storyPrevBtn.addEventListener('click', function () {
+        if (currentStoryIdx > 0) renderStoryStep(currentStoryIdx - 1);
+      });
+
+      storyNextBtn.addEventListener('click', function () {
+        if (currentStoryIdx < storySteps.length - 1) renderStoryStep(currentStoryIdx + 1);
+      });
+
+      /* ---------------------------------------------------------
+         6. XƯỞNG TƯƠNG TÁC TRỌNG TÂM (HÌNH 03 - 3D AXONOMETRIC SVG)
+         --------------------------------------------------------- */
+      function fmtVN(num, decimals) {
+        return num.toFixed(decimals).replace('.', ',');
+      }
+
+      function svgEl(tag, attrs, text) {
+        const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+        for (const k in attrs) {
+          el.setAttribute(k, attrs[k]);
+        }
+        if (text !== undefined) el.textContent = text;
+        return el;
+      }
+
+      // Chuyển tab trong Xưởng tương tác
+      const tabBtnPlanes = document.getElementById('tabBtnPlanes');
+      const tabBtnPyramid = document.getElementById('tabBtnPyramid');
+      const panelPlanes = document.getElementById('panelPlanes');
+      const panelPyramid = document.getElementById('panelPyramid');
+
+      function switchLabTab(tab) {
+        const isPlanes = tab === 'planes';
+        tabBtnPlanes.classList.toggle('active', isPlanes);
+        tabBtnPlanes.setAttribute('aria-selected', String(isPlanes));
+        tabBtnPyramid.classList.toggle('active', !isPlanes);
+        tabBtnPyramid.setAttribute('aria-selected', String(!isPlanes));
+        panelPlanes.classList.toggle('active', isPlanes);
+        panelPyramid.classList.toggle('active', !isPlanes);
+      }
+
+      tabBtnPlanes.addEventListener('click', () => switchLabTab('planes'));
+      tabBtnPyramid.addEventListener('click', () => switchLabTab('pyramid'));
+
+      // --- TAB 1: BA MẶT PHẲNG (P), (Q), (R) ---
+      const svgLabPlanes = document.getElementById('svgLabPlanes');
+      const sliderTheta = document.getElementById('sliderTheta');
+      const sliderPhi1 = document.getElementById('sliderPhi1');
+      const valThetaLabel = document.getElementById('valThetaLabel');
+      const valPhi1Label = document.getElementById('valPhi1Label');
+      const outTheta = document.getElementById('outTheta');
+      const outHeight = document.getElementById('outHeight');
+      const outState = document.getElementById('outState');
+      const presetConcurrent = document.getElementById('presetConcurrent');
+      const presetParallel = document.getElementById('presetParallel');
+
+      // Phép chiếu trực giao 3D có xoay góc phương vị phi và góc nâng cố định
+      function projectPlanes3D(x, y, z, phiDeg) {
+        const phi = (phiDeg * Math.PI) / 180;
+        const elev = (21 * Math.PI) / 180;
+        const xr = x * Math.cos(phi) + y * Math.sin(phi);
+        const yr = -x * Math.sin(phi) + y * Math.cos(phi);
+        const scale = 42;
+        const sx = 330 + xr * scale;
+        const sy = 294 - (z * Math.cos(elev) - yr * Math.sin(elev)) * scale;
+        return { x: sx, y: sy };
+      }
+
+      function ptsStr(arr) {
+        return arr.map(p => p.x.toFixed(1) + ',' + p.y.toFixed(1)).join(' ');
+      }
+
+      function renderLabPlanes() {
+        const thetaDeg = Number(sliderTheta.value);
+        const phiDeg = Number(sliderPhi1.value);
+
+        valThetaLabel.textContent = thetaDeg + '°';
+        valPhi1Label.textContent = phiDeg + '°';
+        outTheta.textContent = 'θ = ' + thetaDeg + '°';
+
+        // Khoảng cách đáy từ trục c đến mặt (R) tại z = 0 là D = 2,00 m
+        const D = 2.0;
+        const H_plane = 6.2; // Chiều cao hiển thị của (P) và (Q)
+        // Hướng mở của (P) và (Q) đối xứng nhau: y = 0.72 * s, x = ±0.70 * s
+        const kx = 0.72;
+        const ky = 0.694; // gần đơn vị độ dài
+        const sMax = 3.55; // đủ rộng để chứa y = 2.00 (s = 2.00 / 0.694 = 2.88)
+
+        const isParallel = thetaDeg === 0;
+        const thetaRad = (thetaDeg * Math.PI) / 180;
+        const tanT = Math.tan(thetaRad);
+        const hTrue = isParallel ? Infinity : D / tanT;
+
+        if (isParallel) {
+          outHeight.textContent = 'Không tồn tại (h = ∞)';
+          outState.textContent = 'Đôi một song song: a // b // c';
+          outState.className = 'telemetry-val is-parallel';
+          presetParallel.className = 'btn-preset active-moss';
+          presetConcurrent.className = 'btn-preset';
+        } else {
+          outHeight.textContent = 'h = ' + fmtVN(hTrue, 2) + ' m';
+          outState.textContent = 'Đồng quy tại M';
+          outState.className = 'telemetry-val is-concurrent';
+          presetConcurrent.className = thetaDeg === 20 ? 'btn-preset active-red' : 'btn-preset';
+          presetParallel.className = 'btn-preset';
+        }
+
+        // Xóa nội dung cũ
+        while (svgLabPlanes.firstChild) svgLabPlanes.removeChild(svgLabPlanes.firstChild);
+
+        const P = (x, y, z) => projectPlanes3D(x, y, z, phiDeg);
+
+        // 1. Vẽ mặt phẳng (P) bên trái và (Q) bên phải
+        const pPts = [
+          P(0, 0, 0),
+          P(-kx * sMax, ky * sMax, 0),
+          P(-kx * sMax, ky * sMax, H_plane),
+          P(0, 0, H_plane)
+        ];
+        const qPts = [
+          P(0, 0, 0),
+          P(kx * sMax, ky * sMax, 0),
+          P(kx * sMax, ky * sMax, H_plane),
+          P(0, 0, H_plane)
+        ];
+
+        svgLabPlanes.appendChild(svgEl('polygon', {
+          points: ptsStr(pPts),
+          fill: '#EEF5F6',
+          stroke: '#1C606C',
+          'stroke-width': '1.4'
+        }));
+
+        svgLabPlanes.appendChild(svgEl('polygon', {
+          points: ptsStr(qPts),
+          fill: '#FBF5E9',
+          stroke: '#9E6812',
+          'stroke-width': '1.4'
+        }));
+
+        // Đường cơ sở đáy (z = 0) giúp định hướng không gian
+        const cBot = P(0, 0, 0);
+        const cTop = P(0, 0, H_plane);
+
+        // 2. Tính giao tuyến a (trên P), b (trên Q) và mặt phẳng (R)
+        // Phương trình (R): y + z * tan(theta) = D  =>  y(z) = D - z * tan(theta), s(z) = y(z) / ky
+        const s0 = D / ky;
+        const A0 = P(-kx * s0, D, 0);
+        const B0 = P(kx * s0, D, 0);
+
+        const mVisible = !isParallel && hTrue <= H_plane;
+        const zCutTop = mVisible ? hTrue : H_plane;
+        const yTop = isParallel ? D : Math.max(0, D - zCutTop * tanT);
+        const sTop = yTop / ky;
+        const A1 = P(-kx * sTop, yTop, zCutTop);
+        const B1 = P(kx * sTop, yTop, zCutTop);
+
+        // Vẽ phần trục c nằm phía sau mặt (R) bằng nét đứt, phần nhô lên trên M bằng nét liền
+        const zHide = mVisible ? hTrue : H_plane;
+        const cMidHide = P(0, 0, zHide);
+        svgLabPlanes.appendChild(svgEl('line', {
+          x1: cBot.x, y1: cBot.y, x2: cMidHide.x, y2: cMidHide.y,
+          stroke: '#2A664B', 'stroke-width': '2.4', 'stroke-dasharray': '6,5'
+        }));
+        if (mVisible) {
+          svgLabPlanes.appendChild(svgEl('line', {
+            x1: cMidHide.x, y1: cMidHide.y, x2: cTop.x, y2: cTop.y,
+            stroke: '#2A664B', 'stroke-width': '2.8'
+          }));
+        }
+
+        // Mặt phẳng (R) bán trong suốt nằm phía trước trục c
+        const rPolyPts = mVisible ? [A0, B0, A1] : [A0, B0, B1, A1];
+        svgLabPlanes.appendChild(svgEl('polygon', {
+          points: ptsStr(rPolyPts),
+          fill: '#EDF5F0',
+          'fill-opacity': '0.78',
+          stroke: '#2A664B',
+          'stroke-width': '1.3'
+        }));
+
+        // Đường giao tuyến a (xanh lam) và b (vàng đất)
+        svgLabPlanes.appendChild(svgEl('line', {
+          x1: A0.x, y1: A0.y, x2: A1.x, y2: A1.y,
+          stroke: '#1C606C', 'stroke-width': '3'
+        }));
+
+        svgLabPlanes.appendChild(svgEl('line', {
+          x1: B0.x, y1: B0.y, x2: B1.x, y2: B1.y,
+          stroke: '#9E6812', 'stroke-width': '3'
+        }));
+
+        // Nếu θ = 0°, vẽ kí hiệu song song trên 3 giao tuyến a, b, c
+        if (isParallel) {
+          const zMark = 3.2;
+          const mA = P(-kx * s0, D, zMark);
+          const mB = P(kx * s0, D, zMark);
+          const mC = P(0, 0, zMark);
+          [
+            { pt: mA, col: '#1C606C' },
+            { pt: mB, col: '#9E6812' },
+            { pt: mC, col: '#2A664B' }
+          ].forEach(item => {
+            svgLabPlanes.appendChild(svgEl('polyline', {
+              points: `${item.pt.x - 5},${item.pt.y + 4} ${item.pt.x},${item.pt.y - 4} ${item.pt.x + 5},${item.pt.y + 4}`,
+              fill: 'none', stroke: item.col, 'stroke-width': '2'
+            }));
+          });
+        }
+
+        // 3. Điểm đồng quy M hoặc nhãn trạng thái ở đầu trục c (không đè nhãn)
+        if (mVisible) {
+          const Mpt = P(0, 0, hTrue);
+          svgLabPlanes.appendChild(svgEl('circle', {
+            cx: Mpt.x, cy: Mpt.y, r: '5.5', fill: '#B63E2A', stroke: '#FFFFFF', 'stroke-width': '1.8'
+          }));
+          // Nhãn M đặt lệch hẳn lên trên để không chạm đường a, b, c
+          svgLabPlanes.appendChild(svgEl('rect', {
+            x: Mpt.x - 14, y: Mpt.y - 31, width: 28, height: 20, rx: 4, fill: '#FFFFFF', stroke: '#E4DDD0', 'stroke-width': '1'
+          }));
+          svgLabPlanes.appendChild(svgEl('text', {
+            x: Mpt.x, y: Mpt.y - 16, 'text-anchor': 'middle',
+            'font-family': 'JetBrains Mono, monospace', 'font-size': '13', 'font-weight': '600', fill: '#B63E2A'
+          }, 'M'));
+        } else if (!isParallel) {
+          // M nằm phía trên khung nhìn (1° <= θ <= 17°)
+          svgLabPlanes.appendChild(svgEl('rect', {
+            x: cTop.x - 86, y: Math.max(8, cTop.y - 26), width: 172, height: 22, rx: 4,
+            fill: '#F9EFEA', stroke: '#B63E2A', 'stroke-width': '1'
+          }));
+          svgLabPlanes.appendChild(svgEl('text', {
+            x: cTop.x, y: Math.max(23, cTop.y - 11), 'text-anchor': 'middle',
+            'font-family': 'JetBrains Mono, monospace', 'font-size': '12', 'font-weight': '600', fill: '#B63E2A'
+          }, '↑ Hội tụ tại M (h=' + fmtVN(hTrue, 1) + 'm)'));
+        } else {
+          // Trạng thái song song
+          svgLabPlanes.appendChild(svgEl('rect', {
+            x: cTop.x - 56, y: Math.max(8, cTop.y - 26), width: 112, height: 22, rx: 4,
+            fill: '#EDF5F0', stroke: '#2A664B', 'stroke-width': '1'
+          }));
+          svgLabPlanes.appendChild(svgEl('text', {
+            x: cTop.x, y: Math.max(23, cTop.y - 11), 'text-anchor': 'middle',
+            'font-family': 'JetBrains Mono, monospace', 'font-size': '12', 'font-weight': '600', fill: '#2A664B'
+          }, 'a // b // c'));
+        }
+
+        // 4. Bố trí nhãn sole độ cao tránh đè nhau ở mọi góc biên
+        const lblP = P(-kx * (sMax - 0.35), ky * (sMax - 0.35), 0.7);
+        const lblQ = P(kx * (sMax - 0.35), ky * (sMax - 0.35), 0.7);
+        const lblR = P(0, D, 0.55);
+
+        // Nhãn (P), (Q), (R)
+        function drawPillLabel(pt, txt, col, bg) {
+          const w = txt.length * 8 + 14;
+          svgLabPlanes.appendChild(svgEl('rect', {
+            x: pt.x - w / 2, y: pt.y - 11, width: w, height: 20, rx: 4,
+            fill: bg || '#FFFFFF', stroke: col, 'stroke-width': '1'
+          }));
+          svgLabPlanes.appendChild(svgEl('text', {
+            x: pt.x, y: pt.y + 3, 'text-anchor': 'middle',
+            'font-family': 'JetBrains Mono, monospace', 'font-size': '12', 'font-weight': '600', fill: col
+          }, txt));
+        }
+
+        drawPillLabel(lblP, '(P)', '#1C606C', '#FFFFFF');
+        drawPillLabel(lblQ, '(Q)', '#9E6812', '#FFFFFF');
+        drawPillLabel(lblR, '(R)', '#2A664B', '#FFFFFF');
+
+        // Nhãn đường a, b, c ở cao độ an toàn khác nhau (z = 1,45 cho a,b và z = 1,95 cho c)
+        const zAB = Math.min(zCutTop * 0.48, 2.35);
+        const yAB = isParallel ? D : D - zAB * tanT;
+        const sAB = yAB / ky;
+        const posA = P(-kx * sAB, yAB, zAB);
+        const posB = P(kx * sAB, yAB, zAB);
+        const posC = P(0, 0, 1.75);
+
+        drawPillLabel({ x: posA.x - 19, y: posA.y }, 'a', '#1C606C', '#FFFFFF');
+        drawPillLabel({ x: posB.x + 19, y: posB.y }, 'b', '#9E6812', '#FFFFFF');
+        drawPillLabel({ x: posC.x, y: posC.y }, 'c', '#2A664B', '#FFFFFF');
+
+        // Chú giải gọn ở góc trên bên trái khung SVG
+        svgLabPlanes.appendChild(svgEl('text', {
+          x: 16, y: 24, 'font-family': 'JetBrains Mono, monospace', 'font-size': '12', 'font-weight': '600', fill: '#1C606C'
+        }, 'a = (P) ∩ (R)'));
+        svgLabPlanes.appendChild(svgEl('text', {
+          x: 16, y: 42, 'font-family': 'JetBrains Mono, monospace', 'font-size': '12', 'font-weight': '600', fill: '#9E6812'
+        }, 'b = (Q) ∩ (R)'));
+        svgLabPlanes.appendChild(svgEl('text', {
+          x: 16, y: 60, 'font-family': 'JetBrains Mono, monospace', 'font-size': '12', 'font-weight': '600', fill: '#2A664B'
+        }, 'c = (P) ∩ (Q)'));
+      }
+
+      sliderTheta.addEventListener('input', renderLabPlanes);
+      sliderPhi1.addEventListener('input', renderLabPlanes);
+      presetConcurrent.addEventListener('click', function () {
+        sliderTheta.value = 20;
+        renderLabPlanes();
+      });
+      presetParallel.addEventListener('click', function () {
+        sliderTheta.value = 0;
+        renderLabPlanes();
+      });
+
+      // --- TAB 2: ỨNG DỤNG HÌNH CHÓP S.ABCD ---
+      const svgLabPyramid = document.getElementById('svgLabPyramid');
+      const sliderPhi2 = document.getElementById('sliderPhi2');
+      const valPhi2Label = document.getElementById('valPhi2Label');
+      const btnPair1 = document.getElementById('btnPair1');
+      const btnPair2 = document.getElementById('btnPair2');
+      const pyramidLogic = document.getElementById('pyramidLogic');
+      let pyramidMode = 'SAB-SCD';
+
+      function projectPyr3D(v, phiDeg) {
+        const phi = (phiDeg * Math.PI) / 180;
+        const elev = (20 * Math.PI) / 180;
+        const xr = v.x * Math.cos(phi) + v.y * Math.sin(phi);
+        const yr = -v.x * Math.sin(phi) + v.y * Math.cos(phi);
+        const scale = 60;
+        return {
+          x: 330 + xr * scale,
+          y: 266 - (v.z * Math.cos(elev) - yr * Math.sin(elev)) * scale,
+          yr: yr
+        };
+      }
+
+      function sub3(u, v) { return { x: u.x - v.x, y: u.y - v.y, z: u.z - v.z }; }
+      function cross3(u, v) {
+        return {
+          x: u.y * v.z - u.z * v.y,
+          y: u.z * v.x - u.x * v.z,
+          z: u.x * v.y - u.y * v.x
+        };
+      }
+      function dot3(u, v) { return u.x * v.x + u.y * v.y + u.z * v.z; }
+
+      function renderLabPyramid() {
+        const phiDeg = Number(sliderPhi2.value);
+        valPhi2Label.textContent = phiDeg + '°';
+
+        while (svgLabPyramid.firstChild) svgLabPyramid.removeChild(svgLabPyramid.firstChild);
+
+        // Đỉnh hình chóp S.ABCD (đáy hình bình hành ABCD nằm trên z = 0)
+        const V = {
+          A: { x: -1.85, y: 1.05, z: 0 },
+          B: { x: 1.45, y: 1.05, z: 0 },
+          C: { x: 2.15, y: -1.05, z: 0 },
+          D: { x: -1.15, y: -1.05, z: 0 },
+          S: { x: -0.25, y: -0.15, z: 3.35 }
+        };
+
+        // Vector hướng về camera để xác định mặt thấy / cạnh khuất chính xác
+        const phi = (phiDeg * Math.PI) / 180;
+        const elev = (20 * Math.PI) / 180;
+        const camDir = {
+          x: -Math.sin(phi) * Math.cos(elev),
+          y: Math.cos(phi) * Math.cos(elev),
+          z: Math.sin(elev)
+        };
+
+        // 5 mặt với thứ tự đỉnh hướng pháp tuyến ra ngoài khối chóp
+        const faces = {
+          base: ['A', 'D', 'C', 'B'],
+          SAB:  ['S', 'A', 'B'],
+          SBC:  ['S', 'B', 'C'],
+          SCD:  ['S', 'C', 'D'],
+          SAD:  ['S', 'D', 'A']
+        };
+
+        const faceVisible = {};
+        for (const fName in faces) {
+          const verts = faces[fName];
+          const n = cross3(sub3(V[verts[1]], V[verts[0]]), sub3(V[verts[2]], V[verts[0]]));
+          faceVisible[fName] = dot3(n, camDir) > 0;
+        }
+
+        const P = {};
+        for (const k in V) P[k] = projectPyr3D(V[k], phiDeg);
+
+        // Tô nhẹ mặt đáy và 2 mặt phẳng đang xét
+        svgLabPyramid.appendChild(svgEl('polygon', {
+          points: ptsStr([P.A, P.B, P.C, P.D]),
+          fill: '#F3EFE6', 'fill-opacity': '0.55', stroke: 'none'
+        }));
+
+        const isPair1 = pyramidMode === 'SAB-SCD';
+        const f1 = isPair1 ? [P.S, P.A, P.B] : [P.S, P.A, P.D];
+        const f2 = isPair1 ? [P.S, P.C, P.D] : [P.S, P.B, P.C];
+
+        svgLabPyramid.appendChild(svgEl('polygon', {
+          points: ptsStr(f1), fill: '#1C606C', 'fill-opacity': '0.11', stroke: 'none'
+        }));
+        svgLabPyramid.appendChild(svgEl('polygon', {
+          points: ptsStr(f2), fill: '#9E6812', 'fill-opacity': '0.13', stroke: 'none'
+        }));
+
+        // Danh sách 8 cạnh kèm 2 mặt kề để quyết định nét liền / nét đứt
+        const edges = [
+          { a: 'A', b: 'B', f: ['base', 'SAB'] },
+          { a: 'B', b: 'C', f: ['base', 'SBC'] },
+          { a: 'C', b: 'D', f: ['base', 'SCD'] },
+          { a: 'D', b: 'A', f: ['base', 'SAD'] },
+          { a: 'S', b: 'A', f: ['SAB', 'SAD'] },
+          { a: 'S', b: 'B', f: ['SAB', 'SBC'] },
+          { a: 'S', b: 'C', f: ['SBC', 'SCD'] },
+          { a: 'S', b: 'D', f: ['SCD', 'SAD'] }
+        ];
+
+        edges.forEach(e => {
+          const vis = faceVisible[e.f[0]] || faceVisible[e.f[1]];
+          let col = '#1A1917';
+          let sw = vis ? 1.8 : 1.5;
+
+          // Tô nổi hai cạnh đáy song song theo cặp mặt phẳng đang chọn
+          if (isPair1 && e.a === 'A' && e.b === 'B') { col = '#1C606C'; sw = 3.2; }
+          if (isPair1 && e.a === 'C' && e.b === 'D') { col = '#9E6812'; sw = 3.2; }
+          if (!isPair1 && e.a === 'D' && e.b === 'A') { col = '#1C606C'; sw = 3.2; }
+          if (!isPair1 && e.a === 'B' && e.b === 'C') { col = '#9E6812'; sw = 3.2; }
+
+          svgLabPyramid.appendChild(svgEl('line', {
+            x1: P[e.a].x, y1: P[e.a].y, x2: P[e.b].x, y2: P[e.b].y,
+            stroke: col,
+            'stroke-width': sw,
+            'stroke-dasharray': vis ? 'none' : '6,5'
+          }));
+        });
+
+        // Đường giao tuyến m đi qua S song song với AB, CD (hoặc AD, BC)
+        const dirVec = isPair1 ? sub3(V.B, V.A) : sub3(V.C, V.B);
+        const dirLen = Math.hypot(dirVec.x, dirVec.y, dirVec.z);
+        const u = { x: dirVec.x / dirLen, y: dirVec.y / dirLen, z: dirVec.z / dirLen };
+        const span = 2.6;
+        const M1 = projectPyr3D({ x: V.S.x - u.x * span, y: V.S.y - u.y * span, z: V.S.z - u.z * span }, phiDeg);
+        const M2 = projectPyr3D({ x: V.S.x + u.x * span, y: V.S.y + u.y * span, z: V.S.z + u.z * span }, phiDeg);
+
+        svgLabPyramid.appendChild(svgEl('line', {
+          x1: M1.x, y1: M1.y, x2: M2.x, y2: M2.y,
+          stroke: '#2A664B', 'stroke-width': '3.2'
+        }));
+
+        // Điểm S nổi bật đỏ đất
+        svgLabPyramid.appendChild(svgEl('circle', {
+          cx: P.S.x, cy: P.S.y, r: '5.5', fill: '#B63E2A', stroke: '#FFFFFF', 'stroke-width': '1.8'
+        }));
+
+        // Các đỉnh đáy
+        ['A', 'B', 'C', 'D'].forEach(k => {
+          svgLabPyramid.appendChild(svgEl('circle', { cx: P[k].x, cy: P[k].y, r: '3.5', fill: '#1A1917' }));
+        });
+
+        // Nhãn đỉnh và giao tuyến m (đặt lệch tránh đè cạnh)
+        const labelOffsets = {
+          S: { dx: 0, dy: -16, col: '#B63E2A' },
+          A: { dx: -16, dy: 14, col: '#1A1917' },
+          B: { dx: 16, dy: 14, col: '#1A1917' },
+          C: { dx: 18, dy: 4, col: '#1A1917' },
+          D: { dx: -18, dy: 4, col: '#1A1917' }
+        };
+
+        for (const k in labelOffsets) {
+          const o = labelOffsets[k];
+          svgLabPyramid.appendChild(svgEl('text', {
+            x: P[k].x + o.dx, y: P[k].y + o.dy, 'text-anchor': 'middle',
+            'font-family': 'JetBrains Mono, monospace', 'font-size': '14', 'font-weight': '600', fill: o.col
+          }, k));
+        }
+
+        // Nhãn giao tuyến m tại đầu bên phải của đường thẳng m
+        const mEnd = M2.x >= M1.x ? M2 : M1;
+        svgLabPyramid.appendChild(svgEl('rect', {
+          x: mEnd.x - 12, y: mEnd.y - 26, width: 24, height: 20, rx: 4, fill: '#EDF5F0', stroke: '#2A664B', 'stroke-width': '1'
+        }));
+        svgLabPyramid.appendChild(svgEl('text', {
+          x: mEnd.x, y: mEnd.y - 12, 'text-anchor': 'middle',
+          'font-family': 'JetBrains Mono, monospace', 'font-size': '13', 'font-weight': '600', fill: '#2A664B'
+        }, 'm'));
+
+        // Cập nhật 3 dòng lập luận
+        if (isPair1) {
+          pyramidLogic.innerHTML =
+            '<strong>Lập luận xác định giao tuyến (SAB) ∩ (SCD):</strong>' +
+            '<ol>' +
+              '<li><span class="sem-m">S</span> là điểm chung thứ nhất của hai mặt phẳng (SAB) và (SCD).</li>' +
+              '<li>Mặt phẳng (SAB) chứa <span class="sem-a">AB</span>, mặt phẳng (SCD) chứa <span class="sem-b">CD</span>, với <span class="math">AB // CD</span> (hai cạnh đối hình bình hành ABCD).</li>' +
+              '<li>Theo hệ quả định lí ba đường giao tuyến, giao tuyến <span class="sem-c">m</span> là đường thẳng đi qua <span class="sem-m">S</span> và song song với <span class="math">AB, CD</span>.</li>' +
+            '</ol>';
+        } else {
+          pyramidLogic.innerHTML =
+            '<strong>Lập luận xác định giao tuyến (SAD) ∩ (SBC):</strong>' +
+            '<ol>' +
+              '<li><span class="sem-m">S</span> là điểm chung thứ nhất của hai mặt phẳng (SAD) và (SBC).</li>' +
+              '<li>Mặt phẳng (SAD) chứa <span class="sem-a">AD</span>, mặt phẳng (SBC) chứa <span class="sem-b">BC</span>, với <span class="math">AD // BC</span> (hai cạnh đối hình bình hành ABCD).</li>' +
+              '<li>Theo hệ quả định lí ba đường giao tuyến, giao tuyến <span class="sem-c">m</span> là đường thẳng đi qua <span class="sem-m">S</span> và song song với <span class="math">AD, BC</span>.</li>' +
+            '</ol>';
+        }
+      }
+
+      btnPair1.addEventListener('click', function () {
+        pyramidMode = 'SAB-SCD';
+        btnPair1.className = 'btn-preset active-blue';
+        btnPair2.className = 'btn-preset';
+        renderLabPyramid();
+      });
+
+      btnPair2.addEventListener('click', function () {
+        pyramidMode = 'SAD-SBC';
+        btnPair2.className = 'btn-preset active-blue';
+        btnPair1.className = 'btn-preset';
+        renderLabPyramid();
+      });
+
+      sliderPhi2.addEventListener('input', renderLabPyramid);
+
+      // Khởi vẽ cả 2 tab xưởng tương tác
+      renderLabPlanes();
+      renderLabPyramid();
+
+      /* ---------------------------------------------------------
+         7. HỆ THỐNG LUYỆN TẬP (TRẮC NGHIỆM, GHÉP CẶP, GỢI Ý, GIẢI TỪNG BƯỚC)
+         --------------------------------------------------------- */
+      // Trắc nghiệm 1 chạm (Câu 01, 03, 04, 05)
+      document.querySelectorAll('article[data-mcq]').forEach(card => {
+        const correctOpt = card.getAttribute('data-mcq');
+        const buttons = card.querySelectorAll('.opt-btn');
+        const fb = card.querySelector('.quiz-feedback');
+
+        buttons.forEach(btn => {
+          btn.addEventListener('click', function () {
+            const chosen = btn.getAttribute('data-opt');
+            buttons.forEach(b => b.classList.remove('selected-correct', 'selected-wrong'));
+
+            if (chosen === correctOpt) {
+              btn.classList.add('selected-correct');
+              fb.textContent = 'Chính xác — Đáp án đúng là ' + correctOpt + '.';
+              fb.className = 'quiz-feedback show ok';
+            } else {
+              btn.classList.add('selected-wrong');
+              fb.textContent = 'Chưa đúng — Phương án ' + chosen + ' chưa chính xác. Có thể xem Gợi ý hoặc mở Lời giải từng bước.';
+              fb.className = 'quiz-feedback show err';
+            }
+          });
+        });
+      });
+
+      // Ghép cặp Câu 02
+      const gradeMatchBtn = document.getElementById('gradeMatchBtn');
+      const matchFeedback = document.getElementById('matchFeedback');
+
+      gradeMatchBtn.addEventListener('click', function () {
+        const rows = document.querySelectorAll('#cau-02 .match-row');
+        let correctCount = 0;
+        let unanswered = 0;
+
+        rows.forEach(row => {
+          const ans = row.getAttribute('data-ans');
+          const sel = row.querySelector('.match-select');
+          const status = row.querySelector('.match-status');
+          row.classList.remove('row-ok', 'row-err');
+
+          if (!sel.value) {
+            unanswered++;
+            status.textContent = 'Chưa chọn';
+            status.className = 'match-status err';
+            row.classList.add('row-err');
+          } else if (sel.value === ans) {
+            correctCount++;
+            status.textContent = 'Đúng';
+            status.className = 'match-status ok';
+            row.classList.add('row-ok');
+          } else {
+            status.textContent = 'Sai (Đáp án: ' + ans + ')';
+            status.className = 'match-status err';
+            row.classList.add('row-err');
+          }
+        });
+
+        if (correctCount === rows.length) {
+          matchFeedback.textContent = 'Hoàn thành xuất sắc: Đúng cả 4/4 cặp vị trí tương đối.';
+          matchFeedback.className = 'quiz-feedback show ok';
+        } else {
+          const extra = unanswered > 0 ? ' (còn ' + unanswered + ' cặp chưa chọn)' : '';
+          matchFeedback.textContent = 'Kết quả: Đúng ' + correctCount + '/4 cặp' + extra + '. Đối chiếu từng dòng bên trên.';
+          matchFeedback.className = 'quiz-feedback show err';
+        }
+      });
+
+      // Nút Gợi ý
+      document.querySelectorAll('[data-toggle-hint]').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const id = btn.getAttribute('data-toggle-hint');
+          const box = document.getElementById(id);
+          if (!box) return;
+          const isShown = box.classList.toggle('show');
+          btn.textContent = isShown ? 'Ẩn gợi ý' : 'Gợi ý';
+        });
+      });
+
+      // Nút Lời giải từng bước
+      document.querySelectorAll('[data-toggle-sol]').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const id = btn.getAttribute('data-toggle-sol');
+          const box = document.getElementById(id);
+          if (!box) return;
+          const isShown = box.classList.toggle('show');
+          btn.textContent = isShown ? 'Ẩn lời giải' : 'Lời giải từng bước';
+        });
+      });
+
+      // Nút Mở bước tiếp theo trong từng lời giải
+      document.querySelectorAll('[data-next-step]').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const id = btn.getAttribute('data-next-step');
+          const box = document.getElementById(id);
+          if (!box) return;
+          const steps = box.querySelectorAll('.sol-step');
+          const hidden = Array.from(steps).find(s => !s.classList.contains('visible'));
+          if (hidden) {
+            hidden.classList.add('visible');
+            const remaining = Array.from(steps).filter(s => !s.classList.contains('visible')).length;
+            if (remaining === 0) {
+              btn.textContent = 'Thu gọn về Bước 1';
+            }
+          } else {
+            steps.forEach((s, i) => s.classList.toggle('visible', i === 0));
+            btn.textContent = 'Mở bước tiếp theo →';
+          }
+        });
+      });
+
+    })();
+  </script>
+</body>
+</html>
