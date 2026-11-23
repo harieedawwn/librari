@@ -33,12 +33,15 @@ try{await api('git/refs/heads/'+CFG.branch,'PATCH',{sha:c});ALL=j.items;refresh(
 const busy=async f=>{B.style.cursor='progress';try{await f()}catch(e){dlg('Lỗi',`<p>${esc(e.message)}</p>`,null,'')}B.style.cursor=''};
 /* ---- tải lên / thư mục / sửa ---- */
 $('#add').onclick=()=>$('#fi').click();
-$('#fi').onchange=async e=>{const f={},add=[];for(const x of e.target.files){if(!/\.html?$/i.test(x.name)&&x.type!='text/html')continue;const id=uid(),buf=new Uint8Array(await x.arrayBuffer());f['files/'+id+'.html']=b64(buf);LOCAL[id]=D.decode(buf);add.push({id,type:'file',parent:cur,name:x.name.replace(/\.html?$/i,'')})}
-e.target.value='';if(add.length)busy(()=>commit('Thêm '+add.length+' file',f,j=>j.items.push(...add)))};
+async function upl(files){const f={},add=[];for(const x of files){if(!/\.html?$/i.test(x.name)&&x.type!='text/html')continue;const id=uid(),buf=new Uint8Array(await x.arrayBuffer());f['files/'+id+'.html']=b64(buf);LOCAL[id]=D.decode(buf);add.push({id,type:'file',parent:cur,name:x.name.replace(/\.html?$/i,'')})}
+if(add.length)busy(()=>commit('Thêm '+add.length+' file',f,j=>j.items.push(...add)))}
+$('#fi').onchange=e=>{upl([...e.target.files]);e.target.value=''};
+addEventListener('dragover',e=>{if(adm&&e.dataTransfer&&[...e.dataTransfer.types].includes('Files'))e.preventDefault()});
+addEventListener('drop',e=>{if(adm&&e.dataTransfer&&e.dataTransfer.files.length){e.preventDefault();upl([...e.dataTransfer.files])}});
 $('#nf').onclick=()=>dlg('Thư mục mới','<input type="text" placeholder="Tên thư mục" autocomplete="off">',async d=>{const n=$('input',d).value.trim();if(!n)throw Error('Cần đặt tên');await commit('Thư mục '+n,{},j=>j.items.push({id:uid(),type:'folder',parent:cur,name:n}));return true},'Tạo');
-$('#ed').onclick=()=>{const p=P[act];if(!p)return;const id=p.id,bad=p.type=='folder'?[id,...subs(id).map(x=>x.id)]:[],pth=x=>{const f=ALL.find(y=>y.id===x);return f?(f.parent?pth(f.parent)+' / ':'')+f.name:''};
+function openEdit(p){const id=p.id,bad=p.type=='folder'?[id,...subs(id).map(x=>x.id)]:[],pth=x=>{const f=ALL.find(y=>y.id===x);return f?(f.parent?pth(f.parent)+' / ':'')+f.name:''};
 const opts='<option value="">Gốc</option>'+ALL.filter(f=>f.type=='folder'&&!bad.includes(f.id)).map(f=>`<option value="${f.id}"${f.id===p.parent?' selected':''}>${esc(pth(f.id))}</option>`).join('');
-const d=dlg('Sửa',`<input type="text" id="nm" value="${esc(p.name)}" autocomplete="off"><select id="pr">${opts}</select>${p.type=='file'?'<label class="ck"><input id="sd" type="checkbox"> Đổi họa tiết thumbnail</label>':''}`,async d=>{
-const n=$('#nm',d).value.trim(),t=$('#pr',d).value||null,sd=$('#sd',d)&&$('#sd',d).checked?Math.random().toString(36).slice(2,6):null;if(!n)throw Error('Cần đặt tên');
-await commit('Sửa '+n,{},j=>{const x=j.items.find(y=>y.id==id);x.name=n;x.parent=t;if(sd)x.seed=sd});return true},'Lưu','<button type="button" class="bt dn">Xóa</button>');
-$('.dn',d).onclick=()=>{d.close();const all=subs(id);dlg('Xóa "'+esc(p.name)+'"?',`<p>${all.length?'Xóa luôn '+all.length+' mục bên trong. ':''}Không thể hoàn tác.</p>`,async()=>{const ids=[id,...all.map(x=>x.id)],f={};[p,...all].filter(x=>x.type=='file').forEach(x=>f['files/'+x.id+'.html']=null);await commit('Xóa '+p.name,f,j=>{j.items=j.items.filter(x=>!ids.includes(x.id))});return true},'Xóa')}};
+const d=dlg('Sửa',`<input type="text" id="nm" value="${esc(p.name)}" autocomplete="off"><select id="pr">${opts}</select><label class="ck"><input id="pi" type="checkbox"${p.pin?' checked':''}> Ghim lên đầu</label>${p.type=='file'?'<label class="ck"><input id="sd" type="checkbox"> Đổi họa tiết thumbnail</label>':''}`,async d=>{
+const n=$('#nm',d).value.trim(),t=$('#pr',d).value||null,sd=$('#sd',d)&&$('#sd',d).checked?Math.random().toString(36).slice(2,6):null;const pin=$('#pi',d).checked;if(!n)throw Error('Cần đặt tên');
+await commit('Sửa '+n,{},j=>{const x=j.items.find(y=>y.id==id);x.name=n;x.parent=t;if(pin)x.pin=1;else delete x.pin;if(sd)x.seed=sd});return true},'Lưu','<button type="button" class="bt dn">Xóa</button>');
+$('.dn',d).onclick=()=>{d.close();const all=subs(id);dlg('Xóa "'+esc(p.name)+'"?',`<p>${all.length?'Xóa luôn '+all.length+' mục bên trong. ':''}Không thể hoàn tác.</p>`,async()=>{const ids=[id,...all.map(x=>x.id)],f={};[p,...all].filter(x=>x.type=='file').forEach(x=>f['files/'+x.id+'.html']=null);await commit('Xóa '+p.name,f,j=>{j.items=j.items.filter(x=>!ids.includes(x.id))});return true},'Xóa')}}

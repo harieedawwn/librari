@@ -1,6 +1,6 @@
-const sortP=a=>a.sort((x,y)=>(x.type==y.type?0:x.type=='folder'?-1:1)||x.name.localeCompare(y.name,'vi'));
+const sortP=a=>a.sort((x,y)=>(y.pin?1:0)-(x.pin?1:0)||(x.type==y.type?0:x.type=='folder'?-1:1)||x.name.localeCompare(y.name,'vi'));
 function updateTop(){const f=ALL.find(x=>x.id===cur);$('#ttl').textContent=f?f.name:'librari';B.classList.toggle('fol',!!cur);const t=$('#top');t.style.width='';requestAnimationFrame(()=>glass(t,...t._p))}
-function showDir(id,push){cur=id||null;if(push)history.pushState({d:cur},'');P=sortP(ALL.filter(x=>x.parent===cur));tgt=S=0;render();updateTop()}
+function showDir(id,push){cur=id||null;if(push)history.pushState({d:cur},'');P=sortP(ALL.filter(x=>x.parent===cur));render();stage.scrollTop=0;updateTop()}
 function refresh(){P=sortP(ALL.filter(x=>x.parent===cur));render();updateTop()}
 $('#back').onclick=()=>{const f=ALL.find(x=>x.id===cur);showDir(f?f.parent:null,false)};
 /* đọc thẳng từ repo (luôn mới nhất, không chờ Pages deploy); lỗi thì dùng bản trên Pages */
