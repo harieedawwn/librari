@@ -1,0 +1,3620 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Toán 11 · Bài 10: Đường thẳng và mặt phẳng trong không gian</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&family=Lora:ital,wght@0,600;0,700;1,500&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       DESIGN TOKENS — EDITORIAL LIGHT MODE (PHẲNG, ẤM, SẮC NÉT)
+       ============================================================ */
+    :root {
+      --bg-paper: #FAF8F3;
+      --bg-card: #FFFFFF;
+      --bg-tray: #F3EFE6;
+      --border-hairline: #E4DDD0;
+      --border-card: #E2DACB;
+      --text-main: #1A1917;
+      --text-muted: #605C54;
+      --accent-red: #B63E2A;
+      --accent-red-soft: #F7EAE7;
+      --sem-blue: #1C606C;      /* Mặt phẳng / Giao tuyến */
+      --sem-blue-soft: #E9F2F4;
+      --sem-amber: #9E6812;     /* Đường thẳng / Điểm chung */
+      --sem-amber-soft: #F7F0E3;
+      --sem-green: #2A664B;     /* Giao điểm / Tứ diện / Đúng */
+      --sem-green-soft: #EAF3EE;
+
+      --font-serif: 'Lora', Georgia, 'Times New Roman', serif;
+      --font-sans: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+      --nav-h: 48px;
+      --radius-card: 10px;
+      --radius-ctrl: 6px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 68px;
+      background-color: var(--bg-paper);
+      color: var(--text-main);
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-sans);
+      font-size: 16.5px;
+      line-height: 1.7;
+      background-color: var(--bg-paper);
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ============================================================
+       TYPOGRAPHY & UTILITIES
+       ============================================================ */
+    h1, h2, h3, h4 {
+      font-family: var(--font-serif);
+      color: var(--text-main);
+      margin-top: 0;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    h1 {
+      font-size: clamp(1.85rem, 3.6vw, 2.6rem);
+      margin-bottom: 16px;
+      letter-spacing: -0.015em;
+    }
+
+    h2 {
+      font-size: clamp(1.4rem, 2.4vw, 1.8rem);
+      margin-bottom: 14px;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      margin-top: 0;
+      margin-bottom: 14px;
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .code-tag {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--accent-red);
+      text-transform: uppercase;
+    }
+
+    .id-badge {
+      display: inline-flex;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent-red);
+      background-color: var(--bg-tray);
+      border: 1px solid var(--border-hairline);
+      border-radius: 4px;
+      padding: 2px 7px;
+      vertical-align: middle;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .math {
+      font-family: var(--font-mono);
+      font-size: 0.92em;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .frac {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      vertical-align: middle;
+      margin: 0 3px;
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+      line-height: 1.15;
+    }
+
+    .frac > span:first-child {
+      border-bottom: 1px solid currentColor;
+      padding: 0 3px 1px;
+    }
+
+    .frac > span:last-child {
+      padding: 1px 3px 0;
+    }
+
+    /* Gạch chân ngữ nghĩa CHỈ dùng khi đồng màu với hình vẽ kế bên */
+    .u-blue {
+      border-bottom: 2px solid var(--sem-blue);
+      color: var(--sem-blue);
+      font-weight: 600;
+      padding-bottom: 1px;
+    }
+
+    .u-amber {
+      border-bottom: 2px solid var(--sem-amber);
+      color: var(--sem-amber);
+      font-weight: 600;
+      padding-bottom: 1px;
+    }
+
+    .u-green {
+      border-bottom: 2px solid var(--sem-green);
+      color: var(--sem-green);
+      font-weight: 600;
+      padding-bottom: 1px;
+    }
+
+    .u-red {
+      border-bottom: 2px solid var(--accent-red);
+      color: var(--accent-red);
+      font-weight: 600;
+      padding-bottom: 1px;
+    }
+
+    /* Container chính */
+    .page-wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: calc(var(--nav-h) + 32px) 20px 64px;
+    }
+
+    /* Phân tách giữa các mục lớn trực tiếp trên nền giấy */
+    .lesson-section {
+      padding-top: 52px;
+      margin-top: 52px;
+      border-top: 1px solid var(--border-hairline);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding-left: 14px;
+      border-left: 3px solid var(--accent-red);
+    }
+
+    .section-num {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--accent-red);
+      flex-shrink: 0;
+    }
+
+    .section-head h2 {
+      margin-bottom: 0;
+    }
+
+    .lead-copy {
+      max-width: 78ch;
+      color: var(--text-main);
+      margin-bottom: 24px;
+    }
+
+    /* ============================================================
+       THANH ĐIỀU HƯỚNG ĐỈNH (48PX) & THANH TIẾN ĐỘ ĐỌC (2PX)
+       ============================================================ */
+    .top-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--nav-h);
+      background-color: var(--bg-paper);
+      border-bottom: 1px solid var(--border-hairline);
+      z-index: 1000;
+    }
+
+    .top-nav-inner {
+      max-width: 1080px;
+      height: 100%;
+      margin: 0 auto;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .nav-brand {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 0.98rem;
+      color: var(--text-main);
+      text-decoration: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      display: inline-flex;
+      align-items: center;
+      height: 44px;
+      padding: 0 10px;
+      font-size: 0.86rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: var(--radius-ctrl);
+      white-space: nowrap;
+      transition: color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--accent-red);
+      background-color: var(--bg-tray);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .btn-nav {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 14px;
+      font-family: var(--font-sans);
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: var(--text-main);
+      background-color: var(--bg-tray);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-ctrl);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn-nav:hover {
+      border-color: var(--text-muted);
+    }
+
+    .btn-nav.is-active {
+      background-color: var(--accent-red);
+      color: #FFFFFF;
+      border-color: var(--accent-red);
+    }
+
+    .btn-toc-mobile {
+      display: none;
+    }
+
+    .mobile-drawer {
+      display: none;
+      position: fixed;
+      top: var(--nav-h);
+      left: 0;
+      right: 0;
+      background-color: var(--bg-paper);
+      border-bottom: 1px solid var(--border-hairline);
+      padding: 8px 16px 14px;
+      z-index: 999;
+    }
+
+    .mobile-drawer.open {
+      display: block;
+    }
+
+    .mobile-drawer a {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0 10px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-main);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .mobile-drawer a:last-child {
+      border-bottom: none;
+    }
+
+    .progress-track {
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: transparent;
+      pointer-events: none;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background-color: var(--accent-red);
+      transition: width 0.08s linear;
+    }
+
+    @media (max-width: 899px) {
+      .nav-links {
+        display: none;
+      }
+      .btn-toc-mobile {
+        display: inline-flex;
+      }
+    }
+
+    /* ============================================================
+       BÌA CHƯƠNG & BẢN ĐỒ XƯƠNG SỐNG ĐẦU TRANG
+       ============================================================ */
+    .hero {
+      margin-bottom: 32px;
+    }
+
+    .hero-kicker {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--accent-red);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .hero-lead {
+      max-width: 78ch;
+      color: var(--text-muted);
+      font-size: 1.03rem;
+      margin-bottom: 0;
+    }
+
+    /* Thẻ chọn lọc: Bản đồ xương sống */
+    .surface-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-card);
+      padding: 22px;
+    }
+
+    .map-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .map-title {
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .map-hint {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .concept-chain {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+      align-items: stretch;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .concept-node {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      text-align: left;
+      min-height: 76px;
+      padding: 12px 14px;
+      background-color: var(--bg-paper);
+      border: 1px solid var(--border-hairline);
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      color: var(--text-main);
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .concept-node:hover {
+      border-color: var(--text-muted);
+    }
+
+    .concept-node.selected {
+      background-color: var(--accent-red-soft);
+      border: 2px solid var(--accent-red);
+      padding: 11px 13px;
+    }
+
+    .node-code {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent-red);
+      margin-bottom: 4px;
+    }
+
+    .node-label {
+      font-size: 0.92rem;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    .concept-connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0 2px;
+      color: var(--text-muted);
+      font-size: 0.74rem;
+      text-align: center;
+      min-width: 72px;
+    }
+
+    .connector-arrow {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      color: var(--text-muted);
+      line-height: 1;
+      margin-top: 3px;
+    }
+
+    .connector-arrow-down {
+      display: none;
+    }
+
+    .map-detail {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      background-color: var(--bg-tray);
+      border-radius: 8px;
+      padding: 14px 16px;
+      border-left: 3px solid var(--accent-red);
+    }
+
+    .map-detail-text {
+      margin: 0;
+      flex: 1 1 320px;
+      font-size: 0.96rem;
+    }
+
+    .btn-jump {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 16px;
+      background-color: var(--accent-red);
+      color: #FFFFFF;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.88rem;
+      border-radius: var(--radius-ctrl);
+      white-space: nowrap;
+    }
+
+    .btn-jump:hover {
+      background-color: #9A3221;
+    }
+
+    @media (max-width: 899px) {
+      .concept-chain {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+      .concept-connector {
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 8px;
+        padding: 2px 12px;
+        min-width: auto;
+      }
+      .connector-arrow-right {
+        display: none;
+      }
+      .connector-arrow-down {
+        display: inline;
+        margin-top: 0;
+      }
+    }
+
+    /* ============================================================
+       BỐ CỤC 2 CỘT & 3 CỘT ĐAN XEN
+       ============================================================ */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    .grid-2-wide-right {
+      display: grid;
+      grid-template-columns: 0.92fr 1.08fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    @media (max-width: 899px) {
+      .grid-2,
+      .grid-2-wide-right,
+      .grid-3 {
+        grid-template-columns: 1fr;
+        gap: 22px;
+      }
+    }
+
+    /* ============================================================
+       THUẬT NGỮ BẤM MỞ TẠI CHỖ (GLOSSARY TERM)
+       ============================================================ */
+    .term-btn {
+      display: inline;
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: 600;
+      color: var(--text-main);
+      background: transparent;
+      border: none;
+      border-bottom: 1.5px dotted var(--text-muted);
+      padding: 6px 2px 2px;
+      margin: -6px 0 -2px;
+      cursor: pointer;
+      line-height: inherit;
+    }
+
+    .term-btn:hover,
+    .term-btn[aria-expanded="true"] {
+      color: var(--accent-red);
+      border-bottom-color: var(--accent-red);
+    }
+
+    .term-drawer {
+      display: none;
+      margin: 12px 0 18px;
+      padding: 12px 16px;
+      background-color: var(--bg-tray);
+      border-left: 2px solid var(--text-muted);
+      border-radius: 0 6px 6px 0;
+      font-size: 0.93rem;
+      color: var(--text-main);
+    }
+
+    .term-drawer.open {
+      display: block;
+    }
+
+    .term-drawer-title {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    /* ============================================================
+       BẢNG BIỂU & DANH SÁCH TRỰC TIẾP TRÊN NỀN GIẤY
+       ============================================================ */
+    .editorial-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      font-size: 0.94rem;
+    }
+
+    .editorial-table th,
+    .editorial-table td {
+      text-align: left;
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--border-hairline);
+      vertical-align: top;
+    }
+
+    .editorial-table th {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      border-bottom: 2px solid var(--border-hairline);
+    }
+
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .axiom-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0 36px;
+      margin: 18px 0 28px;
+    }
+
+    @media (max-width: 899px) {
+      .axiom-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .axiom-item {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .axiom-code {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent-red);
+      margin-right: 8px;
+    }
+
+    .axiom-note {
+      display: block;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+
+    /* 3 Cách xác định mặt phẳng trên nền giấy */
+    .way-col {
+      padding-top: 14px;
+      border-top: 2px solid var(--sem-blue);
+    }
+
+    .way-code {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--sem-blue);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    /* ============================================================
+       KHUNG CHUẨN GHI NHỚ & CHẾ ĐỘ TỰ DÒ BÀI (.cloak)
+       ============================================================ */
+    .memory-box {
+      margin: 26px 0;
+      padding: 18px 20px;
+      background-color: var(--bg-tray);
+      border-left: 3px solid var(--accent-red);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .memory-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .memory-title {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent-red);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .memory-list {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .memory-list li {
+      margin-bottom: 8px;
+    }
+
+    .memory-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Thẻ che từ khóa khi bật Tự dò bài */
+    .cloak {
+      font-weight: 600;
+      border-radius: 4px;
+      padding: 1px 4px;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    body.quiz-mode .cloak {
+      display: inline-block;
+      min-height: 28px;
+      background-color: var(--border-hairline);
+      color: transparent;
+      cursor: pointer;
+      user-select: none;
+      border: 1px dashed #B5AA96;
+      padding: 0 8px;
+    }
+
+    body.quiz-mode .cloak:hover {
+      background-color: #DCD3C2;
+    }
+
+    body.quiz-mode .cloak.revealed {
+      background-color: var(--accent-red-soft);
+      color: var(--accent-red);
+      border: 1px solid var(--accent-red);
+    }
+
+    .quiz-banner {
+      display: none;
+      margin-bottom: 20px;
+      padding: 10px 14px;
+      background-color: var(--accent-red-soft);
+      border: 1px solid var(--accent-red);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: var(--accent-red);
+      font-weight: 500;
+    }
+
+    body.quiz-mode .quiz-banner {
+      display: block;
+    }
+
+    /* ============================================================
+       KHUNG HÌNH VẼ SVG & KHUNG KỂ CHUYỆN TỪNG BƯỚC
+       ============================================================ */
+    .figure-block {
+      margin: 18px 0 24px;
+    }
+
+    .figure-caption {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .svg-scroll {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .svg-scroll svg {
+      display: block;
+      margin: 0 auto;
+    }
+
+    .svg-scroll.min-600 svg {
+      min-width: 600px;
+      width: 100%;
+      height: auto;
+    }
+
+    .svg-scroll.min-620 svg {
+      min-width: 620px;
+      width: 100%;
+      height: auto;
+    }
+
+    /* Kể chuyện từng bước */
+    .stepper-wrap {
+      margin: 24px 0 28px;
+      padding: 18px 0;
+      border-top: 1px solid var(--border-hairline);
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .stepper-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .step-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .step-pill {
+      min-height: 44px;
+      padding: 0 14px;
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+      font-weight: 600;
+      background-color: var(--bg-tray);
+      color: var(--text-muted);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-ctrl);
+      cursor: pointer;
+    }
+
+    .step-pill:hover {
+      color: var(--text-main);
+      border-color: var(--text-muted);
+    }
+
+    .step-pill.active-blue {
+      background-color: var(--sem-blue);
+      color: #FFFFFF;
+      border-color: var(--sem-blue);
+    }
+
+    .step-pill.active-green {
+      background-color: var(--sem-green);
+      color: #FFFFFF;
+      border-color: var(--sem-green);
+    }
+
+    .step-nav-pair {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-step-nav {
+      min-height: 44px;
+      padding: 0 14px;
+      font-family: var(--font-sans);
+      font-size: 0.86rem;
+      font-weight: 600;
+      background-color: var(--bg-paper);
+      color: var(--text-main);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-ctrl);
+      cursor: pointer;
+    }
+
+    .btn-step-nav:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .step-explanation {
+      margin-top: 14px;
+      padding: 14px 16px;
+      background-color: var(--bg-tray);
+      border-radius: 8px;
+      font-size: 0.96rem;
+    }
+
+    .step-exp-head {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    /* ============================================================
+       MỤC GẬP GIẢI THÍCH TỪ GỐC (<details>)
+       ============================================================ */
+    details.deep-note {
+      margin: 20px 0 24px;
+      border-top: 1px solid var(--border-hairline);
+      border-bottom: 1px solid var(--border-hairline);
+      padding: 4px 0;
+    }
+
+    details.deep-note summary {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 0.96rem;
+      color: var(--sem-blue);
+      cursor: pointer;
+      list-style: none;
+      padding: 6px 0;
+    }
+
+    details.deep-note summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details.deep-note summary::after {
+      content: "+ Mở rộng";
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-left: 12px;
+      flex-shrink: 0;
+    }
+
+    details.deep-note[open] summary::after {
+      content: "− Thu gọn";
+    }
+
+    .deep-note-body {
+      padding: 6px 0 14px;
+      color: var(--text-main);
+      font-size: 0.95rem;
+    }
+
+    /* ============================================================
+       CHỐT NHANH GIỮA BÀI (MINI CHECK)
+       ============================================================ */
+    .mini-check {
+      margin: 26px 0;
+      padding: 16px 18px;
+      background-color: var(--bg-tray);
+      border: 1px solid var(--border-hairline);
+      border-radius: 8px;
+    }
+
+    .mini-q {
+      font-weight: 600;
+      margin: 8px 0 12px;
+    }
+
+    .mini-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn-mini {
+      min-height: 44px;
+      padding: 8px 18px;
+      font-family: var(--font-sans);
+      font-size: 0.92rem;
+      font-weight: 600;
+      background-color: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-ctrl);
+      cursor: pointer;
+    }
+
+    .btn-mini:hover {
+      border-color: var(--text-muted);
+    }
+
+    .btn-mini.correct {
+      background-color: var(--sem-green);
+      color: #FFFFFF;
+      border-color: var(--sem-green);
+    }
+
+    .btn-mini.wrong {
+      background-color: var(--accent-red);
+      color: #FFFFFF;
+      border-color: var(--accent-red);
+    }
+
+    .mini-feedback {
+      display: none;
+      margin-top: 12px;
+      font-size: 0.92rem;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-hairline);
+    }
+
+    .mini-feedback.show {
+      display: block;
+    }
+
+    /* ============================================================
+       XƯỞNG TƯƠNG TÁC TRỌNG TÂM (XƯỞNG 01)
+       ============================================================ */
+    .lab-card {
+      margin: 30px 0;
+    }
+
+    .lab-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .lab-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .lab-tab {
+      min-height: 44px;
+      padding: 0 16px;
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      font-weight: 600;
+      background-color: var(--bg-tray);
+      color: var(--text-muted);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-ctrl);
+      cursor: pointer;
+    }
+
+    .lab-tab.active-green {
+      background-color: var(--sem-green);
+      color: #FFFFFF;
+      border-color: var(--sem-green);
+    }
+
+    .lab-tab.active-blue {
+      background-color: var(--sem-blue);
+      color: #FFFFFF;
+      border-color: var(--sem-blue);
+    }
+
+    .lab-task {
+      font-size: 0.95rem;
+      color: var(--text-main);
+      background-color: var(--bg-paper);
+      border-left: 3px solid var(--sem-green);
+      padding: 10px 14px;
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 18px;
+    }
+
+    .lab-task.blue-border {
+      border-left-color: var(--sem-blue);
+    }
+
+    .lab-layout {
+      display: grid;
+      grid-template-columns: 1.25fr 0.85fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    @media (max-width: 899px) {
+      .lab-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .lab-stage {
+      background-color: var(--bg-paper);
+      border: 1px solid var(--border-hairline);
+      border-radius: 8px;
+      padding: 8px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .lab-stage svg {
+      display: block;
+      width: 100%;
+      min-width: 310px;
+      height: auto;
+      margin: 0 auto;
+    }
+
+    .lab-controls {
+      background-color: var(--bg-tray);
+      border: 1px solid var(--border-hairline);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .ctrl-group {
+      margin-bottom: 16px;
+    }
+
+    .ctrl-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .ctrl-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .ctrl-val {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      color: var(--accent-red);
+    }
+
+    /* Thanh trượt có vùng chạm tối thiểu 44px */
+    input[type="range"].editorial-range {
+      width: 100%;
+      height: 44px;
+      margin: 0;
+      background: transparent;
+      cursor: pointer;
+      accent-color: var(--sem-green);
+    }
+
+    input[type="range"].editorial-range.range-blue {
+      accent-color: var(--sem-blue);
+    }
+
+    .preset-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .btn-preset {
+      min-height: 44px;
+      padding: 6px 11px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 500;
+      background-color: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-ctrl);
+      cursor: pointer;
+    }
+
+    .btn-preset:hover {
+      border-color: var(--text-muted);
+    }
+
+    .btn-preset.active-blue {
+      background-color: var(--sem-blue);
+      color: #FFFFFF;
+      border-color: var(--sem-blue);
+    }
+
+    .btn-preset.active-green {
+      background-color: var(--sem-green);
+      color: #FFFFFF;
+      border-color: var(--sem-green);
+    }
+
+    .readout-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-hairline);
+    }
+
+    .readout-cell {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+
+    .readout-label {
+      display: block;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .readout-num {
+      font-family: var(--font-mono);
+      font-size: 0.96rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-main);
+    }
+
+    .readout-wide {
+      grid-column: 1 / -1;
+      background-color: var(--sem-green-soft);
+      border-color: #C4DCCE;
+    }
+
+    .readout-wide .readout-num {
+      color: var(--sem-green);
+      font-size: 0.88rem;
+    }
+
+    .lab-panel {
+      display: none;
+    }
+
+    .lab-panel.active {
+      display: block;
+    }
+
+    /* ============================================================
+       BẪY ĐỀ THI & MỞ RỘNG (TRỰC TIẾP TRÊN NỀN GIẤY)
+       ============================================================ */
+    .trap-list {
+      margin: 18px 0 32px;
+    }
+
+    .trap-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    @media (max-width: 899px) {
+      .trap-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+    }
+
+    .trap-label-wrong {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent-red);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .trap-label-right {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--sem-green);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .extension-block {
+      margin: 28px 0 38px;
+      padding: 20px 0 6px;
+      border-top: 1px solid var(--border-hairline);
+    }
+
+    /* ============================================================
+       LUYỆN TẬP CUỐI BÀI (5 THẺ TRẮNG)
+       ============================================================ */
+    .practice-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding: 12px 16px;
+      background-color: var(--bg-tray);
+      border-radius: 8px;
+      border: 1px solid var(--border-hairline);
+    }
+
+    .score-pill {
+      font-family: var(--font-mono);
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--sem-green);
+    }
+
+    .q-card {
+      margin-bottom: 18px;
+    }
+
+    .q-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .vdc-tag {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--sem-amber);
+      background-color: var(--sem-amber-soft);
+      border: 1px solid #E4CFA8;
+      border-radius: 4px;
+      padding: 2px 8px;
+      text-transform: uppercase;
+    }
+
+    .q-stem {
+      font-weight: 500;
+      margin-bottom: 14px;
+    }
+
+    .opt-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 640px) {
+      .opt-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .opt-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 46px;
+      padding: 10px 14px;
+      text-align: left;
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      background-color: var(--bg-paper);
+      color: var(--text-main);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-ctrl);
+      cursor: pointer;
+    }
+
+    .opt-btn:hover {
+      border-color: var(--text-muted);
+    }
+
+    .opt-key {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .opt-btn.is-correct {
+      background-color: var(--sem-green-soft);
+      border: 2px solid var(--sem-green);
+      color: var(--sem-green);
+      font-weight: 600;
+    }
+
+    .opt-btn.is-correct .opt-key {
+      color: var(--sem-green);
+    }
+
+    .opt-btn.is-wrong {
+      background-color: var(--accent-red-soft);
+      border: 2px solid var(--accent-red);
+      color: var(--accent-red);
+      font-weight: 600;
+    }
+
+    .opt-btn.is-wrong .opt-key {
+      color: var(--accent-red);
+    }
+
+    /* Câu ghép cặp */
+    .match-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .match-row {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 12px;
+      background-color: var(--bg-paper);
+      border: 1px solid var(--border-hairline);
+      border-radius: 6px;
+    }
+
+    @media (max-width: 720px) {
+      .match-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .match-select {
+      width: 100%;
+      min-height: 44px;
+      padding: 8px 10px;
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      background-color: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+    }
+
+    .match-row.pair-ok {
+      border-color: var(--sem-green);
+      background-color: var(--sem-green-soft);
+    }
+
+    .match-row.pair-bad {
+      border-color: var(--accent-red);
+      background-color: var(--accent-red-soft);
+    }
+
+    .pair-status {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-top: 4px;
+      display: block;
+    }
+
+    .q-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .btn-subtle {
+      min-height: 44px;
+      padding: 0 14px;
+      font-family: var(--font-sans);
+      font-size: 0.86rem;
+      font-weight: 600;
+      background-color: var(--bg-tray);
+      color: var(--text-main);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-ctrl);
+      cursor: pointer;
+    }
+
+    .btn-subtle:hover {
+      border-color: var(--text-muted);
+    }
+
+    .btn-primary-check {
+      min-height: 44px;
+      padding: 0 16px;
+      font-family: var(--font-sans);
+      font-size: 0.88rem;
+      font-weight: 600;
+      background-color: var(--sem-blue);
+      color: #FFFFFF;
+      border: 1px solid var(--sem-blue);
+      border-radius: var(--radius-ctrl);
+      cursor: pointer;
+    }
+
+    .q-feedback {
+      display: none;
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 0.92rem;
+    }
+
+    .q-feedback.show {
+      display: block;
+    }
+
+    .q-feedback.ok {
+      background-color: var(--sem-green-soft);
+      color: var(--sem-green);
+      border: 1px solid #C4DCCE;
+    }
+
+    .q-feedback.err {
+      background-color: var(--accent-red-soft);
+      color: var(--accent-red);
+      border: 1px solid #E5C1BA;
+    }
+
+    .q-hint-box,
+    .q-sol-box {
+      display: none;
+      margin-top: 12px;
+      padding: 12px 14px;
+      background-color: var(--bg-tray);
+      border-radius: 6px;
+      font-size: 0.92rem;
+    }
+
+    .q-hint-box.show,
+    .q-sol-box.show {
+      display: block;
+    }
+
+    .sol-step {
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .sol-step:last-child {
+      border-bottom: none;
+    }
+
+    .btn-next-step {
+      margin-top: 8px;
+      min-height: 44px;
+      padding: 0 14px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 600;
+      background-color: var(--bg-card);
+      color: var(--sem-blue);
+      border: 1px solid var(--sem-blue);
+      border-radius: var(--radius-ctrl);
+      cursor: pointer;
+    }
+
+    /* ============================================================
+       CHÂN TRANG TỐI GIẢN
+       ============================================================ */
+    footer.site-footer {
+      max-width: 1080px;
+      margin: 48px auto 0;
+      padding: 20px 20px 36px;
+      border-top: 1px solid var(--border-hairline);
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       THANH ĐIỀU HƯỚNG ĐỈNH (48PX) + THANH TIẾN ĐỘ ĐỌC (2PX)
+       ============================================================ -->
+  <header class="top-nav">
+    <div class="top-nav-inner">
+      <a href="#top" class="nav-brand">Bài 10 · Không gian</a>
+
+      <nav aria-label="Mục lục bài học">
+        <ul class="nav-links" id="desktopNav">
+          <li><a href="#muc-01">01 Khái niệm</a></li>
+          <li><a href="#muc-02">02 Tính chất</a></li>
+          <li><a href="#muc-03">03 Xác định mp</a></li>
+          <li><a href="#muc-04">04 Chóp &amp; Tứ diện</a></li>
+          <li><a href="#muc-05">05 Luyện tập</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav btn-toc-mobile" id="tocToggleBtn" aria-expanded="false" aria-controls="mobileDrawer">
+          Mục lục
+        </button>
+        <button type="button" class="btn-nav" id="quizModeBtn" aria-pressed="false">
+          Tự dò bài
+        </button>
+      </div>
+    </div>
+    <div class="progress-track" aria-hidden="true">
+      <div class="progress-bar" id="readProgress"></div>
+    </div>
+  </header>
+
+  <!-- Danh sách thả xuống trên điện thoại -->
+  <div class="mobile-drawer" id="mobileDrawer" aria-label="Mục lục trên điện thoại">
+    <a href="#muc-01">01 Khái niệm mở đầu &amp; Hình biểu diễn</a>
+    <a href="#muc-02">02 Sáu tính chất thừa nhận &amp; Giao tuyến</a>
+    <a href="#muc-03">03 Ba cách xác định mặt phẳng</a>
+    <a href="#muc-04">04 Hình chóp, Tứ diện &amp; Xưởng 01</a>
+    <a href="#muc-05">05 Bẫy đề thi, Mở rộng &amp; Luyện tập</a>
+  </div>
+
+  <!-- ============================================================
+       NỘI DUNG CHÍNH
+       ============================================================ -->
+  <main class="page-wrap" id="top">
+
+    <!-- Thông báo nhỏ khi bật chế độ Tự dò bài -->
+    <div class="quiz-banner" role="status">
+      Đang bật chế độ Tự dò bài: toàn bộ từ khóa cốt lõi trong các khung Chuẩn ghi nhớ đã được che mờ. Bấm (hoặc nhấn Enter / Space) vào từng ô mờ để tự kiểm tra đáp án.
+    </div>
+
+    <!-- BÌA CHƯƠNG -->
+    <section class="hero">
+      <span class="hero-kicker">TOÁN 11 · KẾT NỐI TRI THỨC VỚI CUỘC SỐNG · CHƯƠNG IV</span>
+      <h1>Bài 10: Đường thẳng và mặt phẳng trong không gian</h1>
+      <p class="hero-lead">
+        Hình học không gian mở rộng đối tượng nghiên cứu từ mặt phẳng hai chiều sang không gian ba chiều với ba phần tử cơ bản là điểm, đường thẳng và mặt phẳng. Toàn bộ bài học xoay quanh sáu tính chất thừa nhận, ba cách cố định một mặt phẳng và kĩ thuật tìm giao tuyến, giao điểm trên hình chóp và hình tứ diện.
+      </p>
+    </section>
+
+    <!-- BẢN ĐỒ XƯƠNG SỐNG ĐẦU TRANG (THẺ TRẮNG THUẦN HTML/CSS) -->
+    <section class="surface-card" aria-label="Bản đồ xương sống bài học">
+      <div class="map-header">
+        <h2 class="map-title">Bản đồ xương sống toàn bài</h2>
+        <span class="map-hint">Chọn một nhánh để xem ý cốt lõi và đi thẳng xuống mục chi tiết</span>
+      </div>
+
+      <div class="concept-chain" role="tablist" aria-label="Bốn trụ cột của bài 10">
+        <button type="button" class="concept-node selected" data-branch="01" role="tab" aria-selected="true">
+          <span class="node-code">01</span>
+          <span class="node-label">Mặt phẳng &amp; Hình biểu diễn</span>
+        </button>
+
+        <div class="concept-connector" aria-hidden="true">
+          <span>chuẩn hóa bằng</span>
+          <span class="connector-arrow connector-arrow-right">→</span>
+          <span class="connector-arrow connector-arrow-down">↓</span>
+        </div>
+
+        <button type="button" class="concept-node" data-branch="02" role="tab" aria-selected="false">
+          <span class="node-code">02</span>
+          <span class="node-label">6 Tính chất &amp; Giao tuyến</span>
+        </button>
+
+        <div class="concept-connector" aria-hidden="true">
+          <span>suy ra</span>
+          <span class="connector-arrow connector-arrow-right">→</span>
+          <span class="connector-arrow connector-arrow-down">↓</span>
+        </div>
+
+        <button type="button" class="concept-node" data-branch="03" role="tab" aria-selected="false">
+          <span class="node-code">03</span>
+          <span class="node-label">3 Cách xác định mặt phẳng</span>
+        </button>
+
+        <div class="concept-connector" aria-hidden="true">
+          <span>ứng dụng trên</span>
+          <span class="connector-arrow connector-arrow-right">→</span>
+          <span class="connector-arrow connector-arrow-down">↓</span>
+        </div>
+
+        <button type="button" class="concept-node" data-branch="04" role="tab" aria-selected="false">
+          <span class="node-code">04</span>
+          <span class="node-label">Hình chóp, Tứ diện &amp; Giao điểm</span>
+        </button>
+      </div>
+
+      <div class="map-detail" id="conceptDetail" aria-live="polite">
+        <p class="map-detail-text" id="conceptSummary">
+          Mặt phẳng không có bề dày, không có giới hạn và được vẽ trên giấy theo bốn quy tắc bảo toàn tính thẳng, song song, cắt nhau, liên thuộc cùng quy ước nét liền — nét đứt.
+        </p>
+        <a href="#muc-01" class="btn-jump" id="conceptJump">Đi tới mục 01 →</a>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MỤC 01: KHÁI NIỆM MỞ ĐẦU & QUY TẮC HÌNH BIỂU DIỄN
+         ============================================================ -->
+    <section class="lesson-section" id="muc-01">
+      <div class="section-head">
+        <span class="section-num">01</span>
+        <h2>Khái niệm mở đầu &amp; Quy tắc hình biểu diễn</h2>
+      </div>
+
+      <p class="lead-copy">
+        <button type="button" class="term-btn" data-term="term-mp" aria-expanded="false" aria-controls="term-mp">Mặt phẳng</button> là khái niệm cơ bản không có bề dày và không có giới hạn; mặt bảng hay mặt nước tĩnh lặng chỉ là hình ảnh của một phần mặt phẳng. Để mô tả hình không gian trên giấy hai chiều, <button type="button" class="term-btn" data-term="term-hbd" aria-expanded="false" aria-controls="term-hbd">hình biểu diễn</button> phải tuân theo bốn quy tắc bảo toàn cấu trúc hình học.
+      </p>
+
+      <div class="term-drawer" id="term-mp">
+        <span class="term-drawer-title">Thuật ngữ · Mặt phẳng</span>
+        Là đối tượng hình học cơ bản trải rộng vô hạn theo mọi phương và không có bề dày, thường vẽ bằng hình bình hành hoặc một góc kèm tên trong ngoặc như <span class="math">(P)</span>, <span class="math">(α)</span>. Ví dụ thực tế: mặt bàn phẳng, màn hình máy tính, mặt hồ yên lặng là hình ảnh một phần của mặt phẳng.
+      </div>
+
+      <div class="term-drawer" id="term-hbd">
+        <span class="term-drawer-title">Thuật ngữ · Hình biểu diễn</span>
+        Là hình vẽ trên giấy hoặc bảng dùng để mô tả một hình không gian ba chiều mà vẫn giữ nguyên các quan hệ hình học cốt lõi. Ví dụ thực tế: bản vẽ kĩ thuật hình lập phương có các cạnh phía sau vẽ nét đứt để mắt nhận ra độ sâu.
+      </div>
+
+      <div class="grid-2-wide-right">
+        <div>
+          <h3>Quan hệ liên thuộc điểm — mặt phẳng</h3>
+          <p>
+            Điểm <span class="u-green">A thuộc mặt phẳng (P)</span>, kí hiệu <span class="math">A ∈ (P)</span> (còn nói <span class="math">A</span> nằm trên <span class="math">(P)</span>, hoặc <span class="math">(P)</span> chứa <span class="math">A</span>). Điểm <span class="u-amber">B không thuộc mặt phẳng (P)</span>, kí hiệu <span class="math">B ∉ (P)</span>.
+          </p>
+
+          <h3 style="margin-top: 22px;">Bốn quy tắc vẽ hình biểu diễn</h3>
+          <div class="table-scroll">
+            <table class="editorial-table">
+              <thead>
+                <tr>
+                  <th style="width: 56px;">STT</th>
+                  <th>Đối tượng không gian</th>
+                  <th>Trên hình biểu diễn</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="mono">01</td>
+                  <td>Đường thẳng, đoạn thẳng</td>
+                  <td>Đường thẳng, đoạn thẳng</td>
+                </tr>
+                <tr>
+                  <td class="mono">02</td>
+                  <td>Hai đường thẳng song song; cắt nhau</td>
+                  <td>Hai đường thẳng song song; cắt nhau</td>
+                </tr>
+                <tr>
+                  <td class="mono">03</td>
+                  <td>Quan hệ liên thuộc điểm — đường thẳng</td>
+                  <td>Giữ nguyên quan hệ liên thuộc</td>
+                </tr>
+                <tr>
+                  <td class="mono">04</td>
+                  <td>Đường nhìn thấy / đường bị che khuất</td>
+                  <td>Vẽ <strong>nét liền</strong> / vẽ <strong>nét đứt đoạn</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="figure-block" style="margin-top: 0;">
+          <div class="figure-caption">
+            <span class="id-badge">Hình 01</span>
+            <span>Biểu diễn mặt phẳng, điểm liên thuộc và quy ước nét liền — nét đứt</span>
+          </div>
+          <div class="svg-scroll min-600">
+            <svg viewBox="0 0 640 245" role="img" aria-label="Hình 01: Biểu diễn mặt phẳng (P), góc (alpha), điểm A thuộc (P), B không thuộc (P), hình chóp tam giác và hình lập phương">
+              <!-- (a) Mặt phẳng (P), góc (alpha), đường xuyên qua A -->
+              <g>
+                <text x="16" y="22" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="#605C54">(a) Mặt phẳng &amp; liên thuộc</text>
+                <!-- Hình bình hành (P) -->
+                <polygon points="24,185 164,185 204,105 64,105" fill="#E9F2F4" fill-opacity="0.55" stroke="#1C606C" stroke-width="1.8" />
+                <path d="M 48,185 A 24,24 0 0,0 35,163" fill="none" stroke="#1C606C" stroke-width="1.3" />
+                <text x="34" y="179" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#1C606C">P</text>
+
+                <!-- Đường thẳng đi qua B và A xuyên qua (P) -->
+                <line x1="100" y1="45" x2="122" y2="145" stroke="#9E6812" stroke-width="2" />
+                <line x1="122" y1="145" x2="131" y2="185" stroke="#9E6812" stroke-width="2" stroke-dasharray="5,4" />
+                <line x1="131" y1="185" x2="138" y2="218" stroke="#9E6812" stroke-width="2" />
+
+                <!-- Điểm B ngoài (P) -->
+                <circle cx="107" cy="77" r="4.5" fill="#9E6812" />
+                <text x="118" y="81" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#9E6812">B ∉ (P)</text>
+
+                <!-- Điểm A thuộc (P) -->
+                <circle cx="122" cy="145" r="4.5" fill="#2A664B" />
+                <text x="133" y="149" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#2A664B">A ∈ (P)</text>
+
+                <!-- Biểu diễn góc (alpha) -->
+                <polyline points="246,112 214,185 276,185" fill="none" stroke="#1C606C" stroke-width="1.8" />
+                <path d="M 237,185 A 22,22 0 0,0 225,164" fill="none" stroke="#1C606C" stroke-width="1.3" />
+                <text x="224" y="179" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#1C606C">α</text>
+              </g>
+
+              <!-- Vách ngăn mảnh -->
+              <line x1="296" y1="18" x2="296" y2="230" stroke="#E4DDD0" stroke-width="1" />
+
+              <!-- (b) Hình chóp tam giác -->
+              <g>
+                <text x="314" y="22" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="#605C54">(b) Hình chóp tam giác</text>
+                <!-- Cạnh khuất -->
+                <line x1="322" y1="172" x2="444" y2="164" stroke="#605C54" stroke-width="1.8" stroke-dasharray="6,4" />
+                <!-- Các cạnh nhìn thấy -->
+                <polygon points="376,56 322,172 396,204 444,164" fill="none" stroke="#1A1917" stroke-width="2" stroke-linejoin="round" />
+                <line x1="376" y1="56" x2="396" y2="204" stroke="#1A1917" stroke-width="2" />
+                <text x="316" y="228" font-family="Be Vietnam Pro, sans-serif" font-size="12" fill="#605C54">1 cạnh sau vẽ nét đứt</text>
+              </g>
+
+              <!-- Vách ngăn mảnh -->
+              <line x1="466" y1="18" x2="466" y2="230" stroke="#E4DDD0" stroke-width="1" />
+
+              <!-- (c) Hình lập phương -->
+              <g>
+                <text x="484" y="22" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="#605C54">(c) Hình lập phương</text>
+                <!-- Cạnh bị che khuất (3 cạnh từ đỉnh sau-dưới-trái) -->
+                <line x1="528" y1="162" x2="528" y2="74" stroke="#605C54" stroke-width="1.7" stroke-dasharray="5,4" />
+                <line x1="528" y1="162" x2="492" y2="196" stroke="#605C54" stroke-width="1.7" stroke-dasharray="5,4" />
+                <line x1="528" y1="162" x2="616" y2="162" stroke="#605C54" stroke-width="1.7" stroke-dasharray="5,4" />
+                <!-- Mặt trước -->
+                <rect x="492" y="108" width="88" height="88" fill="none" stroke="#1A1917" stroke-width="2" />
+                <!-- Các cạnh nhìn thấy còn lại -->
+                <polyline points="492,108 528,74 616,74 616,162 580,196" fill="none" stroke="#1A1917" stroke-width="2" stroke-linejoin="round" />
+                <line x1="580" y1="108" x2="616" y2="74" stroke="#1A1917" stroke-width="2" />
+                <text x="488" y="228" font-family="Be Vietnam Pro, sans-serif" font-size="12" fill="#605C54">3 cạnh khuất vẽ nét đứt</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Khung Chuẩn ghi nhớ 01 -->
+      <div class="memory-box">
+        <div class="memory-header">
+          <span class="memory-title">Chuẩn ghi nhớ 01</span>
+        </div>
+        <ul class="memory-list">
+          <li>Mặt phẳng không có <span class="cloak" tabindex="0">bề dày</span> và không có <span class="cloak" tabindex="0">giới hạn</span>; kí hiệu <span class="cloak math" tabindex="0">(P)</span> hoặc <span class="cloak math" tabindex="0">(α)</span>.</li>
+          <li>Điểm thuộc mặt phẳng viết <span class="cloak math" tabindex="0">A ∈ (P)</span>; không thuộc viết <span class="cloak math" tabindex="0">B ∉ (P)</span>.</li>
+          <li>Hình biểu diễn giữ nguyên tính thẳng, song song, cắt nhau, liên thuộc; đường nhìn thấy vẽ <span class="cloak" tabindex="0">nét liền</span>, đường bị che khuất vẽ <span class="cloak" tabindex="0">nét đứt đoạn</span>.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MỤC 02: CÁC TÍNH CHẤT THỪA NHẬN & GIAO TUYẾN
+         ============================================================ -->
+    <section class="lesson-section" id="muc-02">
+      <div class="section-head">
+        <span class="section-num">02</span>
+        <h2>Các tính chất thừa nhận &amp; Giao tuyến</h2>
+      </div>
+
+      <p class="lead-copy">
+        Mọi lập luận chặt chẽ trong hình học không gian đều bắt nguồn từ sáu tính chất thừa nhận về quan hệ liên thuộc giữa điểm, đường thẳng và mặt phẳng. Từ tính chất cắt nhau của hai mặt phẳng, bài toán tìm giao tuyến trở thành thao tác nền tảng xuyên suốt chương.
+      </p>
+
+      <!-- Danh sách 6 tính chất thừa nhận trực tiếp trên nền giấy -->
+      <div class="axiom-list">
+        <div class="axiom-item">
+          <span class="axiom-code">TC1</span>
+          Có một và chỉ một đường thẳng đi qua hai điểm phân biệt.
+        </div>
+        <div class="axiom-item">
+          <span class="axiom-code">TC2</span>
+          Có một và chỉ một mặt phẳng đi qua ba điểm không thẳng hàng. Kí hiệu <span class="math">(ABC)</span>.
+          <span class="axiom-note">Ứng dụng thực tế: kiềng ba chân, chân máy ảnh hay giá vẽ luôn đứng vững không cập kênh trên mặt đất.</span>
+        </div>
+        <div class="axiom-item">
+          <span class="axiom-code">TC3</span>
+          Tồn tại bốn điểm không cùng thuộc một mặt phẳng.
+          <span class="axiom-note">Xem thuật ngữ: <button type="button" class="term-btn" data-term="term-dongphang" aria-expanded="false" aria-controls="term-dongphang">đồng phẳng</button>.</span>
+        </div>
+        <div class="axiom-item">
+          <span class="axiom-code">TC4</span>
+          Nếu một đường thẳng có hai điểm phân biệt thuộc một mặt phẳng thì tất cả các điểm của đường thẳng đều thuộc mặt phẳng đó. Kí hiệu <span class="math">d ⊂ (P)</span> hoặc <span class="math">(P) ⊃ d</span>.
+        </div>
+        <div class="axiom-item">
+          <span class="axiom-code">TC5</span>
+          Nếu hai mặt phẳng phân biệt có điểm chung thì các điểm chung của hai mặt phẳng là một đường thẳng đi qua điểm chung đó — gọi là <button type="button" class="term-btn" data-term="term-giaotuyen" aria-expanded="false" aria-controls="term-giaotuyen">giao tuyến</button>, kí hiệu <span class="math">d = (P) ∩ (Q)</span>.
+        </div>
+        <div class="axiom-item">
+          <span class="axiom-code">TC6</span>
+          Trên mỗi mặt phẳng, tất cả các kết quả đã biết trong hình học phẳng đều đúng.
+        </div>
+      </div>
+
+      <div class="term-drawer" id="term-dongphang">
+        <span class="term-drawer-title">Thuật ngữ · Đồng phẳng</span>
+        Nhiều điểm cùng thuộc một mặt phẳng gọi là các điểm đồng phẳng; nếu không có mặt phẳng nào chứa tất cả chúng thì gọi là không đồng phẳng. Ví dụ: bốn đỉnh của một tờ giấy đặt phẳng trên bàn là đồng phẳng, còn bốn đỉnh của khối Rubik tứ diện là không đồng phẳng.
+      </div>
+
+      <div class="term-drawer" id="term-giaotuyen">
+        <span class="term-drawer-title">Thuật ngữ · Giao tuyến</span>
+        Là đường thẳng chung duy nhất chứa mọi điểm chung của hai mặt phẳng phân biệt cắt nhau, kí hiệu <span class="math">d = (P) ∩ (Q)</span>. Ví dụ thực tế: đường mép nước tiếp xúc với mặt kính phẳng của thành bể cá là hình ảnh giao tuyến của hai mặt phẳng.
+      </div>
+
+      <!-- KHUNG KỂ CHUYỆN TỪNG BƯỚC — HÌNH 02 -->
+      <div class="stepper-wrap" id="stepper02">
+        <div class="stepper-top">
+          <div>
+            <span class="id-badge">Hình 02</span>
+            <strong style="margin-left: 8px;">Cơ chế tìm giao tuyến của hai mặt phẳng</strong>
+            <div style="font-size: 0.92rem; color: var(--text-muted); margin-top: 4px;">
+              Tình huống: Cho chóp <span class="math">S.ABC</span> có <span class="math">M, N</span> lần lượt là trung điểm <span class="math">AB, AC</span>. Tìm giao tuyến của <span class="u-blue">(SBN)</span> và <span class="u-amber">(SCM)</span>.
+            </div>
+          </div>
+          <div class="step-nav-pair">
+            <button type="button" class="btn-step-nav" id="s2Prev">← Trước</button>
+            <button type="button" class="btn-step-nav" id="s2Next">Tiếp →</button>
+          </div>
+        </div>
+
+        <div class="step-pills" role="tablist" aria-label="Các bước tìm giao tuyến Hình 02">
+          <button type="button" class="step-pill active-blue" data-s2="1">Bước 1</button>
+          <button type="button" class="step-pill" data-s2="2">Bước 2</button>
+          <button type="button" class="step-pill" data-s2="3">Bước 3</button>
+          <button type="button" class="step-pill" data-s2="4">Bước 4</button>
+        </div>
+
+        <div class="svg-scroll min-600" style="margin-top: 12px;">
+          <svg viewBox="0 0 640 315" id="svgFig02" role="img" aria-label="Hình 02: Tìm giao tuyến SG của hai mặt phẳng (SBN) và (SCM) trên chóp S.ABC">
+            <!-- Bố cục: Hình chóp bên trái (x: 40..360), chú giải trực quan bên phải (x: 390..620) -->
+            <!-- Các mặt phẳng tô nhẹ ở Bước 1..4 -->
+            <polygon id="f2PlaneSBN" points="210,36 78,200 282,232" fill="#1C606C" fill-opacity="0.14" stroke="none" />
+            <polygon id="f2PlaneSCM" points="210,36 334,194 154,235" fill="#9E6812" fill-opacity="0.14" stroke="none" />
+
+            <!-- Cạnh khuất BC -->
+            <line x1="78" y1="200" x2="334" y2="194" stroke="#605C54" stroke-width="1.8" stroke-dasharray="6,4" />
+
+            <!-- Các cạnh nhìn thấy của chóp S.ABC -->
+            <line x1="210" y1="36" x2="78" y2="200" stroke="#1A1917" stroke-width="2" />
+            <line x1="210" y1="36" x2="230" y2="270" stroke="#1A1917" stroke-width="2" />
+            <line x1="210" y1="36" x2="334" y2="194" stroke="#1A1917" stroke-width="2" />
+            <line x1="78" y1="200" x2="230" y2="270" stroke="#1A1917" stroke-width="2" />
+            <line x1="230" y1="270" x2="334" y2="194" stroke="#1A1917" stroke-width="2" />
+
+            <!-- Hai đường sinh SM và SN trên hai mặt bên -->
+            <line x1="210" y1="36" x2="154" y2="235" stroke="#9E6812" stroke-width="1.8" />
+            <line x1="210" y1="36" x2="282" y2="232" stroke="#1C606C" stroke-width="1.8" />
+
+            <!-- Bước 3: Hai trung tuyến BN và CM cắt nhau tại G (214, 221) -->
+            <g id="f2Medians" opacity="0.22">
+              <line x1="78" y1="200" x2="282" y2="232" stroke="#1C606C" stroke-width="2" stroke-dasharray="5,4" />
+              <line x1="334" y1="194" x2="154" y2="235" stroke="#9E6812" stroke-width="2" stroke-dasharray="5,4" />
+            </g>
+
+            <!-- Bước 4: Giao tuyến SG màu đỏ đất -->
+            <line id="f2LineSG" x1="210" y1="36" x2="214" y2="221" stroke="#B63E2A" stroke-width="3" stroke-dasharray="6,4" opacity="0" />
+
+            <!-- Điểm M (trung điểm AB: (78+230)/2=154, (200+270)/2=235) và N (trung điểm AC: (230+334)/2=282, (270+194)/2=232) -->
+            <circle cx="154" cy="235" r="4" fill="#9E6812" />
+            <circle cx="282" cy="232" r="4" fill="#1C606C" />
+
+            <!-- Điểm S (vòng nổi bật ở Bước 2..4) -->
+            <circle id="f2HaloS" cx="210" cy="36" r="11" fill="#B63E2A" fill-opacity="0.16" stroke="#B63E2A" stroke-width="1.6" opacity="0" />
+            <circle cx="210" cy="36" r="4.5" fill="#1A1917" id="f2DotS" />
+
+            <!-- Điểm G (nổi bật ở Bước 3..4) -->
+            <g id="f2PointG" opacity="0">
+              <circle cx="214" cy="221" r="10" fill="#B63E2A" fill-opacity="0.16" stroke="#B63E2A" stroke-width="1.6" />
+              <circle cx="214" cy="221" r="4.5" fill="#B63E2A" />
+              <text x="224" y="216" font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" fill="#B63E2A">G</text>
+            </g>
+
+            <!-- Nhãn đỉnh rõ ràng, không chạm nét -->
+            <text x="206" y="20" font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" fill="#1A1917">S</text>
+            <text x="56" y="205" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600" fill="#1A1917">B</text>
+            <text x="225" y="293" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600" fill="#1A1917">A</text>
+            <text x="344" y="198" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600" fill="#1A1917">C</text>
+            <text x="132" y="253" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#9E6812">M</text>
+            <text x="292" y="249" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#1C606C">N</text>
+
+            <!-- Bảng tóm tắt logic bên phải hình -->
+            <line x1="388" y1="24" x2="388" y2="294" stroke="#E4DDD0" stroke-width="1" />
+            <text x="406" y="42" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="#605C54">CHÚ GIẢI TRẠNG THÁI</text>
+
+            <rect x="406" y="58" width="14" height="14" rx="2" fill="#1C606C" fill-opacity="0.25" stroke="#1C606C" stroke-width="1.4" />
+            <text x="428" y="70" font-family="Be Vietnam Pro, sans-serif" font-size="13" fill="#1A1917">Mặt phẳng (SBN)</text>
+
+            <rect x="406" y="84" width="14" height="14" rx="2" fill="#9E6812" fill-opacity="0.25" stroke="#9E6812" stroke-width="1.4" />
+            <text x="428" y="96" font-family="Be Vietnam Pro, sans-serif" font-size="13" fill="#1A1917">Mặt phẳng (SCM)</text>
+
+            <g id="f2LegendStep2" opacity="0.35">
+              <circle cx="413" cy="132" r="5" fill="#B63E2A" />
+              <text x="428" y="137" font-family="JetBrains Mono, monospace" font-size="13" fill="#1A1917">Điểm chung 1: S</text>
+            </g>
+
+            <g id="f2LegendStep3" opacity="0.35">
+              <circle cx="413" cy="166" r="5" fill="#B63E2A" />
+              <text x="428" y="171" font-family="JetBrains Mono, monospace" font-size="13" fill="#1A1917">Điểm chung 2: G = BN ∩ CM</text>
+            </g>
+
+            <g id="f2LegendStep4" opacity="0.35">
+              <line x1="404" y1="202" x2="424" y2="202" stroke="#B63E2A" stroke-width="3" stroke-dasharray="5,3" />
+              <text x="430" y="207" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#B63E2A">(SBN) ∩ (SCM) = SG</text>
+            </g>
+
+            <text x="406" y="252" font-family="Be Vietnam Pro, sans-serif" font-size="12" fill="#605C54">Lưu ý: BN và CM đều nằm trong</text>
+            <text x="406" y="270" font-family="Be Vietnam Pro, sans-serif" font-size="12" fill="#605C54">đáy (ABC) nên cắt nhau tại G (TC6).</text>
+          </svg>
+        </div>
+
+        <div class="step-explanation" id="s2Explain" aria-live="polite">
+          <span class="step-exp-head" style="color: var(--sem-blue);">Bước 1 / 4 · Xác định hai mặt phẳng cần tìm giao tuyến</span>
+          Biểu diễn chóp <span class="math">S.ABC</span> với cạnh sau <span class="math">BC</span> vẽ nét đứt. Tô phân biệt mặt phẳng <span class="u-blue">(SBN)</span> và mặt phẳng <span class="u-amber">(SCM)</span> để quan sát phần chung giữa chúng.
+        </div>
+      </div>
+
+      <!-- Khung Chuẩn ghi nhớ 02 -->
+      <div class="memory-box">
+        <div class="memory-header">
+          <span class="memory-title">Chuẩn ghi nhớ 02</span>
+        </div>
+        <ul class="memory-list">
+          <li>Đường thẳng có hai điểm phân biệt thuộc <span class="math">(P)</span> thì <span class="cloak" tabindex="0">nằm trọn trong (P)</span>, kí hiệu <span class="cloak math" tabindex="0">d ⊂ (P)</span>.</li>
+          <li>Đường thẳng chung duy nhất của hai mặt phẳng phân biệt gọi là <span class="cloak" tabindex="0">giao tuyến</span>, kí hiệu <span class="cloak math" tabindex="0">d = (P) ∩ (Q)</span>.</li>
+          <li>Cách tìm giao tuyến: xác định <span class="cloak" tabindex="0">hai điểm chung phân biệt</span> của hai mặt phẳng rồi nối chúng.</li>
+        </ul>
+      </div>
+
+      <!-- Chốt nhanh giữa bài — Mini 01 -->
+      <div class="mini-check" id="mini01">
+        <span class="id-badge">Mini 01</span>
+        <p class="mini-q">Mệnh đề: "Với bốn điểm phân biệt bất kì trong không gian, luôn có ít nhất một mặt phẳng đi qua cả bốn điểm đó."</p>
+        <div class="mini-actions">
+          <button type="button" class="btn-mini" data-mini="01" data-ans="true">Đúng</button>
+          <button type="button" class="btn-mini" data-mini="01" data-ans="false">Sai</button>
+        </div>
+        <div class="mini-feedback" id="mini01Feedback" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MỤC 03: BA CÁCH XÁC ĐỊNH MỘT MẶT PHẲNG
+         ============================================================ -->
+    <section class="lesson-section" id="muc-03">
+      <div class="section-head">
+        <span class="section-num">03</span>
+        <h2>Ba cách xác định một mặt phẳng</h2>
+      </div>
+
+      <p class="lead-copy">
+        Một mặt phẳng chỉ được cố định duy nhất khi dữ kiện đủ để sinh ra đúng ba điểm không thẳng hàng. Từ tính chất thừa nhận TC2, có ba cách thông dụng nhất để xác định một mặt phẳng.
+      </p>
+
+      <div class="grid-3">
+        <div class="way-col">
+          <span class="way-code">CÁCH 1 · (ABC)</span>
+          <h3>Ba điểm không thẳng hàng</h3>
+          <p>Một mặt phẳng được hoàn toàn xác định khi biết nó đi qua ba điểm <span class="math">A, B, C</span> không thẳng hàng.</p>
+        </div>
+        <div class="way-col">
+          <span class="way-code">CÁCH 2 · mp(A, d)</span>
+          <h3>Một điểm và một đường thẳng</h3>
+          <p>Một mặt phẳng được hoàn toàn xác định khi biết nó đi qua một điểm <span class="math">A</span> và chứa một đường thẳng <span class="math">d</span> không đi qua <span class="math">A</span> (<span class="math">A ∉ d</span>).</p>
+        </div>
+        <div class="way-col">
+          <span class="way-code">CÁCH 3 · mp(a, b)</span>
+          <h3>Hai đường thẳng cắt nhau</h3>
+          <p>Một mặt phẳng được hoàn toàn xác định khi biết nó chứa hai đường thẳng cắt nhau <span class="math">a</span> và <span class="math">b</span> (<span class="math">a ∩ b = {M}</span>).</p>
+        </div>
+      </div>
+
+      <div class="figure-block">
+        <div class="figure-caption">
+          <span class="id-badge">Hình 03</span>
+          <span>Minh họa ba cách xác định duy nhất một mặt phẳng</span>
+        </div>
+        <div class="svg-scroll min-620">
+          <svg viewBox="0 0 660 190" role="img" aria-label="Hình 03: Ba cách xác định một mặt phẳng: ba điểm không thẳng hàng (ABC), điểm A và đường thẳng d không chứa A, hai đường thẳng cắt nhau a và b">
+            <!-- Cách 1 -->
+            <g>
+              <polygon points="18,144 176,144 206,62 48,62" fill="#E9F2F4" fill-opacity="0.55" stroke="#1C606C" stroke-width="1.8" />
+              <circle cx="84" cy="86" r="4.5" fill="#9E6812" />
+              <circle cx="72" cy="126" r="4.5" fill="#9E6812" />
+              <circle cx="152" cy="116" r="4.5" fill="#9E6812" />
+              <text x="92" y="84" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#9E6812">A</text>
+              <text x="56" y="132" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#9E6812">B</text>
+              <text x="160" y="121" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#9E6812">C</text>
+              <text x="20" y="172" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="#1C606C">Cách 1: (ABC)</text>
+            </g>
+
+            <!-- Cách 2 -->
+            <g>
+              <polygon points="236,144 394,144 424,62 266,62" fill="#E9F2F4" fill-opacity="0.55" stroke="#1C606C" stroke-width="1.8" />
+              <circle cx="326" cy="84" r="4.5" fill="#9E6812" />
+              <text x="336" y="88" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#9E6812">A</text>
+              <line x1="264" y1="126" x2="394" y2="112" stroke="#9E6812" stroke-width="2.2" />
+              <text x="386" y="106" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#9E6812">d</text>
+              <text x="238" y="172" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="#1C606C">Cách 2: mp(A, d), A ∉ d</text>
+            </g>
+
+            <!-- Cách 3 -->
+            <g>
+              <polygon points="454,144 612,144 642,62 484,62" fill="#E9F2F4" fill-opacity="0.55" stroke="#1C606C" stroke-width="1.8" />
+              <line x1="484" y1="126" x2="606" y2="86" stroke="#9E6812" stroke-width="2.2" />
+              <line x1="504" y1="82" x2="594" y2="132" stroke="#2A664B" stroke-width="2.2" />
+              <circle cx="545" cy="106" r="4.5" fill="#B63E2A" />
+              <text x="541" y="96" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#B63E2A">M</text>
+              <text x="608" y="84" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#9E6812">a</text>
+              <text x="598" y="135" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#2A664B">b</text>
+              <text x="456" y="172" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="#1C606C">Cách 3: mp(a, b), a ∩ b = {M}</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Mục gập Giải thích từ gốc (mặc định đóng) -->
+      <details class="deep-note">
+        <summary>Giải thích từ gốc: Vì sao chốt hít nam châm giữ cố định được cánh cửa?</summary>
+        <div class="deep-note-body">
+          Trục bản lề cố định của cánh cửa đóng vai trò đường thẳng <span class="math">d</span>, còn điểm tiếp xúc với chốt hít nam châm trên sàn tạo thành điểm <span class="math">A</span> không thuộc <span class="math">d</span>. Theo cách xác định thứ hai, chỉ tồn tại duy nhất mặt phẳng <span class="math">mp(A, d)</span> nên cánh cửa bị khóa cứng vị trí, không thể xoay thêm.
+        </div>
+      </details>
+
+      <!-- Khung Chuẩn ghi nhớ 03 -->
+      <div class="memory-box">
+        <div class="memory-header">
+          <span class="memory-title">Chuẩn ghi nhớ 03</span>
+        </div>
+        <ul class="memory-list">
+          <li>Cách 1: đi qua <span class="cloak" tabindex="0">ba điểm không thẳng hàng</span> — kí hiệu <span class="cloak math" tabindex="0">(ABC)</span>.</li>
+          <li>Cách 2: đi qua một điểm và chứa <span class="cloak" tabindex="0">một đường thẳng không chứa điểm đó</span> — kí hiệu <span class="cloak math" tabindex="0">mp(A, d)</span>.</li>
+          <li>Cách 3: chứa <span class="cloak" tabindex="0">hai đường thẳng cắt nhau</span> — kí hiệu <span class="cloak math" tabindex="0">mp(a, b)</span>.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MỤC 04: HÌNH CHÓP, HÌNH TỨ DIỆN & XƯỞNG TƯƠNG TÁC TRỌNG TÂM
+         ============================================================ -->
+    <section class="lesson-section" id="muc-04">
+      <div class="section-head">
+        <span class="section-num">04</span>
+        <h2>Hình chóp, hình tứ diện &amp; Xưởng tương tác 3D</h2>
+      </div>
+
+      <p class="lead-copy">
+        Hình chóp tạo thành khi nối một điểm <span class="math">S</span> ngoài mặt phẳng đa giác lồi với mọi đỉnh của đa giác đáy; khi đáy là tam giác, hình chóp đó chính là hình tứ diện. Hai mô hình này là không gian thực hành trực tiếp cho bài toán tìm giao điểm của đường thẳng và mặt phẳng.
+      </p>
+
+      <!-- Bảng so sánh trực tiếp trên nền giấy -->
+      <div class="table-scroll">
+        <table class="editorial-table">
+          <thead>
+            <tr>
+              <th>Tiêu chí</th>
+              <th>Hình chóp <span class="math">S.A<sub>1</sub>A<sub>2</sub>…A<sub>n</sub></span> (<span class="math">n ≥ 3</span>)</th>
+              <th>Hình tứ diện <span class="math">ABCD</span> (chóp tam giác)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Mặt đáy</strong></td>
+              <td>Đa giác lồi <span class="math">n</span> cạnh <span class="math">A<sub>1</sub>A<sub>2</sub>…A<sub>n</sub></span></td>
+              <td>Mặt nào trong 4 mặt tam giác cũng có thể coi là mặt đáy</td>
+            </tr>
+            <tr>
+              <td><strong>Mặt bên</strong></td>
+              <td><span class="math">n</span> tam giác <span class="math">SA<sub>1</sub>A<sub>2</sub>, SA<sub>2</sub>A<sub>3</sub>, …, SA<sub>n</sub>A<sub>1</sub></span></td>
+              <td>3 mặt tam giác còn lại</td>
+            </tr>
+            <tr>
+              <td><strong>Số đỉnh</strong></td>
+              <td class="mono">n + 1</td>
+              <td class="mono">4</td>
+            </tr>
+            <tr>
+              <td><strong>Số mặt</strong></td>
+              <td class="mono">n + 1</td>
+              <td class="mono">4</td>
+            </tr>
+            <tr>
+              <td><strong>Số cạnh</strong></td>
+              <td class="mono">2n <span style="font-family: var(--font-sans); color: var(--text-muted);">(n cạnh đáy + n cạnh bên)</span></td>
+              <td class="mono">6</td>
+            </tr>
+            <tr>
+              <td><strong>Thuật ngữ riêng</strong></td>
+              <td>Đỉnh <span class="math">S</span>, cạnh bên, cạnh đáy; gọi tên theo đa giác đáy</td>
+              <td><strong>Hai cạnh đối diện</strong> (không chung đỉnh), <strong>đỉnh đối diện với mặt</strong>; <strong>tứ diện đều</strong> có 4 mặt là tam giác đều</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- KHUNG KỂ CHUYỆN TỪNG BƯỚC — HÌNH 04 -->
+      <div class="stepper-wrap" id="stepper04">
+        <div class="stepper-top">
+          <div>
+            <span class="id-badge">Hình 04</span>
+            <strong style="margin-left: 8px;">Thuật toán 3 bước tìm giao điểm của đường thẳng và mặt phẳng</strong>
+            <div style="font-size: 0.92rem; color: var(--text-muted); margin-top: 4px;">
+              Tình huống: Tứ diện <span class="math">ABCD</span>, <span class="math">E</span> nằm trong <span class="math">ΔBCD</span>, <span class="math">F</span> nằm giữa <span class="math">A</span> và <span class="math">E</span>. Tìm <span class="u-green">N = BF ∩ (ACD)</span>.
+            </div>
+          </div>
+          <div class="step-nav-pair">
+            <button type="button" class="btn-step-nav" id="s4Prev">← Trước</button>
+            <button type="button" class="btn-step-nav" id="s4Next">Tiếp →</button>
+          </div>
+        </div>
+
+        <div class="step-pills" role="tablist" aria-label="Các bước tìm giao điểm Hình 04">
+          <button type="button" class="step-pill active-green" data-s4="1">Bước 1 · Chọn mp phụ</button>
+          <button type="button" class="step-pill" data-s4="2">Bước 2 · Tìm giao tuyến</button>
+          <button type="button" class="step-pill" data-s4="3">Bước 3 · Lấy giao điểm</button>
+        </div>
+
+        <div class="svg-scroll min-600" style="margin-top: 12px;">
+          <svg viewBox="0 0 640 315" id="svgFig04" role="img" aria-label="Hình 04: Thuật toán 3 bước tìm giao điểm N của BF và mặt phẳng (ACD)">
+            <!-- Tọa độ tứ diện: A(192,36), B(72,212), C(222,276), D(332,208) -->
+            <!-- M trên CD (t=0.52): M(279,241); E trên BM (0.60): E(196,229); F trung điểm AE: F(194,132) -->
+            <!-- Giao điểm N = BF ∩ AM: r = 0.375 -> N(225,113) -->
+
+            <!-- Mặt phẳng (ACD) nền rất nhẹ -->
+            <polygon points="192,36 222,276 332,208" fill="#1C606C" fill-opacity="0.09" stroke="none" />
+
+            <!-- Bước 1..3: Mặt phẳng phụ (ABM) tô nhẹ -->
+            <polygon id="f4PlaneABM" points="192,36 72,212 279,241" fill="#9E6812" fill-opacity="0.14" stroke="none" />
+
+            <!-- Cạnh khuất BD -->
+            <line x1="72" y1="212" x2="332" y2="208" stroke="#605C54" stroke-width="1.8" stroke-dasharray="6,4" />
+
+            <!-- Cạnh nhìn thấy của tứ diện ABCD -->
+            <line x1="192" y1="36" x2="72" y2="212" stroke="#1A1917" stroke-width="2" />
+            <line x1="192" y1="36" x2="222" y2="276" stroke="#1A1917" stroke-width="2" />
+            <line x1="192" y1="36" x2="332" y2="208" stroke="#1A1917" stroke-width="2" />
+            <line x1="72" y1="212" x2="222" y2="276" stroke="#1A1917" stroke-width="2" />
+            <line x1="222" y1="276" x2="332" y2="208" stroke="#1A1917" stroke-width="2" />
+
+            <!-- Đường phụ AE và BM (bị khuất bên trong tứ diện -> nét đứt) -->
+            <line x1="192" y1="36" x2="196" y2="229" stroke="#605C54" stroke-width="1.5" stroke-dasharray="4,4" />
+            <line x1="72" y1="212" x2="279" y2="241" stroke="#9E6812" stroke-width="1.8" stroke-dasharray="5,4" />
+
+            <!-- Bước 2..3: Giao tuyến AM màu xanh lam #1C606C -->
+            <line id="f4LineAM" x1="192" y1="36" x2="279" y2="241" stroke="#1C606C" stroke-width="2.6" opacity="0.2" />
+
+            <!-- Bước 3: Đường thẳng BF kéo dài tới N màu vàng đất #9E6812 -->
+            <line id="f4LineBF" x1="72" y1="212" x2="194" y2="132" stroke="#9E6812" stroke-width="2.4" stroke-dasharray="5,3" />
+            <line id="f4LineFN" x1="194" y1="132" x2="225" y2="113" stroke="#9E6812" stroke-width="2.6" stroke-dasharray="5,3" opacity="0" />
+
+            <!-- Các điểm E, F, M -->
+            <circle cx="196" cy="229" r="3.8" fill="#605C54" />
+            <circle cx="194" cy="132" r="4" fill="#9E6812" />
+            <circle cx="279" cy="241" r="4.2" fill="#1C606C" />
+
+            <!-- Bước 3: Điểm giao N màu xanh rêu #2A664B -->
+            <g id="f4PointN" opacity="0">
+              <circle cx="225" cy="113" r="10" fill="#2A664B" fill-opacity="0.18" stroke="#2A664B" stroke-width="1.6" />
+              <circle cx="225" cy="113" r="4.8" fill="#2A664B" />
+              <text x="239" y="111" font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" fill="#2A664B">N</text>
+            </g>
+
+            <!-- Nhãn đỉnh -->
+            <text x="188" y="21" font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" fill="#1A1917">A</text>
+            <text x="50" y="217" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600" fill="#1A1917">B</text>
+            <text x="217" y="298" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600" fill="#1A1917">C</text>
+            <text x="342" y="212" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600" fill="#1A1917">D</text>
+            <text x="176" y="244" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#605C54">E</text>
+            <text x="174" y="131" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#9E6812">F</text>
+            <text x="288" y="258" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#1C606C">M</text>
+
+            <!-- Cột tóm lược 3 bước bên phải -->
+            <line x1="386" y1="24" x2="386" y2="294" stroke="#E4DDD0" stroke-width="1" />
+            <text x="404" y="42" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="#605C54">SƠ ĐỒ 3 BƯỚC CHUẨN</text>
+
+            <g id="f4Box1">
+              <rect x="404" y="58" width="218" height="58" rx="6" fill="#F7F0E3" stroke="#9E6812" stroke-width="1.4" />
+              <text x="416" y="79" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="#9E6812">B1. Chọn mp phụ (ABM)</text>
+              <text x="416" y="100" font-family="Be Vietnam Pro, sans-serif" font-size="12" fill="#1A1917">M = BE ∩ CD; BF ⊂ (ABM)</text>
+            </g>
+
+            <g id="f4Box2" opacity="0.4">
+              <rect x="404" y="130" width="218" height="58" rx="6" fill="#E9F2F4" stroke="#1C606C" stroke-width="1.4" />
+              <text x="416" y="151" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="#1C606C">B2. Tìm giao tuyến AM</text>
+              <text x="416" y="172" font-family="Be Vietnam Pro, sans-serif" font-size="12" fill="#1A1917">(ABM) ∩ (ACD) = AM</text>
+            </g>
+
+            <g id="f4Box3" opacity="0.4">
+              <rect x="404" y="202" width="218" height="62" rx="6" fill="#EAF3EE" stroke="#2A664B" stroke-width="1.4" />
+              <text x="416" y="223" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="#2A664B">B3. Lấy N = BF ∩ AM</text>
+              <text x="416" y="244" font-family="Be Vietnam Pro, sans-serif" font-size="12" fill="#1A1917">Trong ΔABM ⇒ N = BF ∩ (ACD)</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="step-explanation" id="s4Explain" aria-live="polite">
+          <span class="step-exp-head" style="color: var(--sem-amber);">Bước 1 / 3 · Chọn mặt phẳng phụ (ABM) chứa BF</span>
+          Trong mặt phẳng <span class="math">(BCD)</span>, kéo dài <span class="math">BE</span> cắt cạnh <span class="math">CD</span> tại <span class="math">M</span>. Vì <span class="math">A, E ∈ (ABM)</span> nên <span class="math">F ∈ AE ⊂ (ABM)</span>, suy ra toàn bộ đường thẳng <span class="u-amber">BF</span> nằm trong mặt phẳng phụ <span class="math">(ABM)</span>.
+        </div>
+      </div>
+
+      <!-- ============================================================
+           XƯỞNG TƯƠNG TÁC TRỌNG TÂM — XƯỞNG 01 (THẺ TRẮNG)
+           ============================================================ -->
+      <div class="surface-card lab-card" id="xuong-01">
+        <div class="lab-header">
+          <div>
+            <span class="id-badge">Xưởng 01</span>
+            <h3 style="display: inline-block; margin: 0 0 0 8px;">Phòng thí nghiệm Không gian 3D: Hình chóp &amp; Giao điểm đường — mặt</h3>
+          </div>
+        </div>
+
+        <div class="lab-tabs" role="tablist" aria-label="Chọn mô phỏng trong Xưởng 01">
+          <button type="button" class="lab-tab active-green" id="tabBtn1" data-lab="tab1" role="tab" aria-selected="true">
+            Thí nghiệm Giao điểm N = BF ∩ (ACD)
+          </button>
+          <button type="button" class="lab-tab" id="tabBtn2" data-lab="tab2" role="tab" aria-selected="false">
+            Mô hình Hình chóp n-giác &amp; Quy tắc nét đứt
+          </button>
+        </div>
+
+        <!-- TAB 1: THÍ NGHIỆM GIAO ĐIỂM N = BF ∩ (ACD) -->
+        <div class="lab-panel active" id="labTab1" role="tabpanel">
+          <p class="lab-task">
+            Thay đổi vị trí điểm <span class="math">M</span> trên cạnh <span class="math">CD</span> và điểm <span class="math">F</span> trên đoạn <span class="math">AE</span> để kiểm chứng giao điểm <span class="u-green">N</span> của <span class="u-amber">BF</span> với <span class="math">(ACD)</span> luôn trượt trên giao tuyến <span class="u-blue">AM</span> và thỏa mãn công thức tỉ lệ chính xác.
+          </p>
+
+          <div class="lab-layout">
+            <div class="lab-stage">
+              <svg viewBox="0 0 460 360" id="svgLab1" role="img" aria-label="Mô phỏng 3D tìm giao điểm N của đường thẳng BF và mặt phẳng (ACD) trên tứ diện ABCD"></svg>
+            </div>
+
+            <div class="lab-controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label-row">
+                  <label for="sliderT">Tỉ số <span class="math">CM / CD</span></label>
+                  <span class="ctrl-val" id="valT">0,55</span>
+                </div>
+                <input type="range" id="sliderT" class="editorial-range" min="0.15" max="0.85" step="0.05" value="0.55" />
+              </div>
+
+              <div class="ctrl-group">
+                <div class="ctrl-label-row">
+                  <label for="sliderS">Tỉ số <span class="math">AF / AE</span></label>
+                  <span class="ctrl-val" id="valS">0,50</span>
+                </div>
+                <input type="range" id="sliderS" class="editorial-range" min="0.20" max="0.80" step="0.05" value="0.50" />
+              </div>
+
+              <div class="ctrl-group">
+                <div class="ctrl-label-row">
+                  <label for="sliderTheta1">Góc xoay quan sát <span class="math">θ</span></label>
+                  <span class="ctrl-val" id="valTheta1">0°</span>
+                </div>
+                <input type="range" id="sliderTheta1" class="editorial-range" min="-60" max="60" step="5" value="0" />
+              </div>
+
+              <div class="ctrl-group">
+                <div class="ctrl-label-row"><span>Kịch bản nhanh</span></div>
+                <div class="preset-row">
+                  <button type="button" class="btn-preset active-green" data-preset="0.55,0.50,0">Cân đối (0,55 · 0,50)</button>
+                  <button type="button" class="btn-preset" data-preset="0.25,0.40,-15">Lệch gần C (0,25 · 0,40)</button>
+                  <button type="button" class="btn-preset" data-preset="0.75,0.75,15">Gần đáy E (0,75 · 0,75)</button>
+                </div>
+              </div>
+
+              <div class="readout-grid">
+                <div class="readout-cell">
+                  <span class="readout-label">Tỉ số CM / CD</span>
+                  <span class="readout-num" id="roT">0,55</span>
+                </div>
+                <div class="readout-cell">
+                  <span class="readout-label">Tỉ số AF / AE</span>
+                  <span class="readout-num" id="roS">0,50</span>
+                </div>
+                <div class="readout-cell">
+                  <span class="readout-label">Tỉ số AN / AM (chính xác)</span>
+                  <span class="readout-num" id="roR">0,38</span>
+                </div>
+                <div class="readout-cell">
+                  <span class="readout-label">Cố định BE / BM</span>
+                  <span class="readout-num">0,60</span>
+                </div>
+                <div class="readout-cell readout-wide">
+                  <span class="readout-label">Quan hệ đồng phẳng</span>
+                  <span class="readout-num">N = BF ∩ AM ⇒ N ∈ AM ⊂ (ACD)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: MÔ HÌNH HÌNH CHÓP N-GIÁC & QUY TẮC NÉT ĐỨT -->
+        <div class="lab-panel" id="labTab2" role="tabpanel">
+          <p class="lab-task blue-border">
+            Xoay khối hình chóp quanh trục đứng và thay đổi số cạnh đáy <span class="math">n</span> để quan sát sự chuyển đổi tự động giữa <span class="u-blue">nét liền nhìn thấy</span> và nét đứt bị che khuất.
+          </p>
+
+          <div class="lab-layout">
+            <div class="lab-stage">
+              <svg viewBox="0 0 460 360" id="svgLab2" role="img" aria-label="Mô hình 3D hình chóp n-giác tự động phân biệt cạnh nhìn thấy nét liền và cạnh bị che khuất nét đứt"></svg>
+            </div>
+
+            <div class="lab-controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label-row"><span>Chọn loại hình chóp đáy n-giác</span></div>
+                <div class="preset-row" id="nSelector">
+                  <button type="button" class="btn-preset" data-n="3">n = 3 (Tứ diện)</button>
+                  <button type="button" class="btn-preset active-blue" data-n="4">n = 4 (Chóp tứ giác)</button>
+                  <button type="button" class="btn-preset" data-n="5">n = 5 (Chóp ngũ giác)</button>
+                  <button type="button" class="btn-preset" data-n="6">n = 6 (Chóp lục giác)</button>
+                </div>
+              </div>
+
+              <div class="ctrl-group">
+                <div class="ctrl-label-row">
+                  <label for="sliderYaw">Góc xoay ngang <span class="math">θ</span></label>
+                  <span class="ctrl-val" id="valYaw">25°</span>
+                </div>
+                <input type="range" id="sliderYaw" class="editorial-range range-blue" min="0" max="360" step="5" value="25" />
+              </div>
+
+              <div class="ctrl-group">
+                <div class="ctrl-label-row">
+                  <label for="sliderPitch">Góc nâng <span class="math">φ</span></label>
+                  <span class="ctrl-val" id="valPitch">24°</span>
+                </div>
+                <input type="range" id="sliderPitch" class="editorial-range range-blue" min="12" max="52" step="2" value="24" />
+              </div>
+
+              <div class="readout-grid">
+                <div class="readout-cell">
+                  <span class="readout-label">Số đỉnh (n + 1)</span>
+                  <span class="readout-num" id="roVerts">5</span>
+                </div>
+                <div class="readout-cell">
+                  <span class="readout-label">Số mặt (n + 1)</span>
+                  <span class="readout-num" id="roFaces">5</span>
+                </div>
+                <div class="readout-cell">
+                  <span class="readout-label">Tổng số cạnh (2n)</span>
+                  <span class="readout-num" id="roEdges">8</span>
+                </div>
+                <div class="readout-cell">
+                  <span class="readout-label">Nhìn thấy / Bị khuất</span>
+                  <span class="readout-num" id="roVisHid">6 liền · 2 đứt</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Khung Chuẩn ghi nhớ 04 -->
+      <div class="memory-box">
+        <div class="memory-header">
+          <span class="memory-title">Chuẩn ghi nhớ 04</span>
+        </div>
+        <ul class="memory-list">
+          <li>Hình chóp đáy <span class="math">n</span>-giác có <span class="cloak math" tabindex="0">n + 1</span> đỉnh, <span class="cloak math" tabindex="0">n + 1</span> mặt và <span class="cloak math" tabindex="0">2n</span> cạnh.</li>
+          <li>Hình tứ diện có <span class="cloak" tabindex="0">4 đỉnh</span>, <span class="cloak" tabindex="0">6 cạnh</span>, <span class="cloak" tabindex="0">4 mặt</span>; hai cạnh không có đỉnh chung gọi là <span class="cloak" tabindex="0">hai cạnh đối diện</span>.</li>
+          <li>Tìm giao điểm <span class="math">d ∩ (P)</span>: chọn <span class="cloak" tabindex="0">mặt phẳng phụ (Q)</span> chứa <span class="math">d</span>, tìm giao tuyến <span class="cloak math" tabindex="0">Δ = (P) ∩ (Q)</span>, rồi lấy <span class="cloak math" tabindex="0">d ∩ Δ</span>.</li>
+        </ul>
+      </div>
+
+      <!-- Chốt nhanh giữa bài — Mini 02 -->
+      <div class="mini-check" id="mini02">
+        <span class="id-badge">Mini 02</span>
+        <p class="mini-q">Trong hình tứ diện <span class="math">ABCD</span>, hai cạnh <span class="math">AB</span> và <span class="math">CD</span> là hai cạnh như thế nào?</p>
+        <div class="mini-actions">
+          <button type="button" class="btn-mini" data-mini="02" data-ans="A">Cắt nhau tại một đỉnh chung</button>
+          <button type="button" class="btn-mini" data-mini="02" data-ans="B">Hai cạnh đối diện (không có đỉnh chung)</button>
+        </div>
+        <div class="mini-feedback" id="mini02Feedback" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MỤC 05: BẪY ĐỀ THI, MỞ RỘNG & LUYỆN TẬP CUỐI BÀI
+         ============================================================ -->
+    <section class="lesson-section" id="muc-05">
+      <div class="section-head">
+        <span class="section-num">05</span>
+        <h2>Bẫy đề thi, mở rộng &amp; Luyện tập cuối bài</h2>
+      </div>
+
+      <!-- Bẫy đề thi phổ biến trực tiếp trên nền giấy -->
+      <h3>Ba bẫy đề thi phổ biến</h3>
+      <div class="trap-list">
+        <div class="trap-row">
+          <div>
+            <span class="trap-label-wrong">Nhận định sai 01</span>
+            "Qua ba điểm phân biệt bất kì luôn xác định được duy nhất một mặt phẳng."
+          </div>
+          <div>
+            <span class="trap-label-right">Bản chất đúng</span>
+            Phải có điều kiện <strong>ba điểm không thẳng hàng</strong>; nếu thẳng hàng thì có vô số mặt phẳng đi qua chúng.
+          </div>
+        </div>
+
+        <div class="trap-row">
+          <div>
+            <span class="trap-label-wrong">Nhận định sai 02</span>
+            "Hai đoạn thẳng vẽ cắt nhau trên hình biểu diễn thì luôn cắt nhau trong không gian."
+          </div>
+          <div>
+            <span class="trap-label-right">Bản chất đúng</span>
+            Chỉ được lấy giao điểm khi hai đường thẳng <strong>cùng nằm trong một mặt phẳng</strong> (đồng phẳng).
+          </div>
+        </div>
+
+        <div class="trap-row">
+          <div>
+            <span class="trap-label-wrong">Nhận định sai 03</span>
+            "Nếu ba điểm phân biệt cùng thuộc hai mặt phẳng phân biệt <span class="math">(P)</span> và <span class="math">(Q)</span> thì chúng tạo thành một tam giác."
+          </div>
+          <div>
+            <span class="trap-label-right">Bản chất đúng</span>
+            Mọi điểm chung của hai mặt phẳng phân biệt đều nằm trên đường giao tuyến (TC5) nên ba điểm đó <strong>bắt buộc thẳng hàng</strong>.
+          </div>
+        </div>
+      </div>
+
+      <!-- Mở rộng vận dụng cao trực tiếp trên nền giấy -->
+      <div class="extension-block">
+        <span class="code-tag">Vận dụng cao</span>
+        <h3 style="margin-top: 6px;">Mở rộng: Kĩ thuật chứng minh 3 điểm thẳng hàng và 3 đường thẳng đồng quy</h3>
+        <div class="grid-2" style="margin-top: 12px;">
+          <div>
+            <strong>1. Chứng minh ba điểm I, J, K thẳng hàng</strong>
+            <p style="margin-top: 6px;">
+              Chỉ ra hai mặt phẳng phân biệt <span class="math">(P)</span> và <span class="math">(Q)</span> cùng chứa cả ba điểm <span class="math">I, J, K</span>. Theo TC5, ba điểm đó cùng nằm trên giao tuyến <span class="math">d = (P) ∩ (Q)</span> nên chúng thẳng hàng.
+            </p>
+          </div>
+          <div>
+            <strong>2. Chứng minh ba đường thẳng d<sub>1</sub>, d<sub>2</sub>, d<sub>3</sub> đồng quy</strong>
+            <p style="margin-top: 6px;">
+              Gọi <span class="math">I = d<sub>1</sub> ∩ d<sub>2</sub></span> (trong một mặt phẳng chung). Sau đó chỉ ra <span class="math">d<sub>3</sub></span> là giao tuyến của hai mặt phẳng phân biệt lần lượt chứa <span class="math">d<sub>1</sub></span> và <span class="math">d<sub>2</sub></span>; khi đó <span class="math">I</span> là điểm chung nên <span class="math">I ∈ d<sub>3</sub></span>.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- LUYỆN TẬP CUỐI BÀI (5 THẺ TRẮNG) -->
+      <div class="practice-bar">
+        <div>
+          <strong>Luyện tập tự kiểm tra</strong>
+          <span style="color: var(--text-muted); font-size: 0.9rem; margin-left: 8px;">Chấm điểm ngay khi chọn</span>
+        </div>
+        <span class="score-pill" id="practiceScore">0/5 câu đúng</span>
+      </div>
+
+      <!-- CÂU 01 -->
+      <article class="surface-card q-card" data-q="1" data-correct="C">
+        <div class="q-head">
+          <span class="id-badge">Câu 01</span>
+          <span class="mono" style="font-size: 0.8rem; color: var(--text-muted);">Trắc nghiệm · Xác định mặt phẳng</span>
+        </div>
+        <p class="q-stem">
+          Cho 5 điểm <span class="math">A, B, C, D, E</span> trong không gian sao cho không có 4 điểm nào đồng phẳng (và không có 3 điểm nào thẳng hàng). Xác định được tối đa bao nhiêu mặt phẳng đi qua 3 trong 5 điểm đó?
+        </p>
+        <div class="opt-grid">
+          <button type="button" class="opt-btn" data-opt="A"><span class="opt-key">A.</span> 4</button>
+          <button type="button" class="opt-btn" data-opt="B"><span class="opt-key">B.</span> 6</button>
+          <button type="button" class="opt-btn" data-opt="C"><span class="opt-key">C.</span> 10</button>
+          <button type="button" class="opt-btn" data-opt="D"><span class="opt-key">D.</span> 15</button>
+        </div>
+        <div class="q-toolbar">
+          <button type="button" class="btn-subtle btn-toggle-hint">Gợi ý ngắn</button>
+          <button type="button" class="btn-subtle btn-toggle-sol">Lời giải từng bước</button>
+        </div>
+        <div class="q-feedback" aria-live="polite"></div>
+        <div class="q-hint-box">
+          Mỗi bộ 3 điểm không thẳng hàng xác định duy nhất một mặt phẳng (tổ hợp chập 3 của 5 phần tử).
+        </div>
+        <div class="q-sol-box" data-sol-step="0">
+          <div class="sol-step" data-step="1"><strong>Bước 1:</strong> Vì không có 3 điểm nào thẳng hàng nên mỗi bộ 3 điểm xác định một mặt phẳng; vì không có 4 điểm nào đồng phẳng nên các mặt phẳng này đôi một phân biệt.</div>
+          <div class="sol-step" data-step="2" style="display:none;"><strong>Bước 2:</strong> Số mặt phẳng là <span class="math">C<sub>5</sub><sup>3</sup> = </span><span class="frac"><span>5 × 4 × 3</span><span>3 × 2 × 1</span></span><span class="math"> = 10</span>. Chọn <strong>C</strong>.</div>
+          <button type="button" class="btn-next-step">Xem bước tiếp theo (1/2)</button>
+        </div>
+      </article>
+
+      <!-- CÂU 02 -->
+      <article class="surface-card q-card" data-q="2" data-correct="C">
+        <div class="q-head">
+          <span class="id-badge">Câu 02</span>
+          <span class="mono" style="font-size: 0.8rem; color: var(--text-muted);">Trắc nghiệm · Cấu trúc hình chóp</span>
+        </div>
+        <p class="q-stem">
+          Một hình chóp có tổng cộng 9 mặt (gồm mặt đáy và tất cả các mặt bên). Số cạnh của hình chóp đó là bao nhiêu?
+        </p>
+        <div class="opt-grid">
+          <button type="button" class="opt-btn" data-opt="A"><span class="opt-key">A.</span> 8</button>
+          <button type="button" class="opt-btn" data-opt="B"><span class="opt-key">B.</span> 14</button>
+          <button type="button" class="opt-btn" data-opt="C"><span class="opt-key">C.</span> 16</button>
+          <button type="button" class="opt-btn" data-opt="D"><span class="opt-key">D.</span> 18</button>
+        </div>
+        <div class="q-toolbar">
+          <button type="button" class="btn-subtle btn-toggle-hint">Gợi ý ngắn</button>
+          <button type="button" class="btn-subtle btn-toggle-sol">Lời giải từng bước</button>
+        </div>
+        <div class="q-feedback" aria-live="polite"></div>
+        <div class="q-hint-box">
+          Hình chóp đáy <span class="math">n</span>-giác có <span class="math">n + 1</span> mặt và <span class="math">2n</span> cạnh.
+        </div>
+        <div class="q-sol-box" data-sol-step="0">
+          <div class="sol-step" data-step="1"><strong>Bước 1:</strong> Từ công thức số mặt <span class="math">n + 1 = 9</span> suy ra đa giác đáy có <span class="math">n = 8</span> cạnh (hình bát giác).</div>
+          <div class="sol-step" data-step="2" style="display:none;"><strong>Bước 2:</strong> Tổng số cạnh gồm 8 cạnh đáy và 8 cạnh bên, bằng <span class="math">2n = 16</span> cạnh. Chọn <strong>C</strong>.</div>
+          <button type="button" class="btn-next-step">Xem bước tiếp theo (1/2)</button>
+        </div>
+      </article>
+
+      <!-- CÂU 03: GHÉP CẶP -->
+      <article class="surface-card q-card" data-q="3" id="qCard3">
+        <div class="q-head">
+          <span class="id-badge">Câu 03</span>
+          <span class="mono" style="font-size: 0.8rem; color: var(--text-muted);">Ghép cặp · Kí hiệu hình học không gian</span>
+        </div>
+        <p class="q-stem">
+          Ghép mỗi mô tả hình học bên trái với kí hiệu toán học tương ứng bên phải rồi bấm <strong>Kiểm tra</strong>:
+        </p>
+
+        <div class="match-list">
+          <div class="match-row" data-pair="1" data-ans="mpKm">
+            <div>
+              <strong>1.</strong> Mặt phẳng xác định bởi điểm <span class="math">K</span> và đường thẳng <span class="math">m</span> (<span class="math">K ∉ m</span>)
+              <span class="pair-status"></span>
+            </div>
+            <select class="match-select" aria-label="Chọn kí hiệu cho mô tả 1">
+              <option value="">-- Chọn kí hiệu --</option>
+              <option value="aSubB">a ⊂ (β)</option>
+              <option value="dCapP">d ∩ (P) = {I}</option>
+              <option value="mpKm">mp(K, m)</option>
+              <option value="dPQ">d = (P) ∩ (Q)</option>
+            </select>
+          </div>
+
+          <div class="match-row" data-pair="2" data-ans="aSubB">
+            <div>
+              <strong>2.</strong> Đường thẳng <span class="math">a</span> có hai điểm phân biệt thuộc mặt phẳng <span class="math">(β)</span>
+              <span class="pair-status"></span>
+            </div>
+            <select class="match-select" aria-label="Chọn kí hiệu cho mô tả 2">
+              <option value="">-- Chọn kí hiệu --</option>
+              <option value="aSubB">a ⊂ (β)</option>
+              <option value="dCapP">d ∩ (P) = {I}</option>
+              <option value="mpKm">mp(K, m)</option>
+              <option value="dPQ">d = (P) ∩ (Q)</option>
+            </select>
+          </div>
+
+          <div class="match-row" data-pair="3" data-ans="dPQ">
+            <div>
+              <strong>3.</strong> Đường thẳng <span class="math">d</span> là tập hợp mọi điểm chung của hai mặt phẳng phân biệt <span class="math">(P)</span> và <span class="math">(Q)</span>
+              <span class="pair-status"></span>
+            </div>
+            <select class="match-select" aria-label="Chọn kí hiệu cho mô tả 3">
+              <option value="">-- Chọn kí hiệu --</option>
+              <option value="aSubB">a ⊂ (β)</option>
+              <option value="dCapP">d ∩ (P) = {I}</option>
+              <option value="mpKm">mp(K, m)</option>
+              <option value="dPQ">d = (P) ∩ (Q)</option>
+            </select>
+          </div>
+
+          <div class="match-row" data-pair="4" data-ans="dCapP">
+            <div>
+              <strong>4.</strong> Điểm <span class="math">I</span> là điểm chung duy nhất của đường thẳng <span class="math">d</span> và mặt phẳng <span class="math">(P)</span>
+              <span class="pair-status"></span>
+            </div>
+            <select class="match-select" aria-label="Chọn kí hiệu cho mô tả 4">
+              <option value="">-- Chọn kí hiệu --</option>
+              <option value="aSubB">a ⊂ (β)</option>
+              <option value="dCapP">d ∩ (P) = {I}</option>
+              <option value="mpKm">mp(K, m)</option>
+              <option value="dPQ">d = (P) ∩ (Q)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="q-toolbar">
+          <button type="button" class="btn-primary-check" id="btnCheckMatch">Kiểm tra</button>
+          <button type="button" class="btn-subtle btn-toggle-hint">Gợi ý ngắn</button>
+          <button type="button" class="btn-subtle btn-toggle-sol">Lời giải từng bước</button>
+        </div>
+        <div class="q-feedback" id="matchFeedback" aria-live="polite"></div>
+        <div class="q-hint-box">
+          Phân biệt kí hiệu tập con <span class="math">⊂</span> (đường nằm trong mặt phẳng), phép giao <span class="math">∩</span> (giao tuyến hai mặt phẳng hoặc giao điểm đường — mặt) và cách ghi <span class="math">mp(điểm, đường)</span>.
+        </div>
+        <div class="q-sol-box" data-sol-step="0">
+          <div class="sol-step" data-step="1"><strong>Bước 1:</strong> Cặp 1 dùng Cách 2 xác định mặt phẳng → <span class="math">mp(K, m)</span>. Cặp 2 dùng TC4 → <span class="math">a ⊂ (β)</span>.</div>
+          <div class="sol-step" data-step="2" style="display:none;"><strong>Bước 2:</strong> Cặp 3 dùng định nghĩa giao tuyến (TC5) → <span class="math">d = (P) ∩ (Q)</span>. Cặp 4 biểu diễn giao điểm duy nhất của đường và mặt → <span class="math">d ∩ (P) = {I}</span>.</div>
+          <button type="button" class="btn-next-step">Xem bước tiếp theo (1/2)</button>
+        </div>
+      </article>
+
+      <!-- CÂU 04 -->
+      <article class="surface-card q-card" data-q="4" data-correct="C">
+        <div class="q-head">
+          <span class="id-badge">Câu 04</span>
+          <span class="mono" style="font-size: 0.8rem; color: var(--text-muted);">Trắc nghiệm · Tìm giao tuyến</span>
+        </div>
+        <p class="q-stem">
+          Cho hình chóp <span class="math">S.ABCD</span> có đáy <span class="math">ABCD</span> là tứ giác lồi sao cho đường thẳng <span class="math">AB</span> cắt đường thẳng <span class="math">CD</span> tại điểm <span class="math">O</span>. Giao tuyến của hai mặt phẳng <span class="math">(SAB)</span> và <span class="math">(SCD)</span> là đường thẳng nào?
+        </p>
+        <div class="opt-grid">
+          <button type="button" class="opt-btn" data-opt="A"><span class="opt-key">A.</span> <span class="math">SA</span></button>
+          <button type="button" class="opt-btn" data-opt="B"><span class="opt-key">B.</span> <span class="math">SC</span></button>
+          <button type="button" class="opt-btn" data-opt="C"><span class="opt-key">C.</span> <span class="math">SO</span></button>
+          <button type="button" class="opt-btn" data-opt="D"><span class="opt-key">D.</span> <span class="math">AC</span></button>
+        </div>
+        <div class="q-toolbar">
+          <button type="button" class="btn-subtle btn-toggle-hint">Gợi ý ngắn</button>
+          <button type="button" class="btn-subtle btn-toggle-sol">Lời giải từng bước</button>
+        </div>
+        <div class="q-feedback" aria-live="polite"></div>
+        <div class="q-hint-box">
+          Tìm hai điểm chung phân biệt của <span class="math">(SAB)</span> và <span class="math">(SCD)</span>, trong đó một điểm là đỉnh chung và một điểm nằm trên mặt đáy <span class="math">(ABCD)</span>.
+        </div>
+        <div class="q-sol-box" data-sol-step="0">
+          <div class="sol-step" data-step="1"><strong>Bước 1:</strong> Điểm <span class="math">S</span> là điểm chung thứ nhất của <span class="math">(SAB)</span> và <span class="math">(SCD)</span>.</div>
+          <div class="sol-step" data-step="2" style="display:none;"><strong>Bước 2:</strong> Trong mặt phẳng đáy <span class="math">(ABCD)</span>, <span class="math">O = AB ∩ CD</span> nên <span class="math">O ∈ AB ⊂ (SAB)</span> và <span class="math">O ∈ CD ⊂ (SCD)</span>, suy ra <span class="math">O</span> là điểm chung thứ hai.</div>
+          <div class="sol-step" data-step="3" style="display:none;"><strong>Bước 3:</strong> Nối hai điểm chung phân biệt <span class="math">S</span> và <span class="math">O</span>, suy ra <span class="math">(SAB) ∩ (SCD) = SO</span>. Chọn <strong>C</strong>.</div>
+          <button type="button" class="btn-next-step">Xem bước tiếp theo (1/3)</button>
+        </div>
+      </article>
+
+      <!-- CÂU 05 (VẬN DỤNG CAO) -->
+      <article class="surface-card q-card" data-q="5" data-correct="C">
+        <div class="q-head">
+          <div>
+            <span class="id-badge">Câu 05</span>
+            <span class="vdc-tag" style="margin-left: 8px;">Vận dụng cao</span>
+          </div>
+          <span class="mono" style="font-size: 0.8rem; color: var(--text-muted);">Trắc nghiệm · Giao điểm đường — mặt</span>
+        </div>
+        <p class="q-stem">
+          Cho tứ diện <span class="math">PQRS</span>. Gọi <span class="math">H</span> là trung điểm cạnh <span class="math">QR</span>, <span class="math">G</span> là trọng tâm tam giác <span class="math">PQR</span>, và điểm <span class="math">T</span> nằm trên đoạn <span class="math">SG</span> sao cho <span class="math">ST = </span><span class="frac"><span>2</span><span>3</span></span><span class="math">·SG</span>. Giao điểm <span class="math">X</span> của đường thẳng <span class="math">PT</span> với mặt phẳng <span class="math">(SQR)</span> nằm trên đường thẳng nào sau đây?
+        </p>
+        <div class="opt-grid">
+          <button type="button" class="opt-btn" data-opt="A"><span class="opt-key">A.</span> Đường thẳng <span class="math">SQ</span></button>
+          <button type="button" class="opt-btn" data-opt="B"><span class="opt-key">B.</span> Đường thẳng <span class="math">SR</span></button>
+          <button type="button" class="opt-btn" data-opt="C"><span class="opt-key">C.</span> Đường thẳng <span class="math">SH</span></button>
+          <button type="button" class="opt-btn" data-opt="D"><span class="opt-key">D.</span> Đường thẳng <span class="math">QR</span></button>
+        </div>
+        <div class="q-toolbar">
+          <button type="button" class="btn-subtle btn-toggle-hint">Gợi ý ngắn</button>
+          <button type="button" class="btn-subtle btn-toggle-sol">Lời giải từng bước</button>
+        </div>
+        <div class="q-feedback" aria-live="polite"></div>
+        <div class="q-hint-box">
+          Trọng tâm <span class="math">G</span> nằm trên đường trung tuyến <span class="math">PH</span> của <span class="math">ΔPQR</span>; chọn mặt phẳng phụ <span class="math">(SPH)</span> chứa đường thẳng <span class="math">PT</span>.
+        </div>
+        <div class="q-sol-box" data-sol-step="0">
+          <div class="sol-step" data-step="1"><strong>Bước 1:</strong> Vì <span class="math">G</span> là trọng tâm <span class="math">ΔPQR</span> và <span class="math">H</span> là trung điểm <span class="math">QR</span> nên <span class="math">P, G, H</span> thẳng hàng; suy ra <span class="math">T ∈ SG ⊂ (SPH)</span> nên mặt phẳng phụ <span class="math">(SPH)</span> chứa đường thẳng <span class="math">PT</span>.</div>
+          <div class="sol-step" data-step="2" style="display:none;"><strong>Bước 2:</strong> Hai mặt phẳng <span class="math">(SPH)</span> và <span class="math">(SQR)</span> có hai điểm chung phân biệt là <span class="math">S</span> và <span class="math">H</span>, suy ra giao tuyến <span class="math">(SPH) ∩ (SQR) = SH</span>.</div>
+          <div class="sol-step" data-step="3" style="display:none;"><strong>Bước 3:</strong> Trong mặt phẳng <span class="math">(SPH)</span>, đường thẳng <span class="math">PT</span> cắt <span class="math">SH</span> tại <span class="math">X</span>; do <span class="math">X ∈ SH ⊂ (SQR)</span> nên <span class="math">X = PT ∩ (SQR)</span> và <span class="math">X</span> nằm trên đường thẳng <span class="math">SH</span>. Chọn <strong>C</strong>.</div>
+          <button type="button" class="btn-next-step">Xem bước tiếp theo (1/3)</button>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    Toán 11 · Kết nối tri thức với cuộc sống · Bài 10: Đường thẳng và mặt phẳng trong không gian
+  </footer>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* ============================================================
+         TIỆN ÍCH ĐỊNH DẠNG SỐ THẬP PHÂN KIỂU VIỆT NAM
+         ============================================================ */
+      function fmtVN(num, decimals) {
+        const d = typeof decimals === 'number' ? decimals : 2;
+        return num.toFixed(d).replace('.', ',');
+      }
+
+      /* ============================================================
+         1. THANH TIẾN ĐỘ ĐỌC, MỤC LỤC ĐIỆN THOẠI & TỰ DÒ BÀI
+         ============================================================ */
+      const readProgress = document.getElementById('readProgress');
+      const navLinks = Array.from(document.querySelectorAll('#desktopNav a'));
+      const sections = ['muc-01', 'muc-02', 'muc-03', 'muc-04', 'muc-05']
+        .map(id => document.getElementById(id))
+        .filter(Boolean);
+
+      function updateScrollUI() {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const docH = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = docH > 0 ? Math.min(100, Math.max(0, (scrollTop / docH) * 100)) : 0;
+        readProgress.style.width = pct.toFixed(1) + '%';
+
+        let currentId = 'muc-01';
+        for (let i = 0; i < sections.length; i++) {
+          const rect = sections[i].getBoundingClientRect();
+          if (rect.top <= 110) {
+            currentId = sections[i].id;
+          }
+        }
+        navLinks.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + currentId);
+        });
+      }
+
+      window.addEventListener('scroll', updateScrollUI, { passive: true });
+      updateScrollUI();
+
+      // Mục lục thả xuống điện thoại
+      const tocToggleBtn = document.getElementById('tocToggleBtn');
+      const mobileDrawer = document.getElementById('mobileDrawer');
+
+      tocToggleBtn.addEventListener('click', function () {
+        const isOpen = mobileDrawer.classList.toggle('open');
+        tocToggleBtn.setAttribute('aria-expanded', String(isOpen));
+      });
+
+      mobileDrawer.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', function () {
+          mobileDrawer.classList.remove('open');
+          tocToggleBtn.setAttribute('aria-expanded', 'false');
+        });
+      });
+
+      // Chế độ Tự dò bài
+      const quizModeBtn = document.getElementById('quizModeBtn');
+      const cloaks = Array.from(document.querySelectorAll('.cloak'));
+
+      quizModeBtn.addEventListener('click', function () {
+        const active = document.body.classList.toggle('quiz-mode');
+        quizModeBtn.classList.toggle('is-active', active);
+        quizModeBtn.setAttribute('aria-pressed', String(active));
+        quizModeBtn.textContent = active ? 'Thoát dò bài' : 'Tự dò bài';
+        if (active) {
+          cloaks.forEach(el => el.classList.remove('revealed'));
+        }
+      });
+
+      cloaks.forEach(el => {
+        function toggleCloak() {
+          if (!document.body.classList.contains('quiz-mode')) return;
+          el.classList.toggle('revealed');
+        }
+        el.addEventListener('click', toggleCloak);
+        el.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            if (document.body.classList.contains('quiz-mode')) {
+              e.preventDefault();
+              toggleCloak();
+            }
+          }
+        });
+      });
+
+      /* ============================================================
+         2. BẢN ĐỒ XƯƠNG SỐNG ĐẦU TRANG
+         ============================================================ */
+      const conceptData = {
+        '01': {
+          summary: 'Mặt phẳng không có bề dày, không có giới hạn và được vẽ trên giấy theo bốn quy tắc bảo toàn tính thẳng, song song, cắt nhau, liên thuộc cùng quy ước nét liền — nét đứt.',
+          href: '#muc-01',
+          btn: 'Đi tới mục 01 →'
+        },
+        '02': {
+          summary: 'Sáu tính chất thừa nhận định nghĩa chặt chẽ quan hệ liên thuộc trong không gian và chỉ ra cách tìm giao tuyến của hai mặt phẳng bằng việc xác định hai điểm chung phân biệt.',
+          href: '#muc-02',
+          btn: 'Đi tới mục 02 →'
+        },
+        '03': {
+          summary: 'Mọi mặt phẳng đều được cố định duy nhất theo một trong ba cách: qua ba điểm không thẳng hàng (ABC), qua điểm và đường thẳng không chứa điểm đó mp(A, d), hoặc chứa hai đường thẳng cắt nhau mp(a, b).',
+          href: '#muc-03',
+          btn: 'Đi tới mục 03 →'
+        },
+        '04': {
+          summary: 'Hình chóp và hình tứ diện là không gian thực hành chuẩn cho bài toán tìm giao điểm đường thẳng — mặt phẳng thông qua chọn mặt phẳng phụ, tìm giao tuyến phụ rồi lấy giao điểm.',
+          href: '#muc-04',
+          btn: 'Đi tới mục 04 →'
+        }
+      };
+
+      const conceptNodes = Array.from(document.querySelectorAll('.concept-node'));
+      const conceptSummary = document.getElementById('conceptSummary');
+      const conceptJump = document.getElementById('conceptJump');
+
+      conceptNodes.forEach(btn => {
+        btn.addEventListener('click', function () {
+          const key = btn.getAttribute('data-branch');
+          const data = conceptData[key];
+          if (!data) return;
+          conceptNodes.forEach(n => {
+            const isSel = n === btn;
+            n.classList.toggle('selected', isSel);
+            n.setAttribute('aria-selected', String(isSel));
+          });
+          conceptSummary.textContent = data.summary;
+          conceptJump.setAttribute('href', data.href);
+          conceptJump.textContent = data.btn;
+        });
+      });
+
+      /* ============================================================
+         3. THUẬT NGỮ BẤM MỞ TẠI CHỖ
+         ============================================================ */
+      document.querySelectorAll('.term-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const id = btn.getAttribute('data-term');
+          const drawer = document.getElementById(id);
+          if (!drawer) return;
+          const isOpen = drawer.classList.toggle('open');
+          btn.setAttribute('aria-expanded', String(isOpen));
+        });
+      });
+
+      /* ============================================================
+         4. KỂ CHUYỆN TỪNG BƯỚC — HÌNH 02 (GIAO TUYẾN)
+         ============================================================ */
+      let step2 = 1;
+      const s2Pills = Array.from(document.querySelectorAll('[data-s2]'));
+      const s2Prev = document.getElementById('s2Prev');
+      const s2Next = document.getElementById('s2Next');
+      const s2Explain = document.getElementById('s2Explain');
+
+      const f2Medians = document.getElementById('f2Medians');
+      const f2LineSG = document.getElementById('f2LineSG');
+      const f2HaloS = document.getElementById('f2HaloS');
+      const f2DotS = document.getElementById('f2DotS');
+      const f2PointG = document.getElementById('f2PointG');
+      const f2Legend2 = document.getElementById('f2LegendStep2');
+      const f2Legend3 = document.getElementById('f2LegendStep3');
+      const f2Legend4 = document.getElementById('f2LegendStep4');
+
+      const s2Texts = {
+        1: '<span class="step-exp-head" style="color: var(--sem-blue);">Bước 1 / 4 · Xác định hai mặt phẳng cần tìm giao tuyến</span>Biểu diễn chóp <span class="math">S.ABC</span> với cạnh sau <span class="math">BC</span> vẽ nét đứt. Tô phân biệt mặt phẳng <span class="u-blue">(SBN)</span> và mặt phẳng <span class="u-amber">(SCM)</span> để quan sát phần chung giữa chúng.',
+        2: '<span class="step-exp-head" style="color: var(--accent-red);">Bước 2 / 4 · Chỉ ra điểm chung thứ nhất S</span>Đỉnh <span class="math">S</span> nằm trên cả hai mặt phẳng <span class="math">(SBN)</span> và <span class="math">(SCM)</span>. Do đó <span class="u-red">S là điểm chung thứ nhất</span>.',
+        3: '<span class="step-exp-head" style="color: var(--accent-red);">Bước 3 / 4 · Tìm điểm chung thứ hai G bằng TC6</span>Trong mặt phẳng đáy <span class="math">(ABC)</span>, hai đường trung tuyến <span class="math">BN</span> và <span class="math">CM</span> cắt nhau tại trọng tâm <span class="math">G</span> của <span class="math">ΔABC</span>. Vì <span class="math">G ∈ BN ⊂ (SBN)</span> và <span class="math">G ∈ CM ⊂ (SCM)</span> nên <span class="u-red">G là điểm chung thứ hai</span>.',
+        4: '<span class="step-exp-head" style="color: var(--accent-red);">Bước 4 / 4 · Kết luận giao tuyến SG</span>Nối hai điểm chung phân biệt <span class="math">S</span> và <span class="math">G</span>. Theo TC5, giao tuyến của hai mặt phẳng là <span class="u-red">(SBN) ∩ (SCM) = SG</span> (đi qua trọng tâm đáy).'
+      };
+
+      function renderStep02(s) {
+        step2 = Math.max(1, Math.min(4, s));
+        s2Pills.forEach(p => {
+          p.classList.toggle('active-blue', Number(p.getAttribute('data-s2')) === step2);
+        });
+        s2Prev.disabled = step2 === 1;
+        s2Next.disabled = step2 === 4;
+
+        f2HaloS.setAttribute('opacity', step2 >= 2 ? '1' : '0');
+        f2DotS.setAttribute('fill', step2 >= 2 ? '#B63E2A' : '#1A1917');
+        f2Medians.setAttribute('opacity', step2 >= 3 ? '1' : '0.22');
+        f2PointG.setAttribute('opacity', step2 >= 3 ? '1' : '0');
+        f2LineSG.setAttribute('opacity', step2 >= 4 ? '1' : '0');
+
+        f2Legend2.setAttribute('opacity', step2 >= 2 ? '1' : '0.35');
+        f2Legend3.setAttribute('opacity', step2 >= 3 ? '1' : '0.35');
+        f2Legend4.setAttribute('opacity', step2 >= 4 ? '1' : '0.35');
+
+        s2Explain.innerHTML = s2Texts[step2];
+      }
+
+      s2Pills.forEach(p => p.addEventListener('click', () => renderStep02(Number(p.getAttribute('data-s2')))));
+      s2Prev.addEventListener('click', () => renderStep02(step2 - 1));
+      s2Next.addEventListener('click', () => renderStep02(step2 + 1));
+      renderStep02(1);
+
+      /* ============================================================
+         5. KỂ CHUYỆN TỪNG BƯỚC — HÌNH 04 (GIAO ĐIỂM ĐƯỜNG — MẶT)
+         ============================================================ */
+      let step4 = 1;
+      const s4Pills = Array.from(document.querySelectorAll('[data-s4]'));
+      const s4Prev = document.getElementById('s4Prev');
+      const s4Next = document.getElementById('s4Next');
+      const s4Explain = document.getElementById('s4Explain');
+
+      const f4LineAM = document.getElementById('f4LineAM');
+      const f4LineFN = document.getElementById('f4LineFN');
+      const f4PointN = document.getElementById('f4PointN');
+      const f4Box2 = document.getElementById('f4Box2');
+      const f4Box3 = document.getElementById('f4Box3');
+
+      const s4Texts = {
+        1: '<span class="step-exp-head" style="color: var(--sem-amber);">Bước 1 / 3 · Chọn mặt phẳng phụ (ABM) chứa BF</span>Trong mặt phẳng <span class="math">(BCD)</span>, kéo dài <span class="math">BE</span> cắt cạnh <span class="math">CD</span> tại <span class="math">M</span>. Vì <span class="math">A, E ∈ (ABM)</span> nên <span class="math">F ∈ AE ⊂ (ABM)</span>, suy ra toàn bộ đường thẳng <span class="u-amber">BF</span> nằm trong mặt phẳng phụ <span class="math">(ABM)</span>.',
+        2: '<span class="step-exp-head" style="color: var(--sem-blue);">Bước 2 / 3 · Tìm giao tuyến phụ AM = (ABM) ∩ (ACD)</span>Hai mặt phẳng <span class="math">(ABM)</span> và <span class="math">(ACD)</span> có hai điểm chung phân biệt là <span class="math">A</span> và <span class="math">M</span> (do <span class="math">M ∈ CD ⊂ (ACD)</span>). Suy ra giao tuyến là đường thẳng <span class="u-blue">AM</span>.',
+        3: '<span class="step-exp-head" style="color: var(--sem-green);">Bước 3 / 3 · Lấy giao điểm N = BF ∩ AM</span>Trong tam giác <span class="math">ABM</span> (đồng phẳng), đường thẳng <span class="u-amber">BF</span> cắt <span class="u-blue">AM</span> tại điểm <span class="u-green">N</span>. Vì <span class="math">N ∈ AM ⊂ (ACD)</span> nên <span class="u-green">N = BF ∩ (ACD)</span>.'
+      };
+
+      function renderStep04(s) {
+        step4 = Math.max(1, Math.min(3, s));
+        s4Pills.forEach(p => {
+          p.classList.toggle('active-green', Number(p.getAttribute('data-s4')) === step4);
+        });
+        s4Prev.disabled = step4 === 1;
+        s4Next.disabled = step4 === 3;
+
+        f4LineAM.setAttribute('opacity', step4 >= 2 ? '1' : '0.2');
+        f4LineFN.setAttribute('opacity', step4 >= 3 ? '1' : '0');
+        f4PointN.setAttribute('opacity', step4 >= 3 ? '1' : '0');
+        f4Box2.setAttribute('opacity', step4 >= 2 ? '1' : '0.4');
+        f4Box3.setAttribute('opacity', step4 >= 3 ? '1' : '0.4');
+
+        s4Explain.innerHTML = s4Texts[step4];
+      }
+
+      s4Pills.forEach(p => p.addEventListener('click', () => renderStep04(Number(p.getAttribute('data-s4')))));
+      s4Prev.addEventListener('click', () => renderStep04(step4 - 1));
+      s4Next.addEventListener('click', () => renderStep04(step4 + 1));
+      renderStep04(1);
+
+      /* ============================================================
+         6. CHỐT NHANH GIỮA BÀI (MINI 01 & MINI 02)
+         ============================================================ */
+      document.querySelectorAll('.btn-mini').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const id = btn.getAttribute('data-mini');
+          const ans = btn.getAttribute('data-ans');
+          const groupBtns = document.querySelectorAll('[data-mini="' + id + '"]');
+          const fb = document.getElementById('mini' + id + 'Feedback');
+
+          groupBtns.forEach(b => b.classList.remove('correct', 'wrong'));
+
+          if (id === '01') {
+            if (ans === 'false') {
+              btn.classList.add('correct');
+              fb.innerHTML = '<strong style="color: var(--sem-green);">Chính xác.</strong> Theo tính chất thừa nhận TC3, tồn tại bốn điểm không cùng thuộc một mặt phẳng (ví dụ bốn đỉnh của một khối tứ diện).';
+            } else {
+              btn.classList.add('wrong');
+              fb.innerHTML = '<strong style="color: var(--accent-red);">Chưa đúng.</strong> Theo TC3, trong không gian luôn tồn tại bốn điểm không đồng phẳng nên không phải bộ bốn điểm nào cũng cùng nằm trên một mặt phẳng.';
+            }
+          } else if (id === '02') {
+            if (ans === 'B') {
+              btn.classList.add('correct');
+              fb.innerHTML = '<strong style="color: var(--sem-green);">Chính xác.</strong> Trong tứ diện <span class="math">ABCD</span>, hai cạnh <span class="math">AB</span> và <span class="math">CD</span> không có đỉnh chung nên được gọi là hai cạnh đối diện.';
+            } else {
+              btn.classList.add('wrong');
+              fb.innerHTML = '<strong style="color: var(--accent-red);">Chưa đúng.</strong> <span class="math">AB</span> và <span class="math">CD</span> không có đỉnh chung; chúng là hai cạnh đối diện của tứ diện <span class="math">ABCD</span>.';
+            }
+          }
+          fb.classList.add('show');
+        });
+      });
+
+      /* ============================================================
+         7. XƯỞNG TƯƠNG TÁC 01 — PHÉP CHIẾU 3D CHÍNH XÁC + BACK-FACE CULLING
+         ============================================================ */
+      const tabBtn1 = document.getElementById('tabBtn1');
+      const tabBtn2 = document.getElementById('tabBtn2');
+      const labTab1 = document.getElementById('labTab1');
+      const labTab2 = document.getElementById('labTab2');
+
+      function switchLabTab(tab) {
+        const is1 = tab === 'tab1';
+        labTab1.classList.toggle('active', is1);
+        labTab2.classList.toggle('active', !is1);
+        tabBtn1.classList.toggle('active-green', is1);
+        tabBtn2.classList.toggle('active-blue', !is1);
+        tabBtn1.setAttribute('aria-selected', String(is1));
+        tabBtn2.setAttribute('aria-selected', String(!is1));
+        if (is1) renderLab1();
+        else renderLab2();
+      }
+
+      tabBtn1.addEventListener('click', () => switchLabTab('tab1'));
+      tabBtn2.addEventListener('click', () => switchLabTab('tab2'));
+
+      // Hàm toán học vectơ 3D
+      function vSub(a, b) { return [a[0] - b[0], a[1] - b[1], a[2] - b[2]]; }
+      function vCross(a, b) {
+        return [
+          a[1] * b[2] - a[2] * b[1],
+          a[2] * b[0] - a[0] * b[2],
+          a[0] * b[1] - a[1] * b[0]
+        ];
+      }
+      function vDot(a, b) { return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]; }
+      function vLerp(a, b, t) {
+        return [
+          (1 - t) * a[0] + t * b[0],
+          (1 - t) * a[1] + t * b[1],
+          (1 - t) * a[2] + t * b[2]
+        ];
+      }
+
+      // Xoay quanh trục đứng Z (yaw) và nâng góc nhìn (pitch) -> tọa độ màn hình (sx, sy, depth)
+      // Hệ tọa độ 3D: X sang phải, Y hướng vào trong (hoặc ra trước), Z hướng lên trên.
+      // Camera nằm phía +Z_view (nhìn dọc theo -Z_view từ vị trí ở khoảng dương).
+      function project3D(p, yawDeg, pitchDeg, scale, cx, cy) {
+        const yaw = (yawDeg * Math.PI) / 180;
+        const pitch = (pitchDeg * Math.PI) / 180;
+        // Xoay quanh Z
+        const x1 = p[0] * Math.cos(yaw) - p[1] * Math.sin(yaw);
+        const y1 = p[0] * Math.sin(yaw) + p[1] * Math.cos(yaw);
+        const z1 = p[2];
+        // Xoay quanh X để nâng góc nhìn từ trên xuống (pitch > 0 nhìn từ trên xuống)
+        // Trục màn hình: X_scr = x1; Y_scr = -(z1*cos(pitch) - y1*sin(pitch)); Depth (hướng về camera) = y1*cos(pitch) + z1*sin(pitch)
+        // Chọn quy ước camera nhìn từ phía -Y1 (hoặc +Y1): ta chọn camera ở hướng (0, -cos(pitch), sin(pitch))
+        // Do đó vectơ hướng về camera trong hệ sau xoay yaw là V = (0, -cos(pitch), sin(pitch)).
+        const sx = cx + x1 * scale;
+        const sy = cy - (z1 * Math.cos(pitch) + y1 * Math.sin(pitch)) * scale;
+        const depth = -y1 * Math.cos(pitch) + z1 * Math.sin(pitch);
+        return { x: sx, y: sy, depth: depth, x1: x1, y1: y1, z1: z1 };
+      }
+
+      // Kiểm tra mặt (p0, p1, p2) có hướng về camera không, dựa trên trọng tâm khối để đảm bảo pháp tuyến hướng ra ngoài
+      function isFaceVisible(faceVerts, centroid, yawDeg, pitchDeg) {
+        const yaw = (yawDeg * Math.PI) / 180;
+        const pitch = (pitchDeg * Math.PI) / 180;
+        // Vectơ hướng về camera trong không gian thế giới (nghịch đảo xoay yaw của (0, -cos(p), sin(p)))
+        const vx1 = 0;
+        const vy1 = -Math.cos(pitch);
+        const vz1 = Math.sin(pitch);
+        const camDir = [
+          vx1 * Math.cos(-yaw) - vy1 * Math.sin(-yaw),
+          vx1 * Math.sin(-yaw) + vy1 * Math.cos(-yaw),
+          vz1
+        ];
+        const e1 = vSub(faceVerts[1], faceVerts[0]);
+        const e2 = vSub(faceVerts[2], faceVerts[0]);
+        let n = vCross(e1, e2);
+        // Đảm bảo pháp tuyến hướng ra ngoài so với trọng tâm khối
+        const faceCenter = [
+          faceVerts.reduce((s, v) => s + v[0], 0) / faceVerts.length,
+          faceVerts.reduce((s, v) => s + v[1], 0) / faceVerts.length,
+          faceVerts.reduce((s, v) => s + v[2], 0) / faceVerts.length
+        ];
+        const outward = vSub(faceCenter, centroid);
+        if (vDot(n, outward) < 0) {
+          n = [-n[0], -n[1], -n[2]];
+        }
+        return vDot(n, camDir) > 0.001;
+      }
+
+      /* --- TAB 1: THÍ NGHIỆM GIAO ĐIỂM N = BF ∩ (ACD) --- */
+      const sliderT = document.getElementById('sliderT');
+      const sliderS = document.getElementById('sliderS');
+      const sliderTheta1 = document.getElementById('sliderTheta1');
+      const valT = document.getElementById('valT');
+      const valS = document.getElementById('valS');
+      const valTheta1 = document.getElementById('valTheta1');
+      const roT = document.getElementById('roT');
+      const roS = document.getElementById('roS');
+      const roR = document.getElementById('roR');
+      const svgLab1 = document.getElementById('svgLab1');
+      const presetBtns1 = Array.from(document.querySelectorAll('#labTab1 .btn-preset'));
+
+      // Tọa độ 3D cố định của tứ diện ABCD (tỉ lệ cân đối, B bên trái, C phía trước, D bên phải, A đỉnh trên)
+      const TET = {
+        A: [-0.08, 0.05, 1.55],
+        B: [-1.25, 0.25, -0.55],
+        C: [0.05, -1.05, -0.55],
+        D: [1.28, 0.35, -0.55]
+      };
+      const TET_CENTER = [
+        (TET.A[0] + TET.B[0] + TET.C[0] + TET.D[0]) / 4,
+        (TET.A[1] + TET.B[1] + TET.C[1] + TET.D[1]) / 4,
+        (TET.A[2] + TET.B[2] + TET.C[2] + TET.D[2]) / 4
+      ];
+      const TET_FACES = [
+        { name: 'ABC', v: [TET.A, TET.B, TET.C], edges: ['AB', 'BC', 'AC'] },
+        { name: 'ACD', v: [TET.A, TET.C, TET.D], edges: ['AC', 'CD', 'AD'] },
+        { name: 'ABD', v: [TET.A, TET.B, TET.D], edges: ['AB', 'BD', 'AD'] },
+        { name: 'BCD', v: [TET.B, TET.C, TET.D], edges: ['BC', 'CD', 'BD'] }
+      ];
+      const TET_EDGES = [
+        ['A', 'B', 'AB'],
+        ['A', 'C', 'AC'],
+        ['A', 'D', 'AD'],
+        ['B', 'C', 'BC'],
+        ['C', 'D', 'CD'],
+        ['B', 'D', 'BD']
+      ];
+
+      function renderLab1() {
+        const t = parseFloat(sliderT.value); // CM / CD
+        const s = parseFloat(sliderS.value); // AF / AE
+        const theta = parseFloat(sliderTheta1.value);
+        const k = 0.60; // BE / BM = 0,60
+        // Công thức giải tích chính xác: N = BF ∩ AM => AN / AM = (s*k) / (1 - s + s*k)
+        const r = (s * k) / (1 - s + s * k);
+
+        valT.textContent = fmtVN(t, 2);
+        valS.textContent = fmtVN(s, 2);
+        valTheta1.textContent = (theta > 0 ? '+' : '') + theta + '°';
+        roT.textContent = fmtVN(t, 2);
+        roS.textContent = fmtVN(s, 2);
+        roR.textContent = fmtVN(r, 2);
+
+        const M = vLerp(TET.C, TET.D, t);
+        const E = vLerp(TET.B, M, k);
+        const F = vLerp(TET.A, E, s);
+        const N = vLerp(TET.A, M, r);
+
+        const pitch = 20;
+        const scale = 122;
+        const cx = 228;
+        const cy = 225;
+
+        const P = {
+          A: project3D(TET.A, theta, pitch, scale, cx, cy),
+          B: project3D(TET.B, theta, pitch, scale, cx, cy),
+          C: project3D(TET.C, theta, pitch, scale, cx, cy),
+          D: project3D(TET.D, theta, pitch, scale, cx, cy),
+          M: project3D(M, theta, pitch, scale, cx, cy),
+          E: project3D(E, theta, pitch, scale, cx, cy),
+          F: project3D(F, theta, pitch, scale, cx, cy),
+          N: project3D(N, theta, pitch, scale, cx, cy)
+        };
+
+        // Xác định mặt nhìn thấy -> cạnh nhìn thấy
+        const visEdgeSet = new Set();
+        const faceVis = {};
+        TET_FACES.forEach(f => {
+          const vis = isFaceVisible(f.v, TET_CENTER, theta, pitch);
+          faceVis[f.name] = vis;
+          if (vis) {
+            f.edges.forEach(e => visEdgeSet.add(e));
+          }
+        });
+
+        let out = '';
+
+        // Tô nhẹ mặt phẳng (ACD) màu xanh lam nhạt và mặt phẳng phụ (ABM) màu vàng đất nhạt
+        out += `<polygon points="${P.A.x.toFixed(1)},${P.A.y.toFixed(1)} ${P.C.x.toFixed(1)},${P.C.y.toFixed(1)} ${P.D.x.toFixed(1)},${P.D.y.toFixed(1)}" fill="#1C606C" fill-opacity="0.09" stroke="none" />`;
+        out += `<polygon points="${P.A.x.toFixed(1)},${P.A.y.toFixed(1)} ${P.B.x.toFixed(1)},${P.B.y.toFixed(1)} ${P.M.x.toFixed(1)},${P.M.y.toFixed(1)}" fill="#9E6812" fill-opacity="0.12" stroke="none" />`;
+
+        // Vẽ các cạnh khuất trước (nét đứt)
+        TET_EDGES.forEach(([u, v, key]) => {
+          if (!visEdgeSet.has(key)) {
+            out += `<line x1="${P[u].x.toFixed(1)}" y1="${P[u].y.toFixed(1)}" x2="${P[v].x.toFixed(1)}" y2="${P[v].y.toFixed(1)}" stroke="#605C54" stroke-width="1.7" stroke-dasharray="6,4" />`;
+          }
+        });
+
+        // Đường phụ bên trong: BM, AE (nét đứt mảnh)
+        out += `<line x1="${P.B.x.toFixed(1)}" y1="${P.B.y.toFixed(1)}" x2="${P.M.x.toFixed(1)}" y2="${P.M.y.toFixed(1)}" stroke="#9E6812" stroke-width="1.4" stroke-dasharray="4,4" />`;
+        out += `<line x1="${P.A.x.toFixed(1)}" y1="${P.A.y.toFixed(1)}" x2="${P.E.x.toFixed(1)}" y2="${P.E.y.toFixed(1)}" stroke="#605C54" stroke-width="1.4" stroke-dasharray="4,4" />`;
+
+        // Giao tuyến AM (nằm trên mặt ACD -> nét liền nếu ACD nhìn thấy, nét đứt nếu ACD quay lưng)
+        const amDash = faceVis['ACD'] ? '' : 'stroke-dasharray="6,4"';
+        out += `<line x1="${P.A.x.toFixed(1)}" y1="${P.A.y.toFixed(1)}" x2="${P.M.x.toFixed(1)}" y2="${P.M.y.toFixed(1)}" stroke="#1C606C" stroke-width="2.6" ${amDash} />`;
+
+        // Đường thẳng BF kéo dài đến N (nằm bên trong tứ diện -> nét đứt đậm vàng đất)
+        out += `<line x1="${P.B.x.toFixed(1)}" y1="${P.B.y.toFixed(1)}" x2="${P.N.x.toFixed(1)}" y2="${P.N.y.toFixed(1)}" stroke="#9E6812" stroke-width="2.4" stroke-dasharray="5,3" />`;
+
+        // Vẽ các cạnh nhìn thấy của tứ diện (nét liền)
+        TET_EDGES.forEach(([u, v, key]) => {
+          if (visEdgeSet.has(key)) {
+            out += `<line x1="${P[u].x.toFixed(1)}" y1="${P[u].y.toFixed(1)}" x2="${P[v].x.toFixed(1)}" y2="${P[v].y.toFixed(1)}" stroke="#1A1917" stroke-width="2" stroke-linecap="round" />`;
+          }
+        });
+
+        // Điểm E, F, M, N
+        out += `<circle cx="${P.E.x.toFixed(1)}" cy="${P.E.y.toFixed(1)}" r="3.6" fill="#605C54" />`;
+        out += `<circle cx="${P.F.x.toFixed(1)}" cy="${P.F.y.toFixed(1)}" r="4.2" fill="#9E6812" />`;
+        out += `<circle cx="${P.M.x.toFixed(1)}" cy="${P.M.y.toFixed(1)}" r="4.4" fill="#1C606C" />`;
+        out += `<circle cx="${P.N.x.toFixed(1)}" cy="${P.N.y.toFixed(1)}" r="9.5" fill="#2A664B" fill-opacity="0.18" stroke="#2A664B" stroke-width="1.5" />`;
+        out += `<circle cx="${P.N.x.toFixed(1)}" cy="${P.N.y.toFixed(1)}" r="4.8" fill="#2A664B" />`;
+
+        // Nhãn đỉnh đẩy ra ngoài trọng tâm chiếu để không bao giờ chồng đè
+        const midX = (P.A.x + P.B.x + P.C.x + P.D.x) / 4;
+        const midY = (P.A.y + P.B.y + P.C.y + P.D.y) / 4;
+
+        function placeLabel(pt, text, color, dist, dxExtra, dyExtra) {
+          let vx = pt.x - midX;
+          let vy = pt.y - midY;
+          const len = Math.hypot(vx, vy) || 1;
+          vx /= len;
+          vy /= len;
+          const lx = pt.x + vx * dist + (dxExtra || 0);
+          const ly = pt.y + vy * dist + (dyExtra || 0);
+          return `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" dominant-baseline="central" font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" fill="${color}">${text}</text>`;
+        }
+
+        out += placeLabel(P.A, 'A', '#1A1917', 17, 0, -2);
+        out += placeLabel(P.B, 'B', '#1A1917', 18, 0, 0);
+        out += placeLabel(P.C, 'C', '#1A1917', 18, 0, 2);
+        out += placeLabel(P.D, 'D', '#1A1917', 18, 0, 0);
+
+        // Nhãn điểm phụ đặt lệch cố định theo hướng hình học an toàn
+        out += `<text x="${(P.M.x + 15).toFixed(1)}" y="${(P.M.y + 15).toFixed(1)}" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#1C606C">M</text>`;
+        out += `<text x="${(P.E.x - 16).toFixed(1)}" y="${(P.E.y + 15).toFixed(1)}" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#605C54">E</text>`;
+        out += `<text x="${(P.F.x - 18).toFixed(1)}" y="${(P.F.y - 6).toFixed(1)}" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#9E6812">F</text>`;
+        out += `<text x="${(P.N.x + 15).toFixed(1)}" y="${(P.N.y - 10).toFixed(1)}" font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" fill="#2A664B">N</text>`;
+
+        // Chú giải góc trên trái gọn gàng
+        out += `<g transform="translate(12, 16)">
+          <line x1="0" y1="0" x2="18" y2="0" stroke="#1C606C" stroke-width="2.5" />
+          <text x="24" y="4" font-family="Be Vietnam Pro, sans-serif" font-size="12" fill="#1C606C">Giao tuyến AM</text>
+          <line x1="0" y1="20" x2="18" y2="20" stroke="#9E6812" stroke-width="2.4" stroke-dasharray="4,3" />
+          <text x="24" y="24" font-family="Be Vietnam Pro, sans-serif" font-size="12" fill="#9E6812">Đường thẳng BF</text>
+          <circle cx="9" cy="40" r="4.5" fill="#2A664B" />
+          <text x="24" y="44" font-family="Be Vietnam Pro, sans-serif" font-size="12" fill="#2A664B">Giao điểm N = BF ∩ (ACD)</text>
+        </g>`;
+
+        svgLab1.innerHTML = out;
+      }
+
+      [sliderT, sliderS, sliderTheta1].forEach(el => {
+        el.addEventListener('input', function () {
+          presetBtns1.forEach(b => b.classList.remove('active-green'));
+          renderLab1();
+        });
+      });
+
+      presetBtns1.forEach(btn => {
+        btn.addEventListener('click', function () {
+          const parts = btn.getAttribute('data-preset').split(',').map(Number);
+          sliderT.value = parts[0];
+          sliderS.value = parts[1];
+          sliderTheta1.value = parts[2];
+          presetBtns1.forEach(b => b.classList.toggle('active-green', b === btn));
+          renderLab1();
+        });
+      });
+
+      /* --- TAB 2: MÔ HÌNH HÌNH CHÓP N-GIÁC & QUY TẮC NÉT ĐỨT --- */
+      let pyramidN = 4;
+      const sliderYaw = document.getElementById('sliderYaw');
+      const sliderPitch = document.getElementById('sliderPitch');
+      const valYaw = document.getElementById('valYaw');
+      const valPitch = document.getElementById('valPitch');
+      const roVerts = document.getElementById('roVerts');
+      const roFaces = document.getElementById('roFaces');
+      const roEdges = document.getElementById('roEdges');
+      const roVisHid = document.getElementById('roVisHid');
+      const svgLab2 = document.getElementById('svgLab2');
+      const nBtns = Array.from(document.querySelectorAll('#nSelector .btn-preset'));
+
+      function renderLab2() {
+        const n = pyramidN;
+        const yaw = parseFloat(sliderYaw.value);
+        const pitch = parseFloat(sliderPitch.value);
+
+        valYaw.textContent = yaw + '°';
+        valPitch.textContent = pitch + '°';
+
+        const R = 1.25;
+        const zBase = -0.58;
+        const S = [0, 0, 1.48];
+        const base = [];
+        for (let i = 0; i < n; i++) {
+          const ang = (2 * Math.PI * i) / n - Math.PI / 2;
+          base.push([R * Math.cos(ang), R * Math.sin(ang), zBase]);
+        }
+
+        // Trọng tâm hình chóp để chuẩn hóa pháp tuyến hướng ra ngoài
+        const centroid = [0, 0, (S[2] + n * zBase) / (n + 1)];
+
+        // Xây dựng tập mặt: n mặt bên + 1 mặt đáy
+        const faces = [];
+        for (let i = 0; i < n; i++) {
+          const j = (i + 1) % n;
+          faces.push({
+            verts: [S, base[i], base[j]],
+            edges: ['S-' + i, 'S-' + j, 'B-' + i]
+          });
+        }
+        faces.push({
+          verts: base.slice(),
+          edges: Array.from({ length: n }, (_, i) => 'B-' + i)
+        });
+
+        const visEdges = new Set();
+        faces.forEach(f => {
+          if (isFaceVisible(f.verts, centroid, yaw, pitch)) {
+            f.edges.forEach(e => visEdges.add(e));
+          }
+        });
+
+        const scale = 122;
+        const cx = 230;
+        const cy = 225;
+        const pS = project3D(S, yaw, pitch, scale, cx, cy);
+        const pBase = base.map(v => project3D(v, yaw, pitch, scale, cx, cy));
+
+        let visibleCount = 0;
+        let hiddenCount = 0;
+        const allEdges = [];
+        for (let i = 0; i < n; i++) {
+          const j = (i + 1) % n;
+          allEdges.push({ key: 'S-' + i, a: pS, b: pBase[i] });
+          allEdges.push({ key: 'B-' + i, a: pBase[i], b: pBase[j] });
+        }
+
+        let out = '';
+
+        // Tô đáy rất nhẹ để mắt phân biệt rõ đa giác đáy
+        const basePts = pBase.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+        out += `<polygon points="${basePts}" fill="#1C606C" fill-opacity="0.08" stroke="none" />`;
+
+        // Vẽ cạnh bị che khuất trước (nét đứt)
+        allEdges.forEach(e => {
+          if (!visEdges.has(e.key)) {
+            hiddenCount++;
+            out += `<line x1="${e.a.x.toFixed(1)}" y1="${e.a.y.toFixed(1)}" x2="${e.b.x.toFixed(1)}" y2="${e.b.y.toFixed(1)}" stroke="#605C54" stroke-width="1.8" stroke-dasharray="6,4" />`;
+          }
+        });
+
+        // Vẽ cạnh nhìn thấy (nét liền xanh lam đậm)
+        allEdges.forEach(e => {
+          if (visEdges.has(e.key)) {
+            visibleCount++;
+            out += `<line x1="${e.a.x.toFixed(1)}" y1="${e.a.y.toFixed(1)}" x2="${e.b.x.toFixed(1)}" y2="${e.b.y.toFixed(1)}" stroke="#1C606C" stroke-width="2.2" stroke-linecap="round" />`;
+          }
+        });
+
+        // Điểm đỉnh và nhãn A1..An
+        const baseCenterX = pBase.reduce((s, p) => s + p.x, 0) / n;
+        const baseCenterY = pBase.reduce((s, p) => s + p.y, 0) / n;
+
+        out += `<circle cx="${pS.x.toFixed(1)}" cy="${pS.y.toFixed(1)}" r="4" fill="#B63E2A" />`;
+        out += `<text x="${pS.x.toFixed(1)}" y="${(pS.y - 16).toFixed(1)}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" fill="#B63E2A">S</text>`;
+
+        pBase.forEach((p, idx) => {
+          out += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3.4" fill="#1C606C" />`;
+          let vx = p.x - baseCenterX;
+          let vy = p.y - baseCenterY;
+          const len = Math.hypot(vx, vy) || 1;
+          vx /= len;
+          vy /= len;
+          const lx = p.x + vx * 19;
+          const ly = p.y + vy * 17;
+          out += `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" dominant-baseline="central" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#1A1917">A${idx + 1}</text>`;
+        });
+
+        // Chú giải nét liền / nét đứt
+        out += `<g transform="translate(12, 16)">
+          <line x1="0" y1="0" x2="20" y2="0" stroke="#1C606C" stroke-width="2.2" />
+          <text x="26" y="4" font-family="Be Vietnam Pro, sans-serif" font-size="12" fill="#1C606C">Cạnh nhìn thấy (${visibleCount})</text>
+          <line x1="0" y1="20" x2="20" y2="20" stroke="#605C54" stroke-width="1.8" stroke-dasharray="5,4" />
+          <text x="26" y="24" font-family="Be Vietnam Pro, sans-serif" font-size="12" fill="#605C54">Cạnh bị khuất (${hiddenCount})</text>
+        </g>`;
+
+        svgLab2.innerHTML = out;
+
+        roVerts.textContent = String(n + 1);
+        roFaces.textContent = String(n + 1);
+        roEdges.textContent = String(2 * n);
+        roVisHid.textContent = visibleCount + ' liền · ' + hiddenCount + ' đứt';
+      }
+
+      nBtns.forEach(btn => {
+        btn.addEventListener('click', function () {
+          pyramidN = Number(btn.getAttribute('data-n'));
+          nBtns.forEach(b => b.classList.toggle('active-blue', b === btn));
+          renderLab2();
+        });
+      });
+
+      sliderYaw.addEventListener('input', renderLab2);
+      sliderPitch.addEventListener('input', renderLab2);
+
+      // Khởi vẽ lần đầu
+      renderLab1();
+      renderLab2();
+
+      /* ============================================================
+         8. LUYỆN TẬP CUỐI BÀI (CHẤM ĐIỂM NGAY + GỢI Ý + LỜI GIẢI TỪNG BƯỚC)
+         ============================================================ */
+      const scoreState = { 1: false, 2: false, 3: false, 4: false, 5: false };
+      const scoreEl = document.getElementById('practiceScore');
+
+      function updatePracticeScore() {
+        const total = Object.values(scoreState).filter(Boolean).length;
+        scoreEl.textContent = total + '/5 câu đúng';
+      }
+
+      // Câu trắc nghiệm 01, 02, 04, 05
+      document.querySelectorAll('.q-card[data-correct]').forEach(card => {
+        const qNum = Number(card.getAttribute('data-q'));
+        const correct = card.getAttribute('data-correct');
+        const opts = Array.from(card.querySelectorAll('.opt-btn'));
+        const fb = card.querySelector('.q-feedback');
+
+        opts.forEach(btn => {
+          btn.addEventListener('click', function () {
+            const chosen = btn.getAttribute('data-opt');
+            opts.forEach(o => o.classList.remove('is-correct', 'is-wrong'));
+
+            if (chosen === correct) {
+              btn.classList.add('is-correct');
+              fb.className = 'q-feedback show ok';
+              fb.textContent = 'Chính xác. Đáp án đúng là ' + correct + '.';
+              scoreState[qNum] = true;
+            } else {
+              btn.classList.add('is-wrong');
+              fb.className = 'q-feedback show err';
+              fb.textContent = 'Chưa chính xác. Có thể xem Gợi ý ngắn hoặc mở Lời giải từng bước để đối chiếu.';
+              scoreState[qNum] = false;
+            }
+            updatePracticeScore();
+          });
+        });
+      });
+
+      // Câu ghép cặp 03
+      const btnCheckMatch = document.getElementById('btnCheckMatch');
+      const matchFeedback = document.getElementById('matchFeedback');
+      const matchRows = Array.from(document.querySelectorAll('#qCard3 .match-row'));
+
+      btnCheckMatch.addEventListener('click', function () {
+        let okCount = 0;
+        let missing = 0;
+
+        matchRows.forEach(row => {
+          const ans = row.getAttribute('data-ans');
+          const sel = row.querySelector('.match-select');
+          const statusEl = row.querySelector('.pair-status');
+          row.classList.remove('pair-ok', 'pair-bad');
+
+          if (!sel.value) {
+            missing++;
+            row.classList.add('pair-bad');
+            statusEl.style.color = 'var(--accent-red)';
+            statusEl.textContent = 'Chưa chọn kí hiệu';
+          } else if (sel.value === ans) {
+            okCount++;
+            row.classList.add('pair-ok');
+            statusEl.style.color = 'var(--sem-green)';
+            statusEl.textContent = 'Đúng';
+          } else {
+            row.classList.add('pair-bad');
+            statusEl.style.color = 'var(--accent-red)';
+            statusEl.textContent = 'Chưa đúng';
+          }
+        });
+
+        if (okCount === matchRows.length) {
+          matchFeedback.className = 'q-feedback show ok';
+          matchFeedback.textContent = 'Chính xác cả 4/4 cặp kí hiệu.';
+          scoreState[3] = true;
+        } else {
+          matchFeedback.className = 'q-feedback show err';
+          matchFeedback.textContent = 'Đúng ' + okCount + '/4 cặp' + (missing > 0 ? ' (còn ' + missing + ' cặp chưa chọn)' : '') + '. Kiểm tra lại các cặp được đánh dấu màu đỏ.';
+          scoreState[3] = false;
+        }
+        updatePracticeScore();
+      });
+
+      // Nút Gợi ý ngắn & Lời giải mở từng bước cho cả 5 câu
+      document.querySelectorAll('.q-card').forEach(card => {
+        const hintBtn = card.querySelector('.btn-toggle-hint');
+        const solBtn = card.querySelector('.btn-toggle-sol');
+        const hintBox = card.querySelector('.q-hint-box');
+        const solBox = card.querySelector('.q-sol-box');
+        const steps = Array.from(solBox.querySelectorAll('.sol-step'));
+        const nextStepBtn = solBox.querySelector('.btn-next-step');
+
+        hintBtn.addEventListener('click', function () {
+          const shown = hintBox.classList.toggle('show');
+          hintBtn.textContent = shown ? 'Ẩn gợi ý' : 'Gợi ý ngắn';
+        });
+
+        solBtn.addEventListener('click', function () {
+          const shown = solBox.classList.toggle('show');
+          solBtn.textContent = shown ? 'Ẩn lời giải' : 'Lời giải từng bước';
+          if (shown) {
+            // Mở từ bước 1 nếu chưa mở hết
+            let cur = Number(solBox.getAttribute('data-sol-step'));
+            if (cur === 0) {
+              cur = 1;
+              solBox.setAttribute('data-sol-step', '1');
+              renderSolSteps();
+            }
+          }
+        });
+
+        function renderSolSteps() {
+          const cur = Number(solBox.getAttribute('data-sol-step'));
+          steps.forEach((st, idx) => {
+            st.style.display = idx < cur ? 'block' : 'none';
+          });
+          if (cur >= steps.length) {
+            nextStepBtn.style.display = 'none';
+          } else {
+            nextStepBtn.style.display = 'inline-block';
+            nextStepBtn.textContent = 'Xem bước tiếp theo (' + cur + '/' + steps.length + ')';
+          }
+        }
+
+        nextStepBtn.addEventListener('click', function () {
+          const cur = Number(solBox.getAttribute('data-sol-step'));
+          if (cur < steps.length) {
+            solBox.setAttribute('data-sol-step', String(cur + 1));
+            renderSolSteps();
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
