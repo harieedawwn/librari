@@ -2,11 +2,11 @@
 const E=new TextEncoder(),D=new TextDecoder(),ub=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0)),hex=u=>[...u].map(x=>x.toString(16).padStart(2,'0')).join('');
 const b64=u=>{let s='';for(let i=0;i<u.length;i+=32768)s+=String.fromCharCode(...u.subarray(i,i+32768));return btoa(s)};
 const base=pw=>crypto.subtle.importKey('raw',E.encode(pw),'PBKDF2',false,['deriveBits','deriveKey']);
-const hx=async pw=>hex(new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',salt:E.encode('librari-v1'),iterations:200000,hash:'SHA-256'},await base(pw),256)));
-const ak=async pw=>crypto.subtle.deriveKey({name:'PBKDF2',salt:E.encode('librari-tk-v1'),iterations:200000,hash:'SHA-256'},await base(pw),{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+const hx=async pw=>hex(new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',salt:E.encode('hd-pf-v1'),iterations:200000,hash:'SHA-256'},await base(pw),256)));
+const ak=async pw=>crypto.subtle.deriveKey({name:'PBKDF2',salt:E.encode('hd-tk-v1'),iterations:200000,hash:'SHA-256'},await base(pw),{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
 async function putTok(pw,t){const iv=crypto.getRandomValues(new Uint8Array(12)),ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},await ak(pw),E.encode(t));localStorage.tk=b64(iv)+'.'+b64(new Uint8Array(ct))}
 async function getTok(pw){try{const[i,c]=localStorage.tk.split('.');return D.decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:ub(i)},await ak(pw),ub(c)))}catch{return null}}
-const idb=(m,v)=>new Promise((ok,no)=>{const r=indexedDB.open('librari-k',1);r.onupgradeneeded=()=>r.result.createObjectStore('k');r.onerror=()=>no(r.error);
+const idb=(m,v)=>new Promise((ok,no)=>{const r=indexedDB.open('kho',1);r.onupgradeneeded=()=>r.result.createObjectStore('k');r.onerror=()=>no(r.error);
 r.onsuccess=()=>{const s=r.result.transaction('k',m==='get'?'readonly':'readwrite').objectStore('k'),q=m==='get'?s.get('a'):m==='del'?s.delete('a'):s.put(v,'a');q.onsuccess=()=>ok(q.result);q.onerror=()=>no(q.error)}});
 async function remember(t){const k=await crypto.subtle.generateKey({name:'AES-GCM',length:256},false,['encrypt','decrypt']),iv=crypto.getRandomValues(new Uint8Array(12));await idb('put',{k,iv,c:await crypto.subtle.encrypt({name:'AES-GCM',iv},k,E.encode(t))})}
 async function recall(){try{const a=await idb('get');return a?D.decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:a.iv},a.k,a.c)):null}catch{return null}}
@@ -14,10 +14,10 @@ async function check(t){const r=await fetch(`https://api.github.com/repos/${CFG.
 if(r.status===401)throw Error('Token hết hạn hoặc sai');if(!r.ok)throw Error('GitHub '+r.status);const j=await r.json();if(j.permissions&&!j.permissions.push)throw Error('Token không có quyền ghi')}
 const enter=t=>{TOK=t;adm=true;B.classList.add('adm');loadLib().then(it=>{if(it.length||!ALL.length){ALL=it;refresh()}})};
 $('#sec').onclick=async()=>{if(adm)return;const t=await recall();if(t){try{await check(t);return enter(t)}catch{}}
-dlg('Đăng nhập',`<input id="pw" type="password" placeholder="Mật khẩu" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false"><input id="tk" type="password" placeholder="${localStorage.tk?'Token GitHub (đã lưu)':'Token GitHub'}" autocomplete="off" autocapitalize="off" spellcheck="false"><label class="ck"><input id="sw" type="checkbox"> Hiện chữ đang gõ</label>`,async d=>{
-const pw=$('#pw',d).value;if(await hx(pw)!==HASH)throw Error('Sai mật khẩu');const nt=$('#tk',d).value.trim(),t=nt||await getTok(pw);if(!t)throw Error('Cần token GitHub');
+dlg('Đăng nhập',`<input id="pw" type="password" placeholder="Mật khẩu" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false">${localStorage.tk?'':'<input id="tk" type="password" placeholder="Token GitHub (chỉ nhập 1 lần)" autocomplete="off" autocapitalize="off" spellcheck="false">'}<label class="ck"><input id="sw" type="checkbox"> Hiện chữ đang gõ</label><p style="font-size:14px;opacity:.7">Nhớ tắt bộ gõ tiếng Việt (Unikey/Telex) khi gõ mật khẩu.</p>`,async d=>{
+const pw=$('#pw',d).value;if(await hx(pw)!==HASH)throw Error('Sai mật khẩu');const nt=$('#tk',d)?$('#tk',d).value.trim():'',t=nt||await getTok(pw);if(!t)throw Error('Cần token GitHub');
 await check(t);if(nt)await putTok(pw,t);await remember(t);enter(t);return true},'Vào');
-$('#sw').onchange=e=>{$('#pw').type=$('#tk').type=e.target.checked?'text':'password'}};
+$('#sw').onchange=e=>{$('#pw').type=e.target.checked?'text':'password'}};
 $('#out').onclick=()=>{adm=false;TOK=null;B.classList.remove('adm');idb('del').catch(()=>{})};
 /* ---- ghi vào repo: mọi thay đổi gom thành MỘT commit (Git Data API) ---- */
 async function api(p,m='GET',b){const r=await fetch(`https://api.github.com/repos/${CFG.owner}/${CFG.repo}/${p}`,{method:m,cache:'no-store',headers:{Authorization:'Bearer '+TOK,Accept:'application/vnd.github+json'},body:b?JSON.stringify(b):undefined});

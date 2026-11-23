@@ -1,6 +1,6 @@
 /* ---- cấu hình ---- */
 const CFG={owner:'harieedawwn',repo:'librari',branch:'main'};
-const HASH='a4751b67782b2f2d11706aff9822d2a721492cf282b61d3760e082967de8f615';
+const HASH='69a521283de55297b319fe407061d849000daa1abef79538104ea490c7e27c97';
 let P=[],ALL=[],cur=null,adm=false,TOK=null;
 const B=document.body,uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const kidsOf=x=>ALL.filter(y=>y.parent===x),subs=x=>kidsOf(x).flatMap(y=>[y,...subs(y.id)]);
