@@ -9,7 +9,6 @@ c.innerHTML=`<span class="ph">${f?`<span class="ico">${FOLDER}</span>`:art(p.nam
 function render(){track.textContent='';cards=P.map(card);track.append(...cards);if(!cards.length)track.append(mk('p','em','Chưa có gì ở đây'))}
 track.addEventListener('click',e=>{if(sup)return;const c=e.target.closest('.card');if(!c)return;if(e.target.closest('.eb'))return openEdit(c._p);openP(c._p)});
 track.addEventListener('keydown',e=>{const c=e.target.closest('.card');if(c&&e.target===c&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openP(c._p)}});
-track.addEventListener('contextmenu',e=>{if(adm)e.preventDefault()});
 /* kéo-thả (chuột: kéo; cảm ứng: giữ lâu rồi kéo) */
 const tgOf=e=>{const el=document.elementFromPoint(e.clientX,e.clientY);if(!el)return null;const b=el.closest('#back');if(b&&B.classList.contains('fol'))return{el:b,id:(ALL.find(x=>x.id===cur)||{}).parent||null};
 const c=el.closest('.card.fo');return c&&c._p.id!==drag.c._p.id?{el:c,id:c._p.id}:null};

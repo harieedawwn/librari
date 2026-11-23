@@ -44,4 +44,20 @@ const opts='<option value="">Gốc</option>'+ALL.filter(f=>f.type=='folder'&&!ba
 const d=dlg('Sửa',`<input type="text" id="nm" value="${esc(p.name)}" autocomplete="off"><select id="pr">${opts}</select><label class="ck"><input id="pi" type="checkbox"${p.pin?' checked':''}> Ghim lên đầu</label>${p.type=='file'?'<label class="ck"><input id="sd" type="checkbox"> Đổi họa tiết thumbnail</label>':''}`,async d=>{
 const n=$('#nm',d).value.trim(),t=$('#pr',d).value||null,sd=$('#sd',d)&&$('#sd',d).checked?Math.random().toString(36).slice(2,6):null;const pin=$('#pi',d).checked;if(!n)throw Error('Cần đặt tên');
 await commit('Sửa '+n,{},j=>{const x=j.items.find(y=>y.id==id);x.name=n;x.parent=t;if(pin)x.pin=1;else delete x.pin;if(sd)x.seed=sd});return true},'Lưu','<button type="button" class="bt dn">Xóa</button>');
-$('.dn',d).onclick=()=>{d.close();const all=subs(id);dlg('Xóa "'+esc(p.name)+'"?',`<p>${all.length?'Xóa luôn '+all.length+' mục bên trong. ':''}Không thể hoàn tác.</p>`,async()=>{const ids=[id,...all.map(x=>x.id)],f={};[p,...all].filter(x=>x.type=='file').forEach(x=>f['files/'+x.id+'.html']=null);await commit('Xóa '+p.name,f,j=>{j.items=j.items.filter(x=>!ids.includes(x.id))});return true},'Xóa')}}
+$('.dn',d).onclick=()=>{d.close();delItem(p)}}
+function delItem(p){const id=p.id,all=subs(id);dlg('Xóa "'+esc(p.name)+'"?',`<p>${all.length?'Xóa luôn '+all.length+' mục bên trong. ':''}Không thể hoàn tác.</p>`,async()=>{const ids=[id,...all.map(x=>x.id)],f={};[p,...all].filter(x=>x.type=='file').forEach(x=>f['files/'+x.id+'.html']=null);await commit('Xóa '+p.name,f,j=>{j.items=j.items.filter(x=>!ids.includes(x.id))});return true},'Xóa')}
+/* ---- chuột phải: menu thao tác nhanh ---- */
+const cmClose=()=>{const m=$('.cm');m&&m.remove()};
+function cmShow(x,y,rows){cmClose();const m=mk('div','cm');m.oncontextmenu=e=>e.preventDefault();
+rows.forEach(r=>{if(r==='-')return m.append(mk('hr'));if(r.h)return m.append(mk('div','ch',esc(r.h)));const b=mk('button',r.d?'dn':'',esc(r.t));b.onclick=()=>{cmClose();r.f()};m.append(b)});
+B.append(m);const w=m.offsetWidth,h=m.offsetHeight;m.style.left=Math.max(6,Math.min(x,innerWidth-w-6))+'px';m.style.top=Math.max(6,Math.min(y,innerHeight-h-6))+'px';m.style.maxHeight=innerHeight-12+'px'}
+const upd=(msg,fn)=>busy(()=>commit(msg,{},fn));
+function cmItem(x,y,p){const id=p.id;
+const dest=()=>{const bad=p.type=='folder'?[id,...subs(id).map(z=>z.id)]:[],pth=z=>{const f=ALL.find(q=>q.id===z);return f?(f.parent?pth(f.parent)+' / ':'')+f.name:''},rows=[{h:'Chuyển tới'}];
+if(p.parent)rows.push({t:'Gốc',f:()=>moveItem(p,null)});ALL.filter(f=>f.type=='folder'&&!bad.includes(f.id)&&f.id!==p.parent).forEach(f=>rows.push({t:pth(f.id),f:()=>moveItem(p,f.id)}));if(rows.length==1)rows.push({t:'(Không có thư mục nào khác)',f:()=>{}});cmShow(x,y,rows)};
+cmShow(x,y,[{t:p.type=='folder'?'Mở thư mục':'Mở',f:()=>openP(p)},'-',{t:'Chuyển tới…',f:dest},{t:p.pin?'Bỏ ghim':'Ghim lên đầu',f:()=>upd((p.pin?'Bỏ ghim ':'Ghim ')+p.name,j=>{const q=j.items.find(z=>z.id==id);if(q.pin)delete q.pin;else q.pin=1})},
+{t:'Đổi tên',f:()=>dlg('Đổi tên','<input type="text" id="nm" value="'+esc(p.name)+'" autocomplete="off">',async d=>{const n=$('#nm',d).value.trim();if(!n)throw Error('Cần đặt tên');await commit('Đổi tên '+n,{},j=>{j.items.find(z=>z.id==id).name=n});return true},'Lưu')},
+...(p.type=='file'?[{t:'Đổi họa tiết',f:()=>upd('Đổi họa tiết',j=>{j.items.find(z=>z.id==id).seed=Math.random().toString(36).slice(2,6)})}]:[]),{t:'Chỉnh sửa…',f:()=>openEdit(p)},'-',{t:'Xóa',d:1,f:()=>delItem(p)}])}
+$('#stage').addEventListener('contextmenu',e=>{if(!adm||drag||(pd&&pd.touch))return;e.preventDefault();const c=e.target.closest('.card');
+if(c)cmItem(e.clientX,e.clientY,c._p);else cmShow(e.clientX,e.clientY,[{t:'Tải HTML lên',f:()=>$('#fi').click()},{t:'Thư mục mới',f:()=>$('#nf').click()}])});
+addEventListener('pointerdown',e=>{if(!e.target.closest('.cm'))cmClose()},true);addEventListener('keydown',e=>{if(e.key==='Escape')cmClose()});$('#stage').addEventListener('scroll',cmClose);
